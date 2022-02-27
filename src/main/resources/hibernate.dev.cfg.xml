@@ -1,0 +1,18 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<!-- Database settings - PostgreSQL -->
+		<property name="connection.driver_class">org.postgresql.Driver</property>
+		<property name="dialect">org.hibernate.dialect.PostgreSQL10Dialect</property>
+
+		<property name="current_session_context_class">thread</property>
+		<property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+
+		<property name="javax.persistence.schema-generation.scripts.action">drop-and-create</property>
+		<property name="javax.persistence.schema-generation.scripts.create-target">db-schema.jpa.ddl</property>
+		<property name="javax.persistence.schema-generation.scripts.drop-target">db-schema.jpa.ddl</property>
+	</session-factory>
+</hibernate-configuration>
+<!-- tips givt dat hyr: https://thoughts-on-java.org/hibernate-tips-create-initialize-database/ -->

@@ -1,0 +1,19 @@
+{
+  "forgotPw": "Paswoord vorgeyten",
+  "fpwExplain": "Geav hyr dyn e-mail-adres or dyn brukername an un wy skykket dy en e-mail med en instruktioon üm en ny paswoord to setten.",
+  "emailOrUser": "E-mail or brukername",
+  "errEmailUser": "En e-mail or brukername is vannöden",
+  "resetPw": "Paswoord torügsetten",
+  "knowPw": "Du kenst dyn paswoord?",
+  "signOnHere": "Meld dy hyr an",
+  "signOn": "Anmelding",
+  "pw": "Paswoord",
+  "errPw": "En paswoord is vannöden",
+  "signOnBtn": "Anmelden",
+  "newHere": "Ny by ule.dk?",
+  "regNow": "Registrere dy nu",
+  "title": "ULE.DK – wöördebook",
+  "dataPrivacy": "Datenskuul",
+  "termsOfUse": "Gebruuksbedingen",
+  "imprint": "Impressum"
+}

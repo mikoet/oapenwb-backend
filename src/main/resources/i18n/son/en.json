@@ -1,0 +1,19 @@
+{
+  "forgotPw": "Forgot password",
+  "fpwExplain": "Enter your e-mail address or your username and we will send you an e-mail containing instructions to reset your password.",
+  "emailOrUser": "E-mail or username",
+  "errEmailUser": "An e-mail or username is needed",
+  "resetPw": "Reset password",
+  "knowPw": "You know your password?",
+  "signOnHere": "Sign on here",
+  "signOn": "Sign-on",
+  "pw": "Password",
+  "errPw": "A password is needed",
+  "signOnBtn": "Sign on",
+  "newHere": "New at ule.dk?",
+  "regNow": "Register now",
+  "title": "ULE.DK – dictionary",
+  "dataPrivacy": "Data Privacy Statement",
+  "termsOfUse": "Terms of Use",
+  "imprint": "Imprint"
+}

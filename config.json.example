@@ -1,0 +1,33 @@
+{
+	"port": 60100,
+	"allowedOrigins":[
+		"https://some.domain",		// for use on a hosted site
+		"http://localhost:4200"		// for local dev config
+	],
+	"minThreads": 8,
+	"maxThreads": 32,
+	"timeOutMillis": 60000,
+	"secret": "32 character (8 bits) long secret",
+	"sendEmails": false,
+	"emailConfig": {
+		"smtpHostname": "localhost",
+		"smtpPort": 25,
+		"smtpUsername": "",
+		"smtpPassword": "",
+		"from": "from@adress.domain",
+		"useSSL": false,
+		"useAuthentication": false
+	},
+	"dbConfig": {
+		"hostname": "localhost",
+		"port": 3306,
+		"database": "oapenwb_dev"
+		"username": "username",
+		"password": "password",
+		"showSQL": false,
+		"minPoolSize": 8,
+		"maxPoolSize": 32,
+		"poolIdleTimeout": 120000,
+		"poolConnectionTimeout": 20000
+	}
+}

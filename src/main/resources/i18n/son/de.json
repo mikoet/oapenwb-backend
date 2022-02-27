@@ -1,0 +1,19 @@
+{
+  "forgotPw": "Missing value for 'son.forgotPw'",
+  "fpwExplain": "Missing value for 'son.fpwExplain'",
+  "emailOrUser": "Missing value for 'son.emailOrUser'",
+  "errEmailUser": "Missing value for 'son.errEmailUser'",
+  "resetPw": "Missing value for 'son.resetPw'",
+  "knowPw": "Missing value for 'son.knowPw'",
+  "signOnHere": "Missing value for 'son.signOnHere'",
+  "signOn": "Missing value for 'son.signOn'",
+  "pw": "Missing value for 'son.pw'",
+  "errPw": "Missing value for 'son.errPw'",
+  "signOnBtn": "Missing value for 'son.signOnBtn'",
+  "newHere": "Missing value for 'son.newHere'",
+  "regNow": "Missing value for 'son.regNow'",
+  "title": "Missing value for 'son.title'",
+  "dataPrivacy": "Missing value for 'son.dataPrivacy'",
+  "termsOfUse": "Missing value for 'son.termsOfUse'",
+  "imprint": "Missing value for 'son.imprint'"
+}
