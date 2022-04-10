@@ -3,6 +3,8 @@
 
 # oapen wöördebook (backend)
 
+[//]: # (Shared block begin)
+
 oapen wöördebook (Low Saxon for *open dictionary*, lit. *open wordsbook*, abbreviated *oapenwb*) is an open source
 lexeme-centric dictionary software.
 
@@ -28,6 +30,8 @@ Further goals that oapenwb addresses:
   managed via the administrator's interface as well.
 
 oapenwb is in development stage. The administrator's interface is quiet usable.
+
+[//]: # (Shared block end)
 
 ## License
 

@@ -20,8 +20,9 @@ import java.time.Instant;
 @AllArgsConstructor
 public class VersionInfo {
 	@Id
-	@Column(length = 8)
-	private String version; // example: 01.04.02
+	@Column(length = 12)
+	private String version; // examples: regular version like 01.04.02,
+	                        // snapshots like SNAP02.01.05 or more general SNAP00.01
 
 	@Basic
 	private Instant actionTS;

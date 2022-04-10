@@ -34,7 +34,7 @@ create table UiLanguages (locale varchar(32) not null, version int4 not null, ac
 create table UiLanguages_AUD (locale varchar(32) not null, REV int8 not null, REVTYPE int2, active boolean, isDefault boolean, localName varchar(32), primary key (locale, REV));
 create table Users (id int4 not null, version int4 not null, activated boolean not null, email varchar(320) not null, facebookID varchar(64), failedLogins int4, firstname varchar(32) not null, joinTS timestamp not null, lastActiveTS timestamp, lastname varchar(32), pwHash bytea, role character not null, salt varchar(20), showName int4, type int2 not null, username varchar(32), primary key (id));
 create table Users_AUD (id int4 not null, REV int8 not null, REVTYPE int2, activated boolean, email varchar(320), facebookID varchar(64), failedLogins int4, firstname varchar(32), joinTS timestamp, lastActiveTS timestamp, lastname varchar(32), pwHash bytea, role character, salt varchar(20), showName int4, type int2, username varchar(32), primary key (id, REV));
-create table VersionInfos (version varchar(8) not null, actionTS timestamp, primary key (version));
+create table VersionInfos (version varchar(12) not null, actionTS timestamp, primary key (version));
 create table Violation (ip varchar(45) not null, whenTS timestamp not null, info varchar(256) not null, type character not null, primary key (ip, whenTS));
 
 
