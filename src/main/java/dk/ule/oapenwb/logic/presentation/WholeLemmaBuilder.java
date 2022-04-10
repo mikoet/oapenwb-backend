@@ -8,6 +8,7 @@ import dk.ule.oapenwb.entity.content.basedata.Level;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
+import dk.ule.oapenwb.logic.admin.generic.ICEntityController;
 import dk.ule.oapenwb.logic.presentation.options.WholeLemmaOptions;
 import dk.ule.oapenwb.util.Pair;
 
@@ -25,7 +26,7 @@ public class WholeLemmaBuilder
 {
 	private final SingleLemmaBuilder singleLemmaBuilder = new SingleLemmaBuilder();
 
-	public String build(final WholeLemmaOptions options, final ControllerSet controllers, final Sememe sememe,
+	public String build(final WholeLemmaOptions options, final IControllerSet controllers, final Sememe sememe,
 		HashMap<Long, Variant> allVariantsMap) throws CodeException
 	{
 		final List<Pair<Variant, String>> variantList = new LinkedList<>();
@@ -51,7 +52,7 @@ public class WholeLemmaBuilder
 		return dataToString(options, controllers, sememe, variantList);
 	}
 
-	private String dataToString(final WholeLemmaOptions options, final ControllerSet controllers, final Sememe sememe,
+	private String dataToString(final WholeLemmaOptions options, final IControllerSet controllers, final Sememe sememe,
 		final List<Pair<Variant, String>> variantList) throws CodeException
 	{
 		StringBuilder sb = new StringBuilder();
@@ -76,7 +77,7 @@ public class WholeLemmaBuilder
 			sb.append(' ');
 			sb.append("[[");
 
-			CEntityController<Category, Integer> cc = controllers.getCategoriesController();
+			ICEntityController<Category, Integer> cc = controllers.getCategoriesController();
 			first = true;
 			for (Integer categoryID : categoryIDs)
 			{
@@ -102,7 +103,7 @@ public class WholeLemmaBuilder
 			sb.append(' ');
 			sb.append("[/");
 
-			CEntityController<Level, Integer> lc = controllers.getUnitLevelsController();
+			ICEntityController<Level, Integer> lc = controllers.getUnitLevelsController();
 			first = true;
 			for (Integer levelID : levelIDs)
 			{

@@ -202,7 +202,7 @@ public class AdminControllers
 
 		// Set controllers now (this is where auto wiring comes in helpfull)
 		controllerSet.setControllers(orthographiesController, languagesController, categoriesController,
-			unitLevelsController, linkTypesController, sememeController);
+			unitLevelsController, sememeController);
 
 		// Locking
 		this.lockController = new LockController();

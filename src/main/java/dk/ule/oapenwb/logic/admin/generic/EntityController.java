@@ -35,7 +35,7 @@ import java.util.function.Supplier;
  * @param <T> Type of the entities that shall be managed by this controller
  * @param <S> Type of the IDs of the managed entities
  */
-public class EntityController<T extends IEntity<S>, S extends Serializable> implements IRestController<T, S>
+public class EntityController<T extends IEntity<S>, S extends Serializable> implements IEntityController<T, S>
 {
 	private static final Logger LOG = LoggerFactory.getLogger(EntityController.class);
 

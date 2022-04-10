@@ -28,6 +28,7 @@ import java.util.function.Supplier;
  * @param <S> ID type of entity
  */
 public class CEntityController<T extends IEntity<S>, S extends Serializable> extends EntityController<T, S>
+	implements ICEntityController<T, S>
 {
 	private static final Logger LOG = LoggerFactory.getLogger(CEntityController.class);
 

@@ -7,22 +7,43 @@ import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.basedata.Orthography;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
-import dk.ule.oapenwb.logic.admin.generic.CEntityController;
+import dk.ule.oapenwb.logic.admin.generic.ICEntityController;
 import dk.ule.oapenwb.logic.presentation.options.SingleLemmaOptions;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * The purpose of this class is to build a single lemma, i.e. one for one variant.
- * Such a lemma will include the dialects it is valid for. In order to do that this
- * builder takes the dialectIDs of the variant but reduces them by the dialectIDs
- * that are not part of the sememe's dialectIDs.
+ * The purpose of this class is to build a single lemma, i.e. one for one variant that is
+ * assigned to a sememe. Such a lemma will include the dialects it is valid for. In order
+ * to do that this builder takes the dialectIDs of the variant but reduces them by the
+ * dialectIDs that are not part of the sememe's dialectIDs.
  */
 public class SingleLemmaBuilder
 {
-	public String build(final SingleLemmaOptions options, final ControllerSet controllers, final Variant variant,
+	/**
+	 * <p>Builds a lemma for a single variant that is assigned to a sememe (both being part of the same lexeme, of
+	 * course).</p>
+	 *
+	 * <p>Examples of SingleLemmas:
+	 * <ul>
+	 * <li>eaten^[o:nss] ((l:nds-nw))</li>
+	 * <li>etten^[o:nss] ((l:nds-nw, l:nds-wf))</li>
+	 * <li>eten^[o:db] ((l:nds-nw))</li>
+	 * </ul>
+	 * </p>
+	 *
+	 * @param options The options object (use
+	 *     {@link dk.ule.oapenwb.logic.presentation.options.PresentationOptions}.DEFAULT_PRESENTATION_OPTIONS for defauls)
+	 * @param controllers Set of controllers necessary for building the lemmata
+	 * @param variant The variant of a lexeme for which the lemma is to be build
+	 * @param sememeDialects Set of IDs of dialects that are used in the sememe... TODO
+	 * @return the built lemma string
+	 * @throws CodeException Can be thrown by controllers of the IControllerSet
+	 */
+	public String build(final SingleLemmaOptions options, final IControllerSet controllers, final Variant variant,
 		final Set<Integer> sememeDialects) throws CodeException
 	{
 		if (options.activeDataOnly && !variant.isActive())
@@ -32,7 +53,7 @@ public class SingleLemmaBuilder
 
 		StringBuilder sb = new StringBuilder();
 
-		/**
+		/*
 		 * Examples of SingleLemmas:
 		 * eaten^[o:nss] ((l:nds-nw))
 		 * etten^[o:nss] ((l:nds-wf))
@@ -65,7 +86,8 @@ public class SingleLemmaBuilder
 			Orthography o = controllers.getOrthographiesController().get(variant.getOrthographyID());
 			if (o != null) {
 				sb.append("^[");
-				sb.append(o.getAbbreviation()); // TODO This could be switched to the ID instead of the abbreviation - could make sense if the client already knows all abbrebiations
+				sb.append(o.getAbbreviation()); // TODO This could be switched to the ID instead of the abbreviation
+				                                //   - could make sense if the client already knows all abbrebiations
 				sb.append("]");
 			}
 		}
@@ -73,20 +95,23 @@ public class SingleLemmaBuilder
 		// Add the dialects if set and available on the sememe
 		if (options.includeDialects)
 		{
-			Set<Integer> d = variant.getDialectIDs();
+			Set<Integer> variantDialectIDs = variant.getDialectIDs();
 			// Are there any dialects set on the variant?
-			if (d != null && d.size() > 0 && sememeDialects != null && sememeDialects.size() > 0)
+			if (variantDialectIDs != null && variantDialectIDs.size() > 0 && sememeDialects != null && sememeDialects.size() > 0)
 			{
 				// Filter out the dialects so that only those remain that are both, part of the variant and the sememe
-				List<Integer> dialectIDs = d.stream().filter(id -> sememeDialects.contains(id)).collect(Collectors.toList());
+				List<Integer> dialectIDs = variantDialectIDs.stream().filter(sememeDialects::contains).collect(Collectors.toList());
 				// Are there dialects left that were set on the sememe?
 				if (dialectIDs.size() > 0)
 				{
+					// Sort the IDs
+					Collections.sort(dialectIDs);
+
 					// Now add the dialects
 					sb.append(" ((");
 					boolean first = true;
-					CEntityController<Language, Integer> langController = controllers.getLanguagesController();
-					for (Integer id : d)
+					ICEntityController<Language, Integer> langController = controllers.getLanguagesController();
+					for (Integer id : dialectIDs)
 					{
 						// Only take those dialectIDs into account that are also set on the sememe!
 						if (sememeDialects.contains(id))

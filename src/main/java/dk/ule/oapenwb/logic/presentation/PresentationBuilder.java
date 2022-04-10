@@ -23,7 +23,7 @@ public class PresentationBuilder
 {
 	private final WholeLemmaBuilder wholeLemmaBuilder = new WholeLemmaBuilder();
 
-	public String build(final PresentationOptions options, final ControllerSet controllers,
+	public String build(final PresentationOptions options, final IControllerSet controllers,
 		final List<Sememe> sememes, final List<Variant> allVariants) throws CodeException
 	{
 		LinkedList<Pair<Sememe, String>> sememePairsList = sememeListToPairList(sememes);

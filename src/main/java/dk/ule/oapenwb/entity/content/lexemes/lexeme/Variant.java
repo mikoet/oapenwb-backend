@@ -23,7 +23,7 @@ import java.time.Instant;
 import java.util.*;
 
 /**
- * A variant represents a phonetic and/or written variant of a {@link Lexeme}.
+ * <p>A variant represents a phonetic and/or written variant of a {@link Lexeme}.</p>
  */
 @Data
 @Entity

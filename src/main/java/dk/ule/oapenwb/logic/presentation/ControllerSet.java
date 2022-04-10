@@ -4,6 +4,7 @@ package dk.ule.oapenwb.logic.presentation;
 
 import dk.ule.oapenwb.entity.content.basedata.*;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
+import dk.ule.oapenwb.logic.admin.generic.ICEntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeController;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,39 +13,34 @@ import lombok.NoArgsConstructor;
  * Contains all controllers needed to generated the lemmas / presentation.
  */
 @NoArgsConstructor
-public class ControllerSet
+public class ControllerSet implements IControllerSet
 {
 	@Getter
-	private CEntityController<Orthography, Integer> orthographiesController;
+	private ICEntityController<Orthography, Integer> orthographiesController;
 
 	@Getter
-	private CEntityController<Language, Integer> languagesController;
+	private ICEntityController<Language, Integer> languagesController;
 
 	@Getter
-	private CEntityController<Category, Integer> categoriesController;
+	private ICEntityController<Category, Integer> categoriesController;
 
 	@Getter
-	private CEntityController<Level, Integer> unitLevelsController;
-
-	@Getter
-	private CEntityController<LinkType, Integer> linkTypesController;
+	private ICEntityController<Level, Integer> unitLevelsController;
 
 	@Getter
 	private SememeController sememeController;
 
 	public void setControllers(
-		CEntityController<Orthography, Integer> orthographiesController,
-		CEntityController<Language, Integer> languagesController,
-		CEntityController<Category, Integer> categoriesController,
-		CEntityController<Level, Integer> unitLevelsController,
-		CEntityController<LinkType, Integer> linkTypesController,
+		ICEntityController<Orthography, Integer> orthographiesController,
+		ICEntityController<Language, Integer> languagesController,
+		ICEntityController<Category, Integer> categoriesController,
+		ICEntityController<Level, Integer> unitLevelsController,
 		SememeController sememeController)
 	{
 		this.orthographiesController = orthographiesController;
 		this.languagesController = languagesController;
 		this.categoriesController = categoriesController;
 		this.unitLevelsController = unitLevelsController;
-		this.linkTypesController = linkTypesController;
 		this.sememeController = sememeController;
 	}
 }
