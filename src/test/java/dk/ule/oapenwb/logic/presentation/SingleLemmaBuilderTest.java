@@ -23,6 +23,9 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * <p>Tests for class {@link SingleLemmaBuilder}.</p>
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
 public class SingleLemmaBuilderTest
@@ -94,7 +97,7 @@ public class SingleLemmaBuilderTest
 				this.controllerSet,
 				createVariant(oNSS.getId(), Set.of(lMoensterlaendsk.getId()), createLemma("eaten"), true),
 				Set.of(lMoensterlaendsk.getId())
-			), String.format("String should have been '%s'", checkResult));
+			), String.format("Lemma should have been '%s'", checkResult));
 		}
 
 		{
@@ -107,7 +110,7 @@ public class SingleLemmaBuilderTest
 				this.controllerSet,
 				createVariant(oNSS.getId(), Set.of(lMoensterlaendsk.getId(), lDitmarsk.getId()), createLemma("eaten"), true),
 				Set.of(lMoensterlaendsk.getId())
-			), String.format("String should have been '%s'", checkResult));
+			), String.format("Lemma should have been '%s'", checkResult));
 		}
 
 		{
@@ -120,7 +123,7 @@ public class SingleLemmaBuilderTest
 				this.controllerSet,
 				createVariant(oNSS.getId(), Set.of(lMoensterlaendsk.getId()), createLemma("eaten"), true),
 				Set.of(lMoensterlaendsk.getId(), lDitmarsk.getId())
-			), String.format("String should have been '%s'", checkResult));
+			), String.format("Lemma should have been '%s'", checkResult));
 		}
 
 		{
@@ -135,7 +138,7 @@ public class SingleLemmaBuilderTest
 				// Note that lMoensterlaendsk and lDitmarsk are twisted in the dialectIDs set of th variant
 				createVariant(oNSS.getId(), Set.of(lDitmarsk.getId(), lMoensterlaendsk.getId()), createLemma("eaten"), true),
 				Set.of(lMoensterlaendsk.getId(), lDitmarsk.getId())
-			), String.format("String should have been '%s'", checkResult));
+			), String.format("Lemma should have been '%s'", checkResult));
 		}
 	}
 
@@ -152,7 +155,7 @@ public class SingleLemmaBuilderTest
 				this.controllerSet,
 				createVariant(oNSS.getId(), Set.of(lMoensterlaendsk.getId()), createLemma("eaten"), false),
 				Set.of(lMoensterlaendsk.getId())
-			), String.format("String should have been '%s'", checkResult));
+			), String.format("Lemma should have been '%s'", checkResult));
 		}
 	}
 
