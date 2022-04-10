@@ -59,8 +59,8 @@ public class Dict
 {
 	private static final Logger LOG = LoggerFactory.getLogger(Dict.class);
 
-	// 8 character version info, e.g. 01.03.05, or SNAPSHOT on development branch
-	public static final String VERSION = "SNAPSHOT";
+	// 8 character version info, e.g. 01.03.05, or SNAP00.01 for 00.01 snapshots on development branch
+	public static final String VERSION = "SNAP00.01";
 
 	// oapenwb's entry point
 	public static void main(String[] args) throws IOException, CodeException
