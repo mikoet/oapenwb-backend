@@ -21,6 +21,11 @@ import java.util.Set;
  * <p>This class will stick together the single lemmata built by the SingleLemmaBuilder, do some
  * kind of ordering / sorting of the single lemmata, and add additional information such as the
  * catgories and the levels.</p>
+ * <p>Examples of WholeLemmata:
+ * <ul>
+ *   <li>eaten^NSS, etten^NSS</li>
+ * </ul>
+ * </p>
  */
 public class WholeLemmaBuilder
 {

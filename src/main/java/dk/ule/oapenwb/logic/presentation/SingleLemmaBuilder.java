@@ -16,10 +16,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * The purpose of this class is to build a single lemma, i.e. one for one variant that is
+ * <p>The purpose of this class is to build a single lemma, i.e. one for one variant that is
  * assigned to a sememe. Such a lemma will include the dialects it is valid for. In order
  * to do that this builder takes the dialectIDs of the variant but reduces them by the
- * dialectIDs that are not part of the sememe's dialectIDs.
+ * dialectIDs that are not part of the sememe's dialectIDs.</p>
  */
 public class SingleLemmaBuilder
 {
@@ -29,19 +29,19 @@ public class SingleLemmaBuilder
 	 *
 	 * <p>Examples of SingleLemmas:
 	 * <ul>
-	 * <li>eaten^[o:nss] ((l:nds-nw))</li>
-	 * <li>etten^[o:nss] ((l:nds-nw, l:nds-wf))</li>
-	 * <li>eten^[o:db] ((l:nds-nw))</li>
+	 *   <li>eaten^[o:nss] ((l:nds-nw))</li>
+	 *   <li>etten^[o:nss] ((l:nds-nw, l:nds-wf))</li>
+	 *   <li>eten^[o:db] ((l:nds-nw))</li>
 	 * </ul>
 	 * </p>
 	 *
 	 * @param options The options object (use
 	 *     {@link dk.ule.oapenwb.logic.presentation.options.PresentationOptions}.DEFAULT_PRESENTATION_OPTIONS for defauls)
 	 * @param controllers Set of controllers necessary for building the lemmata
-	 * @param variant The variant of a lexeme for which the lemma is to be build
-	 * @param sememeDialects Set of IDs of dialects that are used in the sememe... TODO
+	 * @param variant The variant of a sememe for which the lemma is to be built
+	 * @param sememeDialects Set of IDs of dialects that are used in the sememe
 	 * @return the built lemma string
-	 * @throws CodeException Can be thrown by controllers of the IControllerSet
+	 * @throws CodeException Can be thrown by controllers of the IControllerSet controllers
 	 */
 	public String build(final SingleLemmaOptions options, final IControllerSet controllers, final Variant variant,
 		final Set<Integer> sememeDialects) throws CodeException
@@ -104,7 +104,7 @@ public class SingleLemmaBuilder
 				// Are there dialects left that were set on the sememe?
 				if (dialectIDs.size() > 0)
 				{
-					// Sort the IDs
+					// Sort the IDs (i.e. the dialects will for now only be sorted via their ID)
 					Collections.sort(dialectIDs);
 
 					// Now add the dialects

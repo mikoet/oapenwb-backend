@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
+// SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.presentation;
 
 import dk.ule.oapenwb.base.error.CodeException;
@@ -25,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <p>Tests for class {@link SingleLemmaBuilder}.</p>
+ * TODO
+ *   - Write tests for non-default configurational options
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
@@ -58,7 +62,8 @@ public class SingleLemmaBuilderTest
 		@Mock ICEntityController<Orthography, Integer> orthographiesController,
 		@Mock ICEntityController<Language, Integer> languagesController,
 		@Mock ICEntityController<Category, Integer> categoriesController,
-		@Mock ICEntityController<Level, Integer> unitLevelsController
+		@Mock ICEntityController<Level, Integer> unitLevelsController,
+		@Mock SememeController sememeController
 	) throws CodeException
 	{
 		// Setting up mocking for orthographies controller
@@ -72,9 +77,6 @@ public class SingleLemmaBuilderTest
 		Mockito.lenient().when(languagesController.get(lMoensterlaendsk.getId())).thenReturn(lMoensterlaendsk);
 		Mockito.lenient().when(languagesController.get(lNorthernLowSaxon.getId())).thenReturn(lNorthernLowSaxon);
 		Mockito.lenient().when(languagesController.get(lDitmarsk.getId())).thenReturn(lDitmarsk);
-
-		/* No need to return any data for these three controllers */
-		SememeController sememeController = Mockito.mock(SememeController.class);
 
 		ControllerSet controllerSet = new ControllerSet();
 		controllerSet.setControllers(orthographiesController, languagesController, categoriesController,
@@ -95,7 +97,8 @@ public class SingleLemmaBuilderTest
 			assertEquals(checkResult, builder.build(
 				PresentationOptions.DEFAULT_PRESENTATION_OPTIONS,
 				this.controllerSet,
-				createVariant(oNSS.getId(), Set.of(lMoensterlaendsk.getId()), createLemma("eaten"), true),
+				EntitiesUtil.createVariant(oNSS.getId(), Set.of(lMoensterlaendsk.getId()),
+					EntitiesUtil.createLemma("eaten"), true),
 				Set.of(lMoensterlaendsk.getId())
 			), String.format("Lemma should have been '%s'", checkResult));
 		}
@@ -108,7 +111,8 @@ public class SingleLemmaBuilderTest
 			assertEquals(checkResult, builder.build(
 				PresentationOptions.DEFAULT_PRESENTATION_OPTIONS,
 				this.controllerSet,
-				createVariant(oNSS.getId(), Set.of(lMoensterlaendsk.getId(), lDitmarsk.getId()), createLemma("eaten"), true),
+				EntitiesUtil.createVariant(oNSS.getId(), Set.of(lMoensterlaendsk.getId(), lDitmarsk.getId()),
+					EntitiesUtil.createLemma("eaten"), true),
 				Set.of(lMoensterlaendsk.getId())
 			), String.format("Lemma should have been '%s'", checkResult));
 		}
@@ -121,7 +125,8 @@ public class SingleLemmaBuilderTest
 			assertEquals(checkResult, builder.build(
 				PresentationOptions.DEFAULT_PRESENTATION_OPTIONS,
 				this.controllerSet,
-				createVariant(oNSS.getId(), Set.of(lMoensterlaendsk.getId()), createLemma("eaten"), true),
+				EntitiesUtil.createVariant(oNSS.getId(), Set.of(lMoensterlaendsk.getId()),
+					EntitiesUtil.createLemma("eaten"), true),
 				Set.of(lMoensterlaendsk.getId(), lDitmarsk.getId())
 			), String.format("Lemma should have been '%s'", checkResult));
 		}
@@ -136,7 +141,8 @@ public class SingleLemmaBuilderTest
 				PresentationOptions.DEFAULT_PRESENTATION_OPTIONS,
 				this.controllerSet,
 				// Note that lMoensterlaendsk and lDitmarsk are twisted in the dialectIDs set of th variant
-				createVariant(oNSS.getId(), Set.of(lDitmarsk.getId(), lMoensterlaendsk.getId()), createLemma("eaten"), true),
+				EntitiesUtil.createVariant(oNSS.getId(), Set.of(lDitmarsk.getId(), lMoensterlaendsk.getId()),
+					EntitiesUtil.createLemma("eaten"), true),
 				Set.of(lMoensterlaendsk.getId(), lDitmarsk.getId())
 			), String.format("Lemma should have been '%s'", checkResult));
 		}
@@ -153,34 +159,10 @@ public class SingleLemmaBuilderTest
 			assertEquals(checkResult, builder.build(
 				options,
 				this.controllerSet,
-				createVariant(oNSS.getId(), Set.of(lMoensterlaendsk.getId()), createLemma("eaten"), false),
+				EntitiesUtil.createVariant(oNSS.getId(), Set.of(lMoensterlaendsk.getId()),
+					EntitiesUtil.createLemma("eaten"), false),
 				Set.of(lMoensterlaendsk.getId())
 			), String.format("Lemma should have been '%s'", checkResult));
 		}
-	}
-
-	private Variant createVariant(int orthographyID, Set<Integer> dialectIDs, Lemma lemma, boolean active)
-	{
-		Variant v = new Variant();
-		v.setOrthographyID(orthographyID);
-		v.setDialectIDs(dialectIDs);
-		v.setLemma(lemma);
-		v.setActive(active);
-		return v;
-	}
-
-	private Lemma createLemma(String pre, String main, String post, String also)
-	{
-		Lemma l = new Lemma();
-		l.setPre(pre);
-		l.setMain(main);
-		l.setPost(post);
-		l.setAlso(also);
-		return l;
-	}
-
-	private Lemma createLemma(String main)
-	{
-		return createLemma(null, main, null, null);
 	}
 }
