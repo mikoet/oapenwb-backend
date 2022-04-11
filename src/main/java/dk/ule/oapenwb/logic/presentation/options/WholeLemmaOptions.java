@@ -13,7 +13,7 @@ import java.util.Comparator;
  */
 public class WholeLemmaOptions extends SingleLemmaOptions
 {
-	public static final Comparator<Pair<Sememe, String>> ALPHABETIC_SINGLE_LEMMA_COMPARATOR =
+	public static final Comparator<Pair<Variant, String>> ALPHABETIC_SINGLE_LEMMA_COMPARATOR =
 		(t1, t2) -> t1.getRight().compareTo(t2.getRight());
 
 	public static final String DEFAULT_SINGLE_LEMMA_DIVIDER = ",";

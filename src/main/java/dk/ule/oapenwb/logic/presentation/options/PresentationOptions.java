@@ -3,6 +3,7 @@
 package dk.ule.oapenwb.logic.presentation.options;
 
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
+import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.util.Pair;
 
 import java.util.Comparator;
@@ -29,7 +30,7 @@ public class PresentationOptions extends WholeLemmaOptions
 
 
 	public PresentationOptions(boolean activeDataOnly, boolean includeOrthographies, boolean includeDialects,
-		boolean includeCategories, boolean includeLevels, Comparator singleLemmaComparator, String singleLemmaDivider,
+		boolean includeCategories, boolean includeLevels, Comparator<Pair<Variant, String>> singleLemmaComparator, String singleLemmaDivider,
 		Comparator<Pair<Sememe, String>> wholeLemmaComparator, String wholeLemmaDivider)
 	{
 		super(activeDataOnly, includeOrthographies, includeDialects, includeCategories, includeLevels,

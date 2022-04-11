@@ -7,15 +7,11 @@ import dk.ule.oapenwb.entity.content.basedata.Category;
 import dk.ule.oapenwb.entity.content.basedata.Level;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
-import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.generic.ICEntityController;
 import dk.ule.oapenwb.logic.presentation.options.WholeLemmaOptions;
 import dk.ule.oapenwb.util.Pair;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>This class will stick together the single lemmata built by the SingleLemmaBuilder, do some
@@ -32,7 +28,7 @@ public class WholeLemmaBuilder
 	private final SingleLemmaBuilder singleLemmaBuilder = new SingleLemmaBuilder();
 
 	public String build(final WholeLemmaOptions options, final IControllerSet controllers, final Sememe sememe,
-		HashMap<Long, Variant> allVariantsMap) throws CodeException
+		Map<Long, Variant> allVariantsMap) throws CodeException
 	{
 		final List<Pair<Variant, String>> variantList = new LinkedList<>();
 
