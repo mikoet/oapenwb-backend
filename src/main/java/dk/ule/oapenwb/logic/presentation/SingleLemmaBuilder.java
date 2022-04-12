@@ -17,9 +17,10 @@ import java.util.stream.Collectors;
 
 /**
  * <p>The purpose of this class is to build a single lemma, i.e. one for one variant that is
- * assigned to a sememe. Such a lemma will include the dialects it is valid for. In order
- * to do that this builder takes the dialectIDs of the variant but reduces them by the
- * dialectIDs that are not part of the sememe's dialectIDs.</p>
+ * assigned to a sememe (i.e. could also be named VariantLemmaBuilder).</p>
+ * <p>Such a lemma will include the dialects it is valid for. In order to do that this builder takes
+ * the dialectIDs of the variant but reduces them by the dialectIDs that are not part of the sememe's
+ * dialectIDs.</p>
  */
 public class SingleLemmaBuilder
 {

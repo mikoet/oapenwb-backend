@@ -12,15 +12,16 @@ import dk.ule.oapenwb.logic.presentation.options.WholeLemmaOptions;
 import dk.ule.oapenwb.util.Pair;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <p>This class will stick together the single lemmata built by the SingleLemmaBuilder, do some
  * kind of ordering / sorting of the single lemmata, and add additional information such as the
- * catgories and the levels.</p>
+ * catgories and the levels. It could also be called SememeLemmaBuilder as it builds the lemma
+ * for a sememe.</p>
  * <p>Examples of WholeLemmata:
  * <ul>
  *   <li>eaten^NSS, etten^NSS</li>
+ *   <li>eaten, etten [[c:flora_a, c:fauna_a]] [/sl:colloq_a, sl:exalted_a/]</li>
  * </ul>
  * </p>
  */
@@ -39,8 +40,7 @@ public class WholeLemmaBuilder
 			for (Long variantID : variantIDs)
 			{
 				Variant variant = allVariantsMap.get(variantID);
-				if (variant != null && ((options.activeDataOnly && variant.isActive())
-					|| (!options.activeDataOnly && !variant.isActive())))
+				if (variant != null && ((options.activeDataOnly && variant.isActive()) ^ !options.activeDataOnly))
 				{
 					variantList.add(new Pair<>(
 						variant, singleLemmaBuilder.build(options, controllers, variant, sememe.getDialectIDs())));
