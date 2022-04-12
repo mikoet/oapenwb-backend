@@ -102,6 +102,12 @@ public class WholeLemmaBuilderTest
 		this.controllerSet = controllerSet;
 	}
 
+	/**
+	 * In this test the activity of the variants does play a role and inactive variants shall not show up in the
+	 * built lemma. If all variants are inactive there shall be an empty lemma without any categories or levels.
+	 *
+	 * @throws CodeException Can be thrown by controllers by declaration (but not by the mocked ones, though)
+	 */
 	@Test
 	void testWithActiveDataOnlyFlag() throws CodeException
 	{
