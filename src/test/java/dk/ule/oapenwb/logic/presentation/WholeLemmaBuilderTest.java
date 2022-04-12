@@ -113,10 +113,10 @@ public class WholeLemmaBuilderTest
 			WholeLemmaOptions.ALPHABETIC_SINGLE_LEMMA_COMPARATOR, WholeLemmaOptions.DEFAULT_SINGLE_LEMMA_DIVIDER);
 
 		{
-			// Check 1: TODO describe and outsource some code into a method
+			// Check 1: a sememe with two active variants, two categories and two levels
 			Variant vOne = EntitiesUtil.createVariant(1L, oNSS.getId(), Set.of(lMoensterlaendsk.getId()),
 				EntitiesUtil.createLemma("eaten"), true);
-			Variant vTwo = EntitiesUtil.createVariant(2L, oNSS.getId(), Set.of(lMoensterlaendsk.getId()),
+			Variant vTwo = EntitiesUtil.createVariant(2L, oNSS.getId(), Set.of(lDitmarsk.getId()),
 				EntitiesUtil.createLemma("etten"), true);
 
 			Map<Long, Variant> allVariantsMap = Map.of(
@@ -138,6 +138,60 @@ public class WholeLemmaBuilderTest
 				this.slColloquial.getUitID_abbr(),
 				this.slExalted.getUitID_abbr()
 			);
+			String wholeLemma = wBuilder.build(wOption, this.controllerSet, sememe, allVariantsMap);
+
+			assertEquals(checkResult, wholeLemma, String.format("Lemma should have been '%s'", checkResult));
+		}
+
+		{
+			// Check 2: a sememe with one active and one inactive variant, two categories and two levels
+			Variant vOne = EntitiesUtil.createVariant(1L, oNSS.getId(), Set.of(lMoensterlaendsk.getId()),
+				EntitiesUtil.createLemma("eaten"), true);
+			Variant vTwo = EntitiesUtil.createVariant(2L, oNSS.getId(), Set.of(lDitmarsk.getId()),
+				EntitiesUtil.createLemma("etten"), false);
+
+			Map<Long, Variant> allVariantsMap = Map.of(
+				vOne.getId(), vOne,
+				vTwo.getId(), vTwo
+			);
+
+			Sememe sememe = EntitiesUtil.createSememe(
+				Set.of(vOne.getId(), vTwo.getId()),
+				Set.of(cFlora.getId(), cFauna.getId()),
+				Set.of(slColloquial.getId(), slExalted.getId())
+			);
+
+			String checkResult = String.format("%s [[%s, %s]] [/%s, %s/]",
+				sBuilder.build(sOptions, this.controllerSet, vOne, sememe.getDialectIDs()),
+				this.cFlora.getUitID_abbr(),
+				this.cFauna.getUitID_abbr(),
+				this.slColloquial.getUitID_abbr(),
+				this.slExalted.getUitID_abbr()
+			);
+			String wholeLemma = wBuilder.build(wOption, this.controllerSet, sememe, allVariantsMap);
+
+			assertEquals(checkResult, wholeLemma, String.format("Lemma should have been '%s'", checkResult));
+		}
+
+		{
+			// Check 3: a sememe with two inactive variants, two categories and two levels
+			Variant vOne = EntitiesUtil.createVariant(1L, oNSS.getId(), Set.of(lMoensterlaendsk.getId()),
+				EntitiesUtil.createLemma("eaten"), false);
+			Variant vTwo = EntitiesUtil.createVariant(2L, oNSS.getId(), Set.of(lDitmarsk.getId()),
+				EntitiesUtil.createLemma("etten"), false);
+
+			Map<Long, Variant> allVariantsMap = Map.of(
+				vOne.getId(), vOne,
+				vTwo.getId(), vTwo
+			);
+
+			Sememe sememe = EntitiesUtil.createSememe(
+				Set.of(vOne.getId(), vTwo.getId()),
+				Set.of(cFlora.getId(), cFauna.getId()),
+				Set.of(slColloquial.getId(), slExalted.getId())
+			);
+
+			String checkResult = ""; // Empty result
 			String wholeLemma = wBuilder.build(wOption, this.controllerSet, sememe, allVariantsMap);
 
 			assertEquals(checkResult, wholeLemma, String.format("Lemma should have been '%s'", checkResult));

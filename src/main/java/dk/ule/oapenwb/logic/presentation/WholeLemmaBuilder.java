@@ -39,7 +39,8 @@ public class WholeLemmaBuilder
 			for (Long variantID : variantIDs)
 			{
 				Variant variant = allVariantsMap.get(variantID);
-				if (variant != null)
+				if (variant != null && ((options.activeDataOnly && variant.isActive())
+					|| (!options.activeDataOnly && !variant.isActive())))
 				{
 					variantList.add(new Pair<>(
 						variant, singleLemmaBuilder.build(options, controllers, variant, sememe.getDialectIDs())));
@@ -47,11 +48,15 @@ public class WholeLemmaBuilder
 			}
 		}
 
-		// Sort the variants
-		variantList.sort(options.singleLemmaComparator);
+		if (variantList.size() > 0) {
+			// Sort the variants
+			variantList.sort(options.singleLemmaComparator);
 
-		// Return them in string form
-		return dataToString(options, controllers, sememe, variantList);
+			// Return them in string form
+			return dataToString(options, controllers, sememe, variantList);
+		} else {
+			return "";
+		}
 	}
 
 	private String dataToString(final WholeLemmaOptions options, final IControllerSet controllers, final Sememe sememe,
