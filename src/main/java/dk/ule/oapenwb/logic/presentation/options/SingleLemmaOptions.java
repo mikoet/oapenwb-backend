@@ -5,10 +5,8 @@ package dk.ule.oapenwb.logic.presentation.options;
 import lombok.AllArgsConstructor;
 
 /**
- * <p>Options that are used only for building a single lemma.</p>
- *
- * TODO What's a single lemma? A SingleLemma probably is the lemma built for only one sememe or one variant.
- *   Debug and dodcument well.
+ * <p>Options that are used only for building a single lemma for a variant of a sememe. Such a lemma may
+ * include an orthography and the dialects it's valid for.</p>
  */
 @AllArgsConstructor
 public class SingleLemmaOptions

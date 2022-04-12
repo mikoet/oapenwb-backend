@@ -9,7 +9,7 @@ import dk.ule.oapenwb.util.Pair;
 import java.util.Comparator;
 
 /**
- * Options for a whole presentation (of a SynGroup?).
+ * <p>Options for a whole presentation (of a SynGroup?).</p>
  */
 public class PresentationOptions extends WholeLemmaOptions
 {

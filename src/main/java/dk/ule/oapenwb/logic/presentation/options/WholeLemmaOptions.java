@@ -2,19 +2,19 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.presentation.options;
 
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.util.Pair;
 
 import java.util.Comparator;
 
 /**
- * Options for a whole lemma, extending those of a single lemma.
+ * <p>Options for a whole lemma, extending those of a single lemma. A whole lemma consists of one to many
+ * single lemmas as optional categories and levels.</p>
  */
 public class WholeLemmaOptions extends SingleLemmaOptions
 {
 	public static final Comparator<Pair<Variant, String>> ALPHABETIC_SINGLE_LEMMA_COMPARATOR =
-		(t1, t2) -> t1.getRight().compareTo(t2.getRight());
+		Comparator.comparing(Pair::getRight);
 
 	public static final String DEFAULT_SINGLE_LEMMA_DIVIDER = ",";
 

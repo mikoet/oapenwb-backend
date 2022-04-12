@@ -12,6 +12,7 @@ import dk.ule.oapenwb.logic.presentation.options.WholeLemmaOptions;
 import dk.ule.oapenwb.util.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>This class will stick together the single lemmata built by the SingleLemmaBuilder, do some
@@ -78,9 +79,13 @@ public class WholeLemmaBuilder
 			sb.append(' ');
 			sb.append("[[");
 
+			// Sort the IDs (i.e. the catetegories will for now only be sorted via their ID)
+			List<Integer> categoryIDsSorted = new ArrayList<>(categoryIDs);
+			Collections.sort(categoryIDsSorted);
+
 			ICEntityController<Category, Integer> cc = controllers.getCategoriesController();
 			first = true;
-			for (Integer categoryID : categoryIDs)
+			for (Integer categoryID : categoryIDsSorted)
 			{
 				Category c = cc.get(categoryID);
 				if (c != null)
@@ -104,9 +109,13 @@ public class WholeLemmaBuilder
 			sb.append(' ');
 			sb.append("[/");
 
+			// Sort the IDs (i.e. the levels will for now only be sorted via their ID)
+			List<Integer> levelIDsSorted = new ArrayList<>(levelIDs);
+			Collections.sort(levelIDsSorted);
+
 			ICEntityController<Level, Integer> lc = controllers.getUnitLevelsController();
 			first = true;
-			for (Integer levelID : levelIDs)
+			for (Integer levelID : levelIDsSorted)
 			{
 				Level l = lc.get(levelID);
 				if (l != null)

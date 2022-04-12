@@ -7,8 +7,6 @@ import dk.ule.oapenwb.entity.content.basedata.Category;
 import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.basedata.Level;
 import dk.ule.oapenwb.entity.content.basedata.Orthography;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.generic.ICEntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeController;
 import dk.ule.oapenwb.logic.presentation.options.PresentationOptions;

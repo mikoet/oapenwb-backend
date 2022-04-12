@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.logic.admin.generic.IEntity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
@@ -27,6 +28,7 @@ import javax.validation.constraints.Size;
 @Table(name = "UnitLevels")
 @Audited
 @NoArgsConstructor
+@AllArgsConstructor
 public class Level implements IEntity<Integer>
 {
 	@Id
@@ -40,6 +42,12 @@ public class Level implements IEntity<Integer>
 	@JsonView({Views.BaseConfig.class, Views.REST.class})
 	private Integer version;
 
+	@Column(length = 64, nullable = false)
+	@NotNull
+	@Size(min = 2, max = 64)
+	@JsonView(Views.REST.class)
+	private String uitID;
+
 	/*
 	 * The texts of this uitID should be an abbreviation.
 	 * For example "ugs." for German "umgangssprachlich" and "coll." for English "colloquial".
@@ -49,12 +57,6 @@ public class Level implements IEntity<Integer>
 	@Size(min = 2, max = 64)
 	@JsonView(Views.REST.class)
 	private String uitID_abbr;
-
-	@Column(length = 64, nullable = false)
-	@NotNull
-	@Size(min = 2, max = 64)
-	@JsonView(Views.REST.class)
-	private String uitID;
 
 	@Column(length = 1024)
 	@Size(max = 1024)

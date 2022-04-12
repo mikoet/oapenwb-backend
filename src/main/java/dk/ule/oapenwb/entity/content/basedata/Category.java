@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.logic.admin.generic.IEntity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
@@ -24,6 +25,7 @@ import javax.validation.constraints.Size;
 @Table(name = "Categories")
 @Audited
 @NoArgsConstructor
+@AllArgsConstructor
 public class Category implements IEntity<Integer>
 {
 	@Id
@@ -41,18 +43,18 @@ public class Category implements IEntity<Integer>
 	@JsonView(Views.REST.class)
 	private Integer parentID;
 
+	@Column(length = 64, nullable = false)
+	@NotNull
+	@Size(min = 2, max = 64)
+	@JsonView(Views.REST.class)
+	private String uitID;
+
 	// uitID for the abbreviation (short text), e.g. "bot." for "botanical"
 	@Column(length = 64, nullable = false)
 	@NotNull
 	@Size(min = 2, max = 64)
 	@JsonView(Views.REST.class)
 	private String uitID_abbr;
-
-	@Column(length = 64, nullable = false)
-	@NotNull
-	@Size(min = 2, max = 64)
-	@JsonView(Views.REST.class)
-	private String uitID;
 
 	@Column(length = 1024)
 	@Size(max = 1024)
