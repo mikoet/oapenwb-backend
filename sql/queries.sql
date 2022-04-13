@@ -3,7 +3,7 @@
 -- (via the variants, lexemes and sememes).
 select sg.id as id, sg.description as description, sg.presentation as presentation
 from SynGroups sg, Sememes se left join Variants Va on (se.lexemeID = Va.lexemeID and Va.mainVariant=true)
-where sg.sememeIDs @> ('[' || se.id || ']')::jsonb -- attention: escape the colons
+where sg.sememeIDs @> ('[' || se.id || ']')::jsonb -- attention: escape the colons -- TODO string concatenation is bad practive here, see query Q500
   and se.lexemeID in (
     select L.id
     from Lexemes L left join Variants V on (L.id = V.lexemeID and V.mainVariant=true)
@@ -42,6 +42,31 @@ from Sememes Se left join Variants Va on (se.lexemeID = Va.lexemeID)
 where Se.variantIDs @> ('[' || Va.id || ']')::jsonb -- attention: escape the colons
   and Se.id = :id
 order by Va.main
+
+-- Q500
+-- Search query for both directions. Part before union is for left-to-right
+-- while part after union is for right-to-left search.
+select sememeOneID, sememeTwoID, weight -- typeID
+from Mappings
+where sememeOneID in (
+	select s.id from Sememes s inner join Lexemes l on s.lexemeID = l.id,
+		jsonb_array_elements(s.variantIDs) va(variantID)
+	where l.langID = :langOneID and variantID::int in ( -- escape the :: (!)
+		select variantID from LexemeForms
+			where searchableText @@ websearch_to_tsquery('simple', :term)
+	)
+)
+union
+select sememeOneID, sememeTwoID, weight -- typeID
+from Mappings
+where sememeTwoID in (
+	select s.id from Sememes s inner join Lexemes l on s.lexemeID = l.id,
+		jsonb_array_elements(s.variantIDs) va(variantID)
+	where l.langID = :langTwoID and variantID::int in ( -- escape the :: (!)
+		select variantID from LexemeForms
+			where searchableText @@ websearch_to_tsquery('simple', :term)
+	)
+)
 
 -- Q030
 -- Get a slim sememe
