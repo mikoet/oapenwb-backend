@@ -46,7 +46,7 @@ order by Va.main
 -- Q500
 -- Search query for both directions. Part before union is for left-to-right
 -- while part after union is for right-to-left search.
-select sememeOneID, sememeTwoID, weight -- typeID
+select sememeOneID, sememeTwoID, weight
 from Mappings
 where sememeOneID in (
 	select s.id from Sememes s inner join Lexemes l on s.lexemeID = l.id,
@@ -57,7 +57,7 @@ where sememeOneID in (
 	)
 )
 union
-select sememeOneID, sememeTwoID, weight -- typeID
+select sememeOneID, sememeTwoID, weight
 from Mappings
 where sememeTwoID in (
 	select s.id from Sememes s inner join Lexemes l on s.lexemeID = l.id,
