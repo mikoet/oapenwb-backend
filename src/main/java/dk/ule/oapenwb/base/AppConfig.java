@@ -2,12 +2,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.base;
 
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.util.EmailConfig;
 import lombok.Getter;
 
 /**
  * <p>Configuration object for the dictionary that will be loaded from a JSON file.</p>
  */
+@Singleton
 public class AppConfig
 {
 	@Getter

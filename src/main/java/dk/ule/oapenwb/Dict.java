@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.base.RunMode;
 import dk.ule.oapenwb.base.Views;
@@ -99,15 +101,18 @@ public class Dict
 		objMapper.registerModule(new Jdk8Module());
 		objMapper.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);
 		//objMapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
+		
+		// Setup dependency injection
+		Injector injector = Guice.createInjector(new DictModule());
 
 		// Load the application's configuration depending on the RunMode via the just created ObjectMapper
+		final AppConfig appConfig = injector.getInstance(AppConfig.class);
 		final String configFile =
 			  getRunMode() == RunMode.Normal ? "config.json"
 			: getRunMode() == RunMode.Development ? "config.dev.json"
 			: "config.testing.json";
-		AppConfig appConfig = objMapper.readValue(
-			Files.readString(Paths.get(configFile)),
-			AppConfig.class);
+		// Update appConfig instance with file content
+		objMapper.readerForUpdating(appConfig).readValue(Files.readString(Paths.get(configFile)));
 
 		// Initialize email configuration if needed
 		if (appConfig.isSendEmails()) {
@@ -135,7 +140,7 @@ public class Dict
 		JWTAccessManager accessManager = new JWTAccessManager("role", rolesMapping, RoleType.Anyone);
 
 		// Create the controllers for the API
-		DictControllers controllers = new DictControllers(appConfig);
+		DictControllers controllers = injector.getInstance(DictControllers.class);
 
 		// Create the Javalin faces to the controllers
 		DictFaces faces = new DictFaces(controllers, provider);

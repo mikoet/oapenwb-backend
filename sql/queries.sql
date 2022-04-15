@@ -43,6 +43,7 @@ where Se.variantIDs @> ('[' || Va.id || ']')::jsonb -- attention: escape the col
   and Se.id = :id
 order by Va.main
 
+
 -- Q500
 -- Search query for both directions. Part before union is for left-to-right
 -- while part after union is for right-to-left search.
@@ -67,6 +68,8 @@ where sememeTwoID in (
 			where searchableText @@ websearch_to_tsquery('simple', :term)
 	)
 )
+order by weight desc
+
 
 -- Q030
 -- Get a slim sememe

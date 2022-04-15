@@ -3,6 +3,7 @@
 package dk.ule.oapenwb.logic.l10n;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.ui.UiLanguage;
@@ -31,6 +32,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *   shall be used for lazy loading long descriptive texts
  * TODO Make it work to support scopes. Edit: That was already done?
  */
+@Singleton
 public class L10nController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(L10nController.class);

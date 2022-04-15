@@ -2,6 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.users;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.basis.RegistryToken;
@@ -23,6 +26,7 @@ import java.util.Arrays;
  * <p>The UserController handles the registration of new users, the login and the logout of a user, as well as
  * the forgot-password functionality.</p>
  */
+@Singleton
 public class UserController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
@@ -30,9 +34,10 @@ public class UserController
 	private final boolean sendEmails;
 	private final ViolationController violations;
 
-	public UserController(boolean sendEmails, ViolationController violations)
+	@Inject
+	public UserController(AppConfig appConfig, ViolationController violations)
 	{
-		this.sendEmails = sendEmails;
+		this.sendEmails = appConfig.isSendEmails();
 		this.violations = violations;
 	}
 

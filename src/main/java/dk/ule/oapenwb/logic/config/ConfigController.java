@@ -5,6 +5,7 @@ package dk.ule.oapenwb.logic.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.base.error.CodeException;
@@ -28,6 +29,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * TODO REFACT See the TODO comment in {@link BaseConfig} about splitting the base config up
  */
+@Singleton
 public class ConfigController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(ConfigController.class);

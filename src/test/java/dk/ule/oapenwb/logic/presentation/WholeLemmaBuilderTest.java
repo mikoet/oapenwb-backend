@@ -11,7 +11,6 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.generic.ICEntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeController;
-import dk.ule.oapenwb.logic.presentation.options.SingleLemmaOptions;
 import dk.ule.oapenwb.logic.presentation.options.WholeLemmaOptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

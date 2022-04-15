@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.users;
 
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.basis.Ban;
@@ -26,6 +27,7 @@ import java.util.List;
  * </ul>
  * </p>
  */
+@Singleton
 public class ViolationController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(ViolationController.class);

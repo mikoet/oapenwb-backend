@@ -27,6 +27,7 @@ public class HibernateUtil
 	 * for ::jsonb type hint. It also contains a trailing space to be on the safe side in use.
 	 */
 	public static final String CONSTANT_JSONB = "\\:\\:jsonb ";
+	public static final String CONSTANT_INT = "\\:\\:int ";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HibernateUtil.class);
 
