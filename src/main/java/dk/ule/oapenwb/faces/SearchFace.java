@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.faces;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.logic.search.QueryObject;
 import dk.ule.oapenwb.logic.search.ResultObject;
 import dk.ule.oapenwb.logic.search.SearchController;
@@ -14,16 +16,20 @@ import org.slf4j.LoggerFactory;
 /**
  * Javalin face to the {@link SearchController}.
  */
+@Singleton
 public class SearchFace
 {
 	private static final Logger LOG = LoggerFactory.getLogger(SearchFace.class);
-	private SearchController controller;
+	private final SearchController controller;
 
-	public SearchFace(SearchController controller) {
+	@Inject
+	public SearchFace(SearchController controller)
+	{
 		this.controller = controller;
 	}
 
-	public void executeQuery(@NotNull Context ctx) throws Exception {
+	public void executeQuery(@NotNull Context ctx) throws Exception
+	{
 		LOG.info("Got search query");
 		QueryObject queryData = ctx.bodyAsClass(QueryObject.class);
 		ResultObject result = this.controller.executeQuery(queryData);

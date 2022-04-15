@@ -125,7 +125,7 @@ public class Dict
 
 		// For more info on Javalin-JWT see: https://github.com/kmehrunes/javalin-jwt
 		// Initialize Javalin JWT and the AccessManager
-		JWTProvider provider = Dict.createHMAC512(appConfig.getSecret()); // see also this custom method!
+		JWTProvider provider = injector.getInstance(DictJwtProvider.class).getProvider();
 		Map<String, RouteRole> rolesMapping = new HashMap<>() {{
 			// Add new roles here!
 			put(RoleType.Anyone.toString(), RoleType.Anyone);
@@ -143,7 +143,7 @@ public class Dict
 		DictControllers controllers = injector.getInstance(DictControllers.class);
 
 		// Create the Javalin faces to the controllers
-		DictFaces faces = new DictFaces(controllers, provider);
+		DictFaces faces = injector.getInstance(DictFaces.class);
 
 		// Create the controllers for the admin section
 		AdminControllers adminControllers = new AdminControllers();
@@ -477,31 +477,5 @@ public class Dict
 			HibernateUtil.closeSession();
 		}
 		LOG.debug("End of run()");
-	}
-
-	static JWTProvider createHMAC512(final String secret) {
-		if (secret == null || secret.length() < 32) {
-			throw new RuntimeException("The given secret must contain at least 32 characters.");
-		}
-
-		final byte[] byteArray = secret.getBytes(StandardCharsets.UTF_8);
-		if (byteArray.length < 32) {
-			throw new RuntimeException("The given secret must at least result in 32 bytes.");
-		} else if (byteArray.length > 32) {
-			throw new RuntimeException("The given secret is longer than 32 bytes which results in an unnessesary hashing.");
-		}
-
-		JWTGenerator<LoginToken> generator = (loginToken, alg) -> {
-			JWTCreator.Builder token = JWT.create()
-					.withClaim("id", loginToken.getId())
-					.withClaim("role", loginToken.getRole().toString());
-			return token.sign(alg);
-		};
-
-		// 256 bits make 32 bytes, so the secret should at least be 32 8-bit characters long
-		Algorithm algorithm = Algorithm.HMAC256(byteArray);
-		JWTVerifier verifier = JWT.require(algorithm).build();
-
-		return new JWTProvider(algorithm, generator, verifier);
 	}
 }

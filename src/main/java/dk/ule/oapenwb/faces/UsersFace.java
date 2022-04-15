@@ -2,6 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.faces;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import dk.ule.oapenwb.DictJwtProvider;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.logic.users.LoginObject;
@@ -24,6 +27,7 @@ import org.slf4j.LoggerFactory;
  * Javalin face to the {@link UserController} that utilizes the {@link JWTProvider}, an aditional library built
  * for Javalin to generate JWTs, along the way.
  */
+@Singleton
 public class UsersFace
 {
 	@Data
@@ -36,15 +40,18 @@ public class UsersFace
 	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(UsersFace.class);
-	private UserController controller;
-	private JWTProvider jwtProvider;
+	private final UserController controller;
+	private final JWTProvider jwtProvider;
 
-	public UsersFace(UserController controller, JWTProvider jwtProvider) {
+	@Inject
+	public UsersFace(UserController controller, DictJwtProvider jwtProvider)
+	{
 		this.controller = controller;
-		this.jwtProvider = jwtProvider;
+		this.jwtProvider = jwtProvider.getProvider();
 	}
 
-	public void registerByEmail(@NotNull Context ctx) throws Exception {
+	public void registerByEmail(@NotNull Context ctx)
+	{
 		Response res = new Response();
 		try {
 			RegisterObject registerObject = ctx.bodyAsClass(RegisterObject.class);
@@ -70,7 +77,8 @@ public class UsersFace
 		ctx.json(res);
 	}
 
-	public void login(@NotNull Context ctx) throws Exception {
+	public void login(@NotNull Context ctx)
+	{
 		Response res = new Response();
 		try {
 			// Take login information from context

@@ -4,7 +4,6 @@ package dk.ule.oapenwb;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.logic.config.ConfigController;
 import dk.ule.oapenwb.logic.l10n.L10nController;
 import dk.ule.oapenwb.logic.search.SearchController;
@@ -38,15 +37,4 @@ class DictControllers
 	@Getter
 	@Inject
 	private UserController users;
-
-	/*
-	DictControllers(AppConfig appConfig)
-	{
-		this.violations = new ViolationController();
-		this.config = new ConfigController();
-		this.l10n = new L10nController();
-		this.search = new SearchController();
-		this.users = new UserController(appConfig.isSendEmails(), violations);
-	}
-	 */
 }

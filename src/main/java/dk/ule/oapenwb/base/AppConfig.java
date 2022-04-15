@@ -37,10 +37,10 @@ public class AppConfig
 	private boolean sendEmails = false;
 
 	@Getter
-	private EmailConfig emailConfig;
+	private EmailConfig emailConfig = new EmailConfig();
 
 	@Getter
-	private DbConfig dbConfig;
+	private DbConfig dbConfig = new DbConfig();
 
 	public class DbConfig
 	{
