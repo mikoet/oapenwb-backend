@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.admin.generic;
 
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.logic.admin.common.FilterCriterion;
-import dk.ule.oapenwb.logic.admin.common.IRestController;
 import dk.ule.oapenwb.logic.context.Context;
 import dk.ule.oapenwb.logic.context.ITransaction;
 import dk.ule.oapenwb.util.HibernateUtil;
@@ -35,6 +35,7 @@ import java.util.function.Supplier;
  * @param <T> Type of the entities that shall be managed by this controller
  * @param <S> Type of the IDs of the managed entities
  */
+@Singleton
 public class EntityController<T extends IEntity<S>, S extends Serializable> implements IEntityController<T, S>
 {
 	private static final Logger LOG = LoggerFactory.getLogger(EntityController.class);
@@ -83,6 +84,8 @@ public class EntityController<T extends IEntity<S>, S extends Serializable> impl
 		this.convertFn = convertFn;
 		this.resetIdOnCreate = resetIdOnCreate;
 		this._context = new Context(transactional);
+
+		//LOG.warn("Instance for class " + clazz.getSimpleName() + " was created");
 	}
 
 	public EntityController(Supplier<T> supplier, Class<T> clazz, Function<String[], S> convertFn,

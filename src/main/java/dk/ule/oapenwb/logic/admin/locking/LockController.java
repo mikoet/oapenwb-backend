@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.admin.locking;
 
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.util.CurrentUser;
 import io.javalin.websocket.*;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * </ul>
  * </p>
  */
+@Singleton
 public class LockController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(LockController.class);

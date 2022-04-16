@@ -2,10 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTCreator;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +31,6 @@ import io.javalin.http.Handler;
 import io.javalin.http.InternalServerErrorResponse;
 import io.javalin.plugin.json.JavalinJackson;
 import javalinjwt.JWTAccessManager;
-import javalinjwt.JWTGenerator;
 import javalinjwt.JWTProvider;
 import javalinjwt.JavalinJWT;
 import lombok.Getter;
@@ -46,7 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -125,7 +119,7 @@ public class Dict
 
 		// For more info on Javalin-JWT see: https://github.com/kmehrunes/javalin-jwt
 		// Initialize Javalin JWT and the AccessManager
-		JWTProvider provider = injector.getInstance(DictJwtProvider.class).getProvider();
+		JWTProvider<LoginToken> provider = injector.getInstance(DictJwtProvider.class).getProvider();
 		Map<String, RouteRole> rolesMapping = new HashMap<>() {{
 			// Add new roles here!
 			put(RoleType.Anyone.toString(), RoleType.Anyone);
@@ -146,7 +140,7 @@ public class Dict
 		DictFaces faces = injector.getInstance(DictFaces.class);
 
 		// Create the controllers for the admin section
-		AdminControllers adminControllers = new AdminControllers();
+		AdminControllers adminControllers = injector.getInstance(AdminControllers.class);
 
 		// Create the Javalin faces for the admin section controllers
 		AdminFaces adminFaces = new AdminFaces(adminControllers, controllers);

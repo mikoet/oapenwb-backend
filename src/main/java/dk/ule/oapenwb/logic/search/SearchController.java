@@ -6,30 +6,18 @@ import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.logic.admin.LangPairController;
-import dk.ule.oapenwb.logic.admin.lexeme.LexemeController;
-import dk.ule.oapenwb.logic.admin.lexeme.sememe.LexemeSlimPlus;
-import dk.ule.oapenwb.logic.admin.syngroup.SGSearchRequest;
-import dk.ule.oapenwb.logic.admin.syngroup.SGSearchResult;
-import dk.ule.oapenwb.logic.admin.syngroup.SynGroupItem;
 import dk.ule.oapenwb.util.HibernateUtil;
-import dk.ule.oapenwb.util.JsonUtil;
 import dk.ule.oapenwb.util.Pair;
 import dk.ule.oapenwb.util.TimeUtil;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
-import org.hibernate.query.Query;
-import org.hibernate.type.IntegerType;
 import org.hibernate.type.LongType;
 import org.hibernate.type.ShortType;
-import org.hibernate.type.StringType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.stream.Stream;
 
 /**

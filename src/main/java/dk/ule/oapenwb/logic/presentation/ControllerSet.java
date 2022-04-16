@@ -2,9 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.presentation;
 
-import dk.ule.oapenwb.entity.content.basedata.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+import dk.ule.oapenwb.AdminControllers;
+import dk.ule.oapenwb.entity.content.basedata.Category;
+import dk.ule.oapenwb.entity.content.basedata.Language;
+import dk.ule.oapenwb.entity.content.basedata.Level;
+import dk.ule.oapenwb.entity.content.basedata.Orthography;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
-import dk.ule.oapenwb.logic.admin.generic.ICEntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeController;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,29 +18,40 @@ import lombok.NoArgsConstructor;
 /**
  * Contains all controllers needed to generated the lemmas / presentation.
  */
+@Singleton
 @NoArgsConstructor
 public class ControllerSet implements IControllerSet
 {
 	@Getter
-	private ICEntityController<Orthography, Integer> orthographiesController;
+	@Inject
+	@Named(AdminControllers.CONTROLLER_ORTHOGRAPHIES)
+	private CEntityController<Orthography, Integer> orthographiesController;
 
 	@Getter
-	private ICEntityController<Language, Integer> languagesController;
+	@Inject
+	@Named(AdminControllers.CONTROLLER_LANGUAGES)
+	private CEntityController<Language, Integer> languagesController;
 
 	@Getter
-	private ICEntityController<Category, Integer> categoriesController;
+	@Inject
+	@Named(AdminControllers.CONTROLLER_CATEGORIES)
+	private CEntityController<Category, Integer> categoriesController;
 
 	@Getter
-	private ICEntityController<Level, Integer> unitLevelsController;
+	@Inject
+	@Named(AdminControllers.CONTROLLER_UNIT_LEVELS)
+	private CEntityController<Level, Integer> unitLevelsController;
 
 	@Getter
+	@Inject
 	private SememeController sememeController;
 
+	// For use in testing without Guice
 	public void setControllers(
-		ICEntityController<Orthography, Integer> orthographiesController,
-		ICEntityController<Language, Integer> languagesController,
-		ICEntityController<Category, Integer> categoriesController,
-		ICEntityController<Level, Integer> unitLevelsController,
+		CEntityController<Orthography, Integer> orthographiesController,
+		CEntityController<Language, Integer> languagesController,
+		CEntityController<Category, Integer> categoriesController,
+		CEntityController<Level, Integer> unitLevelsController,
 		SememeController sememeController)
 	{
 		this.orthographiesController = orthographiesController;

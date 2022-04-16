@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.admin.generic;
 
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.logic.context.Context;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import java.util.function.Supplier;
  * @param <S> Type of the entity IDs
  * @param <R> Type of the grouping key
  */
+@Singleton
 public class CGEntityController<T extends IEntity<S>, S extends Serializable, R>
 	extends EntityController<T, S>
 	implements IGroupedEntitySupplier<T, S, R>

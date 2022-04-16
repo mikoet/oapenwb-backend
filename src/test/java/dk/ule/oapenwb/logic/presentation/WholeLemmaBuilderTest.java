@@ -9,7 +9,7 @@ import dk.ule.oapenwb.entity.content.basedata.Level;
 import dk.ule.oapenwb.entity.content.basedata.Orthography;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
-import dk.ule.oapenwb.logic.admin.generic.ICEntityController;
+import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeController;
 import dk.ule.oapenwb.logic.presentation.options.WholeLemmaOptions;
 import org.junit.jupiter.api.BeforeAll;
@@ -68,10 +68,10 @@ public class WholeLemmaBuilderTest
 
 	@BeforeAll
 	public void initControllers(
-		@Mock ICEntityController<Orthography, Integer> orthographiesController,
-		@Mock ICEntityController<Language, Integer> languagesController,
-		@Mock ICEntityController<Category, Integer> categoriesController,
-		@Mock ICEntityController<Level, Integer> levelsController,
+		@Mock CEntityController<Orthography, Integer> orthographiesController,
+		@Mock CEntityController<Language, Integer> languagesController,
+		@Mock CEntityController<Category, Integer> categoriesController,
+		@Mock CEntityController<Level, Integer> levelsController,
 		@Mock SememeController sememeController
 	) throws CodeException
 	{

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.admin.lexeme.sememe;
 
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
@@ -34,6 +35,7 @@ import java.util.Set;
  *   attributes – all the distributed instances must be replaced.</li>
  * </ul>
  */
+@Singleton
 public class SememeController extends EntityController<Sememe, Long>
 {
 	private static final Logger LOG = LoggerFactory.getLogger(SememeController.class);

@@ -3,6 +3,10 @@
 package dk.ule.oapenwb.logic.admin.lexeme;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.base.error.MultiCodeException;
@@ -55,6 +59,7 @@ import java.util.stream.Collectors;
  * </ol>
  * </p>
  */
+@Singleton
 public class LexemeController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(LexemeController.class);
@@ -68,11 +73,12 @@ public class LexemeController
 
 	private final Context _context;
 
+	@Inject
 	public LexemeController(
-		final CGEntityController<LexemeFormType, Integer, Integer> lftController,
-		final CGEntityController<LemmaTemplate, Integer, Integer> ltController,
-		final TagController tagController, final SynGroupController synGroupController,
-		final LangPairController langPairsController, final SememeController sememeController)
+		@Named(AdminControllers.CONTROLLER_LEXEME_FORM_TYPES) CGEntityController<LexemeFormType, Integer, Integer> lftController,
+		@Named(AdminControllers.CONTROLLER_LEMMA_TEMPLATES) CGEntityController<LemmaTemplate, Integer, Integer> ltController,
+		TagController tagController, final SynGroupController synGroupController,
+		LangPairController langPairsController, final SememeController sememeController)
 	{
 		this.lftController = lftController;
 		this.ltController = ltController;

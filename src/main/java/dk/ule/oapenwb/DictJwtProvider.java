@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 public class DictJwtProvider
 {
 	@Getter
-	private final JWTProvider provider;
+	private final JWTProvider<LoginToken> provider;
 
 	@Inject
 	public DictJwtProvider(AppConfig appConfig)
@@ -31,7 +31,7 @@ public class DictJwtProvider
 		this.provider = createHMAC512(appConfig.getSecret()); // see also this custom method!
 	}
 
-	private JWTProvider createHMAC512(final String secret)
+	private JWTProvider<LoginToken> createHMAC512(final String secret)
 	{
 		if (secret == null || secret.length() < 32) {
 			throw new RuntimeException("The given secret must contain at least 32 characters.");
@@ -55,6 +55,6 @@ public class DictJwtProvider
 		Algorithm algorithm = Algorithm.HMAC256(byteArray);
 		JWTVerifier verifier = JWT.require(algorithm).build();
 
-		return new JWTProvider(algorithm, generator, verifier);
+		return new JWTProvider<LoginToken>(algorithm, generator, verifier);
 	}
 }

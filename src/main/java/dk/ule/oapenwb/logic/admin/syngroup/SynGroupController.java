@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.admin.syngroup;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.basis.ApiAction;
@@ -35,18 +37,19 @@ import java.util.*;
 /**
  * The SynGroupController.
  */
+@Singleton
 public class SynGroupController extends EntityController<SynGroup, Integer>
 {
 	private static final Logger LOG = LoggerFactory.getLogger(SynGroupController.class);
 	private static final int MAX_SYN_GROUPS = 25;
 	private static final int MAX_LEXEMES = 10;
 
-	private final ControllerSet controllers;
+	@Inject
+	private ControllerSet controllers;
 
-	public SynGroupController(ControllerSet controllers)
+	public SynGroupController()
 	{
 		super(SynGroup::new, SynGroup.class, ids -> Integer.parseInt(ids[0]), true);
-		this.controllers = controllers;
 	}
 
 	@Override

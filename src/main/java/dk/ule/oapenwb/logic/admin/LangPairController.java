@@ -2,6 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.admin;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.content.basedata.LangPair;
 import dk.ule.oapenwb.entity.content.basedata.Language;
@@ -25,6 +29,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * </ul>
  * </p>
  */
+@Singleton
 public class LangPairController extends EntityController<LangPair, String>
 {
 	private static final Logger LOG = LoggerFactory.getLogger(LangPairController.class);
@@ -41,7 +46,9 @@ public class LangPairController extends EntityController<LangPair, String>
 	// LanguageController
 	private final CEntityController<Language, Integer> languagesController;
 
-	public LangPairController(final CEntityController<Language, Integer> languagesController)
+	@Inject
+	public LangPairController(
+		@Named(AdminControllers.CONTROLLER_LANGUAGES) CEntityController<Language, Integer> languagesController)
 	{
 		super(LangPair::new, LangPair.class, ids -> ids[0], false);
 		this.languagesController = languagesController;

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.admin;
 
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Tag;
@@ -25,6 +26,7 @@ import org.hibernate.Session;
  *   will minimize collisions on editing. They can basically occur, though, and a better solution shall be found.
  * </p>
  */
+@Singleton
 public class TagController extends EntityController<Tag, String>
 {
 	public TagController()

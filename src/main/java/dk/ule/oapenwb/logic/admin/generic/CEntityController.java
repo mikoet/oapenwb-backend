@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.admin.generic;
 
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.logic.context.Context;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import java.util.function.Supplier;
  * @param <T> Entity type
  * @param <S> ID type of entity
  */
+@Singleton
 public class CEntityController<T extends IEntity<S>, S extends Serializable> extends EntityController<T, S>
 	implements ICEntityController<T, S>
 {

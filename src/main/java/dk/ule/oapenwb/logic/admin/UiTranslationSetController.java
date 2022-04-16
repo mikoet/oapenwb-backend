@@ -2,6 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.admin;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.ui.UiTranslation;
@@ -26,6 +30,7 @@ import java.util.*;
  * </ul>
  * </p>
  */
+@Singleton
 public class UiTranslationSetController implements IRestController<UiTranslationSet, String>
 {
 	private final EntityController<UiTranslation, UiTranslationKey> uitController;
@@ -35,13 +40,17 @@ public class UiTranslationSetController implements IRestController<UiTranslation
 		return _context;
 	}
 
-	public UiTranslationSetController(EntityController<UiTranslation, UiTranslationKey> uitController) {
+	@Inject
+	public UiTranslationSetController(
+		@Named(AdminControllers.CONTROLLER_UI_TRANSLATIONS) EntityController<UiTranslation, UiTranslationKey> uitController)
+	{
 		this.uitController = uitController;
 		this._context = new Context(true);
 	}
 
 	@Override
-	public List<UiTranslationSet> list() throws CodeException {
+	public List<UiTranslationSet> list() throws CodeException
+	{
 		final SortedMap<String, UiTranslationSet> map = new TreeMap<>();
 		for (UiTranslation uit : this.uitController.list()) {
 			final String uitID = uit.getUitKey().getId();
@@ -71,12 +80,14 @@ public class UiTranslationSetController implements IRestController<UiTranslation
 	 * @throws CodeException is actually never thrown
 	 */
 	@Override
-	public UiTranslationSet get(String id) throws CodeException {
+	public UiTranslationSet get(String id) throws CodeException
+	{
 		throw new CodeException(ErrorCode.Admin_EntityOperation_NotSupported,
 			Arrays.asList(new Pair<>("operation", "GET-BY-SIMPLE-ID"), new Pair<>("entity", "UiTranslationSet")));
 	}
 
-	public UiTranslationSet get(String scope, String uitID) throws CodeException {
+	public UiTranslationSet get(String scope, String uitID) throws CodeException
+	{
 		UiTranslationSet uitSet = null; // return null if no UiTranslation instance will be found
 		// Load all UiTranslation instances for the given id (uitID)
 		List<UiTranslation> uiTranslations = uitController.getBy(
@@ -99,7 +110,8 @@ public class UiTranslationSetController implements IRestController<UiTranslation
 	}
 
 	@Override
-	public Object create(UiTranslationSet entity, final Context context) throws CodeException {
+	public Object create(UiTranslationSet entity, final Context context) throws CodeException
+	{
 		// TODO use Admin_EntityOperation_PropertyNotOk
 		if (entity.getUitID() == null || entity.getUitID().trim().isEmpty())
 		{
@@ -127,11 +139,13 @@ public class UiTranslationSetController implements IRestController<UiTranslation
 		return entity.getUitID();
 	}
 
-	public void update(String scope, String uitID, UiTranslationSet entity) throws CodeException {
+	public void update(String scope, String uitID, UiTranslationSet entity) throws CodeException
+	{
 		update(scope, uitID, entity, getContext());
 	}
 
-	public void update(String scope, String uitID, UiTranslationSet entity, final Context context) throws CodeException {
+	public void update(String scope, String uitID, UiTranslationSet entity, final Context context) throws CodeException
+	{
 		if (entity.getUitID() == null || entity.getUitID().trim().isEmpty()
 			|| !entity.getUitID().equals(uitID))
 		{
@@ -160,16 +174,19 @@ public class UiTranslationSetController implements IRestController<UiTranslation
 	}
 
 	@Override
-	public void update(String id, UiTranslationSet entity, final Context context) throws CodeException {
+	public void update(String id, UiTranslationSet entity, final Context context) throws CodeException
+	{
 		throw new CodeException(ErrorCode.Admin_EntityOperation_NotSupported,
 			Arrays.asList(new Pair<>("operation", "UPDATE-BY-ID"), new Pair<>("entity", "UiTranslationSet")));
 	}
 
-	public void delete(String scope, String uitID) throws CodeException {
+	public void delete(String scope, String uitID) throws CodeException
+	{
 		delete(scope, uitID, getContext());
 	}
 
-	public void delete(String scope, String uitID, final Context context) throws CodeException {
+	public void delete(String scope, String uitID, final Context context) throws CodeException
+	{
 		if (uitID == null || uitID.trim().isEmpty())
 		{
 			throw new CodeException(ErrorCode.Admin_EntityOperation_PropertyNotOk,
@@ -192,7 +209,8 @@ public class UiTranslationSetController implements IRestController<UiTranslation
 	}
 
 	@Override
-	public void delete(String id, UiTranslationSet entity, final Context context) throws CodeException {
+	public void delete(String id, UiTranslationSet entity, final Context context) throws CodeException
+	{
 		throw new CodeException(ErrorCode.Admin_EntityOperation_NotSupported,
 			Arrays.asList(new Pair<>("operation", "DELETE-BY-ID"), new Pair<>("entity", "UiTranslationSet")));
 	}
