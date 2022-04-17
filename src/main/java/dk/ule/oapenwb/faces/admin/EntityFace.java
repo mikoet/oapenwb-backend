@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.faces.admin;
 
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.base.error.Message;
 import dk.ule.oapenwb.logic.admin.generic.EntityController;
@@ -21,6 +22,7 @@ import java.io.Serializable;
  * @param <T> The entity's class that is managed
  * @param <S> The entity's ID type
  */
+@Singleton
 public class EntityFace<T extends IEntity<S>, S extends Serializable>
 {
 	private static final Logger LOG = LoggerFactory.getLogger(EntityFace.class);

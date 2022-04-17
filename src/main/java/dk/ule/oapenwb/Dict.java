@@ -9,6 +9,8 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.base.RunMode;
 import dk.ule.oapenwb.base.Views;
@@ -21,6 +23,8 @@ import dk.ule.oapenwb.data.importer.sheet.SheetConfig;
 import dk.ule.oapenwb.data.importer.sheet.SheetFileImporter;
 import dk.ule.oapenwb.data.importer.sheet.SheetResult;
 import dk.ule.oapenwb.entity.basis.RoleType;
+import dk.ule.oapenwb.entity.ui.UiLanguage;
+import dk.ule.oapenwb.faces.admin.EntityFace;
 import dk.ule.oapenwb.logic.users.LoginToken;
 import dk.ule.oapenwb.util.CurrentUser;
 import dk.ule.oapenwb.util.EmailUtil;
@@ -134,7 +138,7 @@ public class Dict
 		JWTAccessManager accessManager = new JWTAccessManager("role", rolesMapping, RoleType.Anyone);
 
 		// Create the controllers for the API
-		DictControllers controllers = injector.getInstance(DictControllers.class);
+		DictControllers dictControllers = injector.getInstance(DictControllers.class);
 
 		// Create the Javalin faces to the controllers
 		DictFaces faces = injector.getInstance(DictFaces.class);
@@ -143,7 +147,8 @@ public class Dict
 		AdminControllers adminControllers = injector.getInstance(AdminControllers.class);
 
 		// Create the Javalin faces for the admin section controllers
-		AdminFaces adminFaces = new AdminFaces(adminControllers, controllers);
+		AdminFaces adminFaces = new AdminFaces(adminControllers, dictControllers); //injector.getInstance(AdminFaces.class);
+		adminFaces.setUiLanguagesFace(injector.getInstance(new Key<EntityFace<UiLanguage, String>>(Names.named(AdminFaces.FACE_UI_LANGUAGES)) {}));
 
 		// Create and setup the Javalin instance
 		Javalin app = Javalin.create(config -> {
@@ -211,7 +216,7 @@ public class Dict
 			});
 
 			path("users", () -> {
-				before((ctx) -> controllers.getViolations().checkForBan(ctx.ip()));
+				before((ctx) -> dictControllers.getViolations().checkForBan(ctx.ip()));
 
 				post("login", faces.getUsers()::login, allRoles);
 				post("register", faces.getUsers()::registerByEmail, allRoles);
@@ -463,8 +468,8 @@ public class Dict
 		});
 
 		try {
-			controllers.getL10n().loadTranslations();
-			controllers.getConfig().loadConfig();
+			dictControllers.getL10n().loadTranslations();
+			dictControllers.getConfig().loadConfig();
 		} catch (Exception e) {
 			LOG.error("Could not preload L10Ns and/or config", e);
 		} finally {

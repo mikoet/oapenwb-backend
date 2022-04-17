@@ -13,6 +13,7 @@ import dk.ule.oapenwb.faces.ConfigFace;
 import dk.ule.oapenwb.faces.L10nFace;
 import dk.ule.oapenwb.faces.SearchFace;
 import dk.ule.oapenwb.faces.UsersFace;
+import dk.ule.oapenwb.faces.admin.EntityFace;
 import dk.ule.oapenwb.logic.admin.LangPairController;
 import dk.ule.oapenwb.logic.admin.TagController;
 import dk.ule.oapenwb.logic.admin.UiTranslationSetController;
@@ -62,18 +63,20 @@ public class DictModule extends AbstractModule
 	 */
 	private void configureAdminClasses()
 	{
-		/* !! UI data */
+		/* !!!! Controllers !!!! */
+		/* !! UI data !! */
 
 		// UiLanguages controller
+		EntityController<UiLanguage, String> uiLanguageCtrl = new EntityController<>(UiLanguage::new, UiLanguage.class,
+			ids -> ids[0], false) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.locale ASC";
+			}
+		};
 		bind(new TypeLiteral<EntityController<UiLanguage, String>>() {})
 			.annotatedWith(Names.named(AdminControllers.CONTROLLER_UI_LANGUAGES))
-			.toInstance(new EntityController<>(UiLanguage::new, UiLanguage.class,
-				ids -> ids[0], false) {
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.locale ASC";
-				}
-			});
+			.toInstance(uiLanguageCtrl);
 
 		// UiScopes controller
 		bind(new TypeLiteral<EntityController<UiTranslationScope, String>>() {})
@@ -114,7 +117,7 @@ public class DictModule extends AbstractModule
 			});
 
 
-		/* !! Dictionary data */
+		/* !! Dictionary data !! */
 
 		// Orthographies controller
 		bind(new TypeLiteral<CEntityController<Orthography, Integer>>() {})
@@ -223,27 +226,25 @@ public class DictModule extends AbstractModule
 			});
 
 
-		/* !! Content data */
+		/* !! Content data !! */
 
 		// Tags controller
 		bind(TagController.class);
-
-		// SynGroups controller
 		bind(SynGroupController.class);
-
-		// Sememes controller
 		bind(SememeController.class);
-
-		// Lexemes controller
 		bind(LexemeController.class);
-
-		// Locks controller
 		bind(LockController.class);
-
-		// ControllerSet
 		bind(ControllerSet.class);
 
 		// The controllers class itself
 		bind(AdminControllers.class);
+
+		/* !!!! Faces !!!! */
+		/* !! UI data !! */
+
+		// hwa
+		bind(new TypeLiteral<EntityFace<UiLanguage, String>>() {})
+			.annotatedWith(Names.named(AdminFaces.FACE_UI_LANGUAGES))
+			.toInstance(new EntityFace<>(uiLanguageCtrl));
 	}
 }
