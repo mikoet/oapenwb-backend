@@ -9,8 +9,6 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.name.Names;
 import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.base.RunMode;
 import dk.ule.oapenwb.base.Views;
@@ -23,8 +21,6 @@ import dk.ule.oapenwb.data.importer.sheet.SheetConfig;
 import dk.ule.oapenwb.data.importer.sheet.SheetFileImporter;
 import dk.ule.oapenwb.data.importer.sheet.SheetResult;
 import dk.ule.oapenwb.entity.basis.RoleType;
-import dk.ule.oapenwb.entity.ui.UiLanguage;
-import dk.ule.oapenwb.faces.admin.EntityFace;
 import dk.ule.oapenwb.logic.users.LoginToken;
 import dk.ule.oapenwb.util.CurrentUser;
 import dk.ule.oapenwb.util.EmailUtil;
@@ -147,8 +143,7 @@ public class Dict
 		AdminControllers adminControllers = injector.getInstance(AdminControllers.class);
 
 		// Create the Javalin faces for the admin section controllers
-		AdminFaces adminFaces = new AdminFaces(adminControllers, dictControllers); //injector.getInstance(AdminFaces.class);
-		adminFaces.setUiLanguagesFace(injector.getInstance(new Key<EntityFace<UiLanguage, String>>(Names.named(AdminFaces.FACE_UI_LANGUAGES)) {}));
+		AdminFaces adminFaces = injector.getInstance(AdminFaces.class);
 
 		// Create and setup the Javalin instance
 		Javalin app = Javalin.create(config -> {

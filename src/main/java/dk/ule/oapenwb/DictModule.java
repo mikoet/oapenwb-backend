@@ -3,17 +3,15 @@
 package dk.ule.oapenwb;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.TypeLiteral;
+import com.google.inject.Key;
 import com.google.inject.name.Names;
+import com.google.inject.util.Types;
 import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.entity.content.basedata.*;
 import dk.ule.oapenwb.entity.content.basedata.tlConfig.TypeLanguageConfig;
 import dk.ule.oapenwb.entity.ui.*;
-import dk.ule.oapenwb.faces.ConfigFace;
-import dk.ule.oapenwb.faces.L10nFace;
-import dk.ule.oapenwb.faces.SearchFace;
-import dk.ule.oapenwb.faces.UsersFace;
-import dk.ule.oapenwb.faces.admin.EntityFace;
+import dk.ule.oapenwb.faces.*;
+import dk.ule.oapenwb.faces.admin.*;
 import dk.ule.oapenwb.logic.admin.LangPairController;
 import dk.ule.oapenwb.logic.admin.TagController;
 import dk.ule.oapenwb.logic.admin.UiTranslationSetController;
@@ -30,6 +28,8 @@ import dk.ule.oapenwb.logic.presentation.ControllerSet;
 import dk.ule.oapenwb.logic.search.SearchController;
 import dk.ule.oapenwb.logic.users.UserController;
 import dk.ule.oapenwb.logic.users.ViolationController;
+
+import java.lang.reflect.ParameterizedType;
 
 public class DictModule extends AbstractModule
 {
@@ -67,163 +67,184 @@ public class DictModule extends AbstractModule
 		/* !! UI data !! */
 
 		// UiLanguages controller
-		EntityController<UiLanguage, String> uiLanguageCtrl = new EntityController<>(UiLanguage::new, UiLanguage.class,
+		EntityController<UiLanguage, String> uiLanguageCtrl = new EntityController<>(
+			UiLanguage::new, UiLanguage.class,
 			ids -> ids[0], false) {
 			@Override
 			protected String getDefaultOrderClause() {
 				return " order by E.locale ASC";
 			}
 		};
-		bind(new TypeLiteral<EntityController<UiLanguage, String>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_UI_LANGUAGES))
-			.toInstance(uiLanguageCtrl);
+		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_UI_LANGUAGES, uiLanguageCtrl,
+			EntityController.class, UiLanguage.class, String.class);
 
 		// UiScopes controller
-		bind(new TypeLiteral<EntityController<UiTranslationScope, String>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_UI_SCOPES))
-			.toInstance(new EntityController<>(UiTranslationScope::new, UiTranslationScope.class,
-				ids -> ids[0], false) {
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.id ASC";
-				}
-			});
+		EntityController<UiTranslationScope, String> uiScopeCtrl = new EntityController<>(
+			UiTranslationScope::new, UiTranslationScope.class,
+			ids -> ids[0], false) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.id ASC";
+			}
+		};
+		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_UI_SCOPES, uiScopeCtrl,
+			EntityController.class, UiTranslationScope.class, String.class);
 
 		// UiTranslationSets controller
 		bind(UiTranslationSetController.class);
 
 		// UiTranslations controller
-		bind(new TypeLiteral<EntityController<UiTranslation, UiTranslationKey>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_UI_TRANSLATIONS))
-			.toInstance(new EntityController<>(UiTranslation::new, UiTranslation.class,
-				ids -> new UiTranslationKey(ids[0]/*uitID*/, ids[1]/*scope*/, ids[2]/*locale*/), false, false)
-			{
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.uitKey.scopeID ASC, E.uitKey.id ASC";
-				}
-			});
+		EntityController<UiTranslation, UiTranslationKey> uiTranslationCtrl = new EntityController<>(
+			UiTranslation::new, UiTranslation.class,
+			ids -> new UiTranslationKey(ids[0]/*uitID*/, ids[1]/*scope*/, ids[2]/*locale*/), false, false) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.uitKey.scopeID ASC, E.uitKey.id ASC";
+			}
+		};
+		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_UI_TRANSLATIONS, uiTranslationCtrl,
+			EntityController.class, UiTranslation.class, UiTranslationKey.class);
 
 		// UiResultCategories controller
-		bind(new TypeLiteral<EntityController<UiResultCategory, Integer>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_UI_RESULT_CATEGORIES))
-			.toInstance(new EntityController<>(
-				UiResultCategory::new, UiResultCategory.class, ids -> Integer.parseInt(ids[0])
-			) {
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.position ASC";
-				}
-			});
+		EntityController<UiResultCategory, Integer> uiResultCategoryCtrl = new EntityController<>(
+			UiResultCategory::new, UiResultCategory.class,
+			ids -> Integer.parseInt(ids[0])) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.position ASC";
+			}
+		};
+		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_UI_RESULT_CATEGORIES, uiResultCategoryCtrl,
+			EntityController.class, UiResultCategory.class, Integer.class);
 
 
 		/* !! Dictionary data !! */
 
 		// Orthographies controller
-		bind(new TypeLiteral<CEntityController<Orthography, Integer>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_ORTHOGRAPHIES))
-			.toInstance(new CEntityController<>(Orthography::new, Orthography.class, ids -> Integer.parseInt(ids[0])) {
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.abbreviation ASC";
-				}
-			});
+		CEntityController<Orthography, Integer> orthographiesCtrl = new CEntityController<>(
+			Orthography::new, Orthography.class,
+			ids -> Integer.parseInt(ids[0])) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.abbreviation ASC";
+			}
+		};
+		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_ORTHOGRAPHIES, orthographiesCtrl,
+			CEntityController.class, Orthography.class, Integer.class);
 
 		// LoMappings controller
-		bind(new TypeLiteral<EntityController<LangOrthoMapping, Integer>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_LO_MAPPINGS))
-			.toInstance(new EntityController<>(LangOrthoMapping::new, LangOrthoMapping.class, ids -> Integer.parseInt(ids[0])) {
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.langID ASC, E.position ASC";
-				}
-			});
+		EntityController<LangOrthoMapping, Integer> loMappingsCtrl = new EntityController<>(
+			LangOrthoMapping::new, LangOrthoMapping.class,
+			ids -> Integer.parseInt(ids[0])) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.langID ASC, E.position ASC";
+			}
+		};
+		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_LO_MAPPINGS, loMappingsCtrl,
+			EntityController.class, LangOrthoMapping.class, Integer.class);
 
 		// Languages controller
-		bind(new TypeLiteral<CEntityController<Language, Integer>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_LANGUAGES))
-			.toInstance(new CEntityController<>(Language::new, Language.class, ids -> Integer.parseInt(ids[0])) {
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.locale ASC";
-				}
-			});
+		CEntityController<Language, Integer> languagesCtrl = new CEntityController<>(
+			Language::new, Language.class,
+			ids -> Integer.parseInt(ids[0])) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.locale ASC";
+			}
+		};
+		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_LANGUAGES, languagesCtrl,
+			CEntityController.class, Language.class, Integer.class);
 
 		// LangPairs controller
 		bind(LangPairController.class);
 
 		// LexemeTypes controller
-		bind(new TypeLiteral<EntityController<LexemeType, Integer>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_LEXEME_TYPES))
-			.toInstance(new EntityController<>(LexemeType::new, LexemeType.class, ids -> Integer.parseInt(ids[0])) {
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.name ASC";
-				}
-			});
+		EntityController<LexemeType, Integer> lexemeTypesCtrl = new EntityController<>(
+			LexemeType::new, LexemeType.class,
+			ids -> Integer.parseInt(ids[0])) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.name ASC";
+			}
+		};
+		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_LEXEME_TYPES, lexemeTypesCtrl,
+			EntityController.class, LexemeType.class, Integer.class);
 
 		// LexemeFormTypes controller
-		bind(new TypeLiteral<CGEntityController<LexemeFormType, Integer, Integer>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_LEXEME_FORM_TYPES))
-			.toInstance(new CGEntityController<>(LexemeFormType::new, LexemeFormType.class,
-				ids -> Integer.parseInt(ids[0]), entity -> entity.getLexemeTypeID()) {
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.lexemeTypeID ASC, E.position ASC";
-				}
-			});
+		CGEntityController<LexemeFormType, Integer, Integer> lexemeFormTypesCtrl = new CGEntityController<>(
+			LexemeFormType::new,
+			LexemeFormType.class,
+			ids -> Integer.parseInt(ids[0]), LexemeFormType::getLexemeTypeID) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.lexemeTypeID ASC, E.position ASC";
+			}
+		};
+		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_LEXEME_FORM_TYPES, lexemeFormTypesCtrl,
+			CGEntityController.class, LexemeFormType.class, Integer.class, Integer.class);
 
 		// TypeLangConfigs controller
-		bind(new TypeLiteral<CGEntityController<TypeLanguageConfig, Integer, Integer>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_TL_CONFIGS))
-			.toInstance(new CGEntityController<>(TypeLanguageConfig::new, TypeLanguageConfig.class,
-				ids -> Integer.parseInt(ids[0]), entity -> entity.getLexemeTypeID()) {
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.lexemeTypeID ASC, E.langID ASC";
-				}
-			});
+		CGEntityController<TypeLanguageConfig, Integer, Integer> tlConfigsCtrl = new CGEntityController<>(
+			TypeLanguageConfig::new, TypeLanguageConfig.class,
+			ids -> Integer.parseInt(ids[0]), TypeLanguageConfig::getLexemeTypeID) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.lexemeTypeID ASC, E.langID ASC";
+			}
+		};
+		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_TL_CONFIGS, tlConfigsCtrl,
+			CGEntityController.class, TypeLanguageConfig.class, Integer.class, Integer.class);
 
 		// LemmaTemplates controller
-		bind(new TypeLiteral<CGEntityController<LemmaTemplate, Integer, Integer>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_LEMMA_TEMPLATES))
-			.toInstance(new CGEntityController<>(LemmaTemplate::new, LemmaTemplate.class,
-				ids -> Integer.parseInt(ids[0]), entity -> entity.getLexemeTypeID()) {
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.lexemeTypeID ASC, E.name ASC";
-				}
-			});
+		CGEntityController<LemmaTemplate, Integer, Integer> lemmaTemplatesCtrl = new CGEntityController<>(
+			LemmaTemplate::new,
+			LemmaTemplate.class,
+			ids -> Integer.parseInt(ids[0]), LemmaTemplate::getLexemeTypeID) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.lexemeTypeID ASC, E.name ASC";
+			}
+		};
+		bindAnnotatedTypeWithInstance(
+			AdminControllers.CONTROLLER_LEMMA_TEMPLATES, lemmaTemplatesCtrl,
+			CGEntityController.class, LemmaTemplate.class, Integer.class, Integer.class);
 
 		// Categories controller
-		bind(new TypeLiteral<CEntityController<Category, Integer>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_CATEGORIES))
-			.toInstance(new CEntityController<>(Category::new, Category.class, ids -> Integer.parseInt(ids[0])) {
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.description ASC";
-				}
-			});
+		CEntityController<Category, Integer> categoriesCtrl = new CEntityController<>(
+			Category::new, Category.class,
+			ids -> Integer.parseInt(ids[0])) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.description ASC";
+			}
+		};
+		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_CATEGORIES, categoriesCtrl,
+			CEntityController.class, Category.class, Integer.class);
 
 		// UnitLevels controller
-		bind(new TypeLiteral<CEntityController<Level, Integer>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_UNIT_LEVELS))
-			.toInstance(new CEntityController<>(Level::new, Level.class, ids -> Integer.parseInt(ids[0])) {
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.description ASC";
-				}
-			});
+		CEntityController<Level, Integer> levelsCtrl = new CEntityController<>(
+			Level::new, Level.class,
+			ids -> Integer.parseInt(ids[0])) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.description ASC";
+			}
+		};
+		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_UNIT_LEVELS, levelsCtrl,
+			CEntityController.class, Level.class, Integer.class);
 
 		// LinkTypes controller
-		bind(new TypeLiteral<CEntityController<LinkType, Integer>>() {})
-			.annotatedWith(Names.named(AdminControllers.CONTROLLER_LINK_TYPES))
-			.toInstance(new CEntityController<>(LinkType::new, LinkType.class, ids -> Integer.parseInt(ids[0])) {
-				@Override
-				protected String getDefaultOrderClause() {
-					return " order by E.target ASC, E.description ASC";
-				}
-			});
+		CEntityController<LinkType, Integer> linkTypesCtrl = new CEntityController<>(
+			LinkType::new, LinkType.class,
+			ids -> Integer.parseInt(ids[0])) {
+			@Override
+			protected String getDefaultOrderClause() {
+				return " order by E.target ASC, E.description ASC";
+			}
+		};
+		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_LINK_TYPES, linkTypesCtrl,
+			CEntityController.class, LinkType.class, Integer.class);
 
 
 		/* !! Content data !! */
@@ -239,12 +260,55 @@ public class DictModule extends AbstractModule
 		// The controllers class itself
 		bind(AdminControllers.class);
 
+
 		/* !!!! Faces !!!! */
 		/* !! UI data !! */
 
-		// hwa
-		bind(new TypeLiteral<EntityFace<UiLanguage, String>>() {})
-			.annotatedWith(Names.named(AdminFaces.FACE_UI_LANGUAGES))
-			.toInstance(new EntityFace<>(uiLanguageCtrl));
+		bindAnnotatedTypeWithInstance(AdminFaces.FACE_UI_LANGUAGES, new EntityFace<>(uiLanguageCtrl),
+			EntityFace.class, UiLanguage.class, String.class);
+		bindAnnotatedTypeWithInstance(AdminFaces.FACE_UI_SCOPES, new EntityFace<>(uiScopeCtrl),
+			EntityFace.class, UiTranslationScope.class, String.class);
+
+		bind(UiTranslationSetFace.class);
+
+		bindAnnotatedTypeWithInstance(AdminFaces.FACE_UI_RESULT_CATEGORIES, new EntityFace<>(uiResultCategoryCtrl),
+			EntityFace.class, UiResultCategory.class, Integer.class);
+		bindAnnotatedTypeWithInstance(AdminFaces.FACE_ORTHOGRAPHIES, new EntityFace<>(orthographiesCtrl),
+			EntityFace.class, Orthography.class, Integer.class);
+		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LO_MAPPINGS, new EntityFace<>(loMappingsCtrl),
+			EntityFace.class, LangOrthoMapping.class, Integer.class);
+		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LANGUAGES, new EntityFace<>(languagesCtrl),
+			EntityFace.class, Language.class, Integer.class);
+
+		bind(LangPairFace.class);
+
+		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LEXEME_TYPES, new EntityFace<>(lexemeTypesCtrl),
+			EntityFace.class, LexemeType.class, Integer.class);
+		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LEXEME_FORM_TYPES, new EntityFace<>(lexemeFormTypesCtrl),
+			EntityFace.class, LexemeFormType.class, Integer.class);
+
+		bindAnnotatedTypeWithInstance(AdminFaces.FACE_TL_CONFIGS, new EntityFace<>(tlConfigsCtrl),
+			EntityFace.class, TypeLanguageConfig.class, Integer.class);
+		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LEMMA_TEMPLATES, new EntityFace<>(lemmaTemplatesCtrl),
+			EntityFace.class, LemmaTemplate.class, Integer.class);
+		bindAnnotatedTypeWithInstance(AdminFaces.FACE_CATEGORIES, new EntityFace<>(categoriesCtrl),
+			EntityFace.class, Category.class, Integer.class);
+		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LEVELS, new EntityFace<>(levelsCtrl),
+			EntityFace.class, Level.class, Integer.class);
+		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LINK_TYPES, new EntityFace<>(linkTypesCtrl),
+			EntityFace.class, LinkType.class, Integer.class);
+
+		bind(TagsFace.class);
+		bind(SynGroupFace.class);
+		bind(SememeFace.class);
+		bind(LexemeFace.class);
+	}
+
+	private <T> void bindAnnotatedTypeWithInstance(String annotatedWith, T instance, Class<?> rawType, Class<?>... paramClasses)
+	{
+		ParameterizedType parameterizedButler = Types.newParameterizedType(rawType, paramClasses);
+		@SuppressWarnings("unchecked")
+		Key<T> key = (Key<T>) Key.get(parameterizedButler, Names.named(annotatedWith));
+		bind(key).toInstance(instance);
 	}
 }

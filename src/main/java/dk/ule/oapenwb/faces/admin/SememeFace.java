@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.faces.admin;
 
+import com.google.inject.Inject;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SSearchRequest;
@@ -25,6 +26,7 @@ public class SememeFace extends EntityFace<Sememe, Long>
 		return (SememeController) super.getController();
 	}
 
+	@Inject
 	public SememeFace(SememeController controller)
 	{
 		super(controller);
@@ -43,7 +45,7 @@ public class SememeFace extends EntityFace<Sememe, Long>
 		ctx.json(res);
 	}
 
-	public void getSlim(@NotNull Context ctx) throws Exception
+	public void getSlim(@NotNull Context ctx)
 	{
 		Response res = new Response();
 		try {

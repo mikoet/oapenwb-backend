@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.faces.admin;
 
+import com.google.inject.Inject;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.content.lexemes.SynGroup;
 import dk.ule.oapenwb.logic.admin.syngroup.SGSearchRequest;
@@ -25,6 +26,7 @@ public class SynGroupFace extends EntityFace<SynGroup, Integer>
 		return (SynGroupController) super.getController();
 	}
 
+	@Inject
 	public SynGroupFace(SynGroupController controller)
 	{
 		super(controller);

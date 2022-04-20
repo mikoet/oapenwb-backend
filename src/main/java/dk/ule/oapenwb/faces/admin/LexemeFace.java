@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.faces.admin;
 
+import com.google.inject.Inject;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.base.error.Message;
@@ -27,8 +28,9 @@ import java.util.Arrays;
 public class LexemeFace
 {
 	private static final Logger LOG = LoggerFactory.getLogger(LexemeFace.class);
-	private LexemeController controller;
+	private final LexemeController controller;
 
+	@Inject
 	public LexemeFace(LexemeController controller)
 	{
 		this.controller = controller;
@@ -60,7 +62,7 @@ public class LexemeFace
 		ctx.json(res);
 	}
 
-	public void getSlim(@NotNull Context ctx) throws Exception
+	public void getSlim(@NotNull Context ctx)
 	{
 		Response res = new Response();
 		try {

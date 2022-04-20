@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.faces;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.ui.UiTranslationSet;
 import dk.ule.oapenwb.logic.admin.UiTranslationSetController;
@@ -15,10 +17,13 @@ import org.slf4j.LoggerFactory;
 /**
  * Javalin face to the {@link UiTranslationSetController}.
  */
-public class UiTranslationSetFace {
+@Singleton
+public class UiTranslationSetFace
+{
 	private static final Logger LOG = LoggerFactory.getLogger(UiTranslationSetFace.class);
-	private UiTranslationSetController controller;
+	private final UiTranslationSetController controller;
 
+	@Inject
 	public UiTranslationSetFace(UiTranslationSetController controller) {
 		this.controller = controller;
 	}
