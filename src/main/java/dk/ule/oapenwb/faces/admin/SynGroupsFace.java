@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.content.lexemes.SynGroup;
 import dk.ule.oapenwb.logic.admin.syngroup.SGSearchRequest;
-import dk.ule.oapenwb.logic.admin.syngroup.SynGroupController;
+import dk.ule.oapenwb.logic.admin.syngroup.SynGroupsController;
 import dk.ule.oapenwb.util.json.Response;
 import dk.ule.oapenwb.util.json.ResponseStatus;
 import io.javalin.http.Context;
@@ -15,19 +15,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Javalin face to the {@link SynGroupController}.
+ * Javalin face to the {@link SynGroupsController}.
  */
-public class SynGroupFace extends EntityFace<SynGroup, Integer>
+public class SynGroupsFace extends EntityFace<SynGroup, Integer>
 {
-	private static final Logger LOG = LoggerFactory.getLogger(SynGroupFace.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SynGroupsFace.class);
 
 	@Override
-	protected SynGroupController getController() {
-		return (SynGroupController) super.getController();
+	protected SynGroupsController getController() {
+		return (SynGroupsController) super.getController();
 	}
 
 	@Inject
-	public SynGroupFace(SynGroupController controller)
+	public SynGroupsFace(SynGroupsController controller)
 	{
 		super(controller);
 	}

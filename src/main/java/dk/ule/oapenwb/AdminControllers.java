@@ -10,16 +10,16 @@ import dk.ule.oapenwb.entity.content.basedata.tlConfig.TypeLanguageConfig;
 import dk.ule.oapenwb.entity.ui.UiLanguage;
 import dk.ule.oapenwb.entity.ui.UiResultCategory;
 import dk.ule.oapenwb.entity.ui.UiTranslationScope;
-import dk.ule.oapenwb.logic.admin.LangPairController;
-import dk.ule.oapenwb.logic.admin.TagController;
-import dk.ule.oapenwb.logic.admin.UiTranslationSetController;
+import dk.ule.oapenwb.logic.admin.LangPairsController;
+import dk.ule.oapenwb.logic.admin.TagsController;
+import dk.ule.oapenwb.logic.admin.UiTranslationSetsController;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
 import dk.ule.oapenwb.logic.admin.generic.EntityController;
-import dk.ule.oapenwb.logic.admin.lexeme.LexemeController;
-import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeController;
+import dk.ule.oapenwb.logic.admin.lexeme.LexemesController;
+import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
 import dk.ule.oapenwb.logic.admin.locking.LockController;
-import dk.ule.oapenwb.logic.admin.syngroup.SynGroupController;
+import dk.ule.oapenwb.logic.admin.syngroup.SynGroupsController;
 import lombok.Getter;
 
 /**
@@ -31,7 +31,7 @@ public class AdminControllers
 	public static final String CONTROLLER_UI_LANGUAGES = "Controller_UiLanguages";
 	public static final String CONTROLLER_UI_SCOPES = "Controller_UiScopes";
 	public static final String CONTROLLER_UI_RESULT_CATEGORIES = "Controller_UiResultCategories";
-	// Only for injection into UiTranslationSetController
+	// Only for injection into UiTranslationSetsController
 	public static final String CONTROLLER_UI_TRANSLATIONS = "Controller_UiTranslations";
 
 	public static final String CONTROLLER_ORTHOGRAPHIES = "Controller_Orthographies";
@@ -58,7 +58,7 @@ public class AdminControllers
 
 	@Getter
 	@Inject
-	private UiTranslationSetController uiTranslationsController;
+	private UiTranslationSetsController uiTranslationsController;
 
 	@Getter
 	@Inject
@@ -83,7 +83,7 @@ public class AdminControllers
 
 	@Getter
 	@Inject
-	private LangPairController langPairsController;
+	private LangPairsController langPairsController;
 
 	@Getter
 	@Inject
@@ -124,19 +124,19 @@ public class AdminControllers
 
 	@Getter
 	@Inject
-	private TagController tagsController;
+	private TagsController tagsController;
 
 	@Getter
 	@Inject
-	private SynGroupController synGroupsController;
+	private SynGroupsController synGroupsController;
 
 	@Getter
 	@Inject
-	private SememeController sememeController;
+	private SememesController sememesController;
 
 	@Getter
 	@Inject
-	private LexemeController lexemesController;
+	private LexemesController lexemesController;
 
 	@Getter
 	@Inject

@@ -5,13 +5,16 @@ package dk.ule.oapenwb.faces.admin;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Tag;
-import dk.ule.oapenwb.logic.admin.TagController;
+import dk.ule.oapenwb.logic.admin.TagsController;
 
+/**
+ * Javalin face to the {@link TagsController}.
+ */
 @Singleton
 public class TagsFace extends EntityFace<Tag, String>
 {
 	@Inject
-	public TagsFace(TagController controller)
+	public TagsFace(TagsController controller)
 	{
 		super(controller);
 	}

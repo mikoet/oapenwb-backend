@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.ui.UiTranslationSet;
-import dk.ule.oapenwb.logic.admin.UiTranslationSetController;
+import dk.ule.oapenwb.logic.admin.UiTranslationSetsController;
 import dk.ule.oapenwb.util.json.Response;
 import dk.ule.oapenwb.util.json.ResponseStatus;
 import io.javalin.http.Context;
@@ -15,16 +15,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Javalin face to the {@link UiTranslationSetController}.
+ * Javalin face to the {@link UiTranslationSetsController}.
  */
 @Singleton
-public class UiTranslationSetFace
+public class UiTranslationSetsFace
 {
-	private static final Logger LOG = LoggerFactory.getLogger(UiTranslationSetFace.class);
-	private final UiTranslationSetController controller;
+	private static final Logger LOG = LoggerFactory.getLogger(UiTranslationSetsFace.class);
+	private final UiTranslationSetsController controller;
 
 	@Inject
-	public UiTranslationSetFace(UiTranslationSetController controller) {
+	public UiTranslationSetsFace(UiTranslationSetsController controller) {
 		this.controller = controller;
 	}
 

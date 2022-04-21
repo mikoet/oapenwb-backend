@@ -5,13 +5,13 @@ package dk.ule.oapenwb.faces.admin;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dk.ule.oapenwb.entity.content.basedata.LangPair;
-import dk.ule.oapenwb.logic.admin.LangPairController;
+import dk.ule.oapenwb.logic.admin.LangPairsController;
 
 @Singleton
-public class LangPairFace extends EntityFace<LangPair, String>
+public class LangPairsFace extends EntityFace<LangPair, String>
 {
 	@Inject
-	public LangPairFace(LangPairController controller)
+	public LangPairsFace(LangPairsController controller)
 	{
 		super(controller);
 	}

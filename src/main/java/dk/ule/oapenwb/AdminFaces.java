@@ -10,7 +10,7 @@ import dk.ule.oapenwb.entity.content.basedata.tlConfig.TypeLanguageConfig;
 import dk.ule.oapenwb.entity.ui.UiLanguage;
 import dk.ule.oapenwb.entity.ui.UiResultCategory;
 import dk.ule.oapenwb.entity.ui.UiTranslationScope;
-import dk.ule.oapenwb.faces.UiTranslationSetFace;
+import dk.ule.oapenwb.faces.UiTranslationSetsFace;
 import dk.ule.oapenwb.faces.admin.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,7 +50,7 @@ class AdminFaces
 
 	@Getter
 	@Inject
-	private UiTranslationSetFace uiTranslationsFace;
+	private UiTranslationSetsFace uiTranslationsFace;
 
 	@Getter
 	@Inject
@@ -74,7 +74,7 @@ class AdminFaces
 
 	@Getter
 	@Inject
-	private LangPairFace langPairsFace;
+	private LangPairsFace langPairsFace;
 
 	@Getter
 	@Inject
@@ -117,13 +117,13 @@ class AdminFaces
 
 	@Getter
 	@Inject
-	private SynGroupFace synGroupsFace;
+	private SynGroupsFace synGroupsFace;
 
 	@Getter
 	@Inject
-	private SememeFace sememesFace;
+	private SememesFace sememesFace;
 
 	@Getter
 	@Inject
-	private LexemeFace lexemesFace;
+	private LexemesFace lexemesFace;
 }

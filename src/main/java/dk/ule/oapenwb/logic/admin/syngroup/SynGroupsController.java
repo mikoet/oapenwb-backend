@@ -11,7 +11,7 @@ import dk.ule.oapenwb.entity.content.lexemes.SynGroup;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.logic.admin.generic.EntityController;
-import dk.ule.oapenwb.logic.admin.lexeme.LexemeController;
+import dk.ule.oapenwb.logic.admin.lexeme.LexemesController;
 import dk.ule.oapenwb.logic.admin.lexeme.VariantController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.LexemeSlimPlus;
 import dk.ule.oapenwb.logic.context.Context;
@@ -35,19 +35,19 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /**
- * The SynGroupController.
+ * <p>The controller to manage the entities of type {@link SynGroup}.</p>
  */
 @Singleton
-public class SynGroupController extends EntityController<SynGroup, Integer>
+public class SynGroupsController extends EntityController<SynGroup, Integer>
 {
-	private static final Logger LOG = LoggerFactory.getLogger(SynGroupController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SynGroupsController.class);
 	private static final int MAX_SYN_GROUPS = 25;
 	private static final int MAX_LEXEMES = 10;
 
 	@Inject
 	private ControllerSet controllers;
 
-	public SynGroupController()
+	public SynGroupsController()
 	{
 		super(SynGroup::new, SynGroup.class, ids -> Integer.parseInt(ids[0]), true);
 	}
@@ -82,7 +82,7 @@ public class SynGroupController extends EntityController<SynGroup, Integer>
 		VariantController variantController = new VariantController();
 
 		// Load all sememes of the given SynGroup
-		List<Sememe> sememes = controllers.getSememeController().loadByIDs(synGroup.getSememeIDs());
+		List<Sememe> sememes = controllers.getSememesController().loadByIDs(synGroup.getSememeIDs());
 		// Put all variantIDs of the loaded sememes into one big set
 		Set<Long> variantIDs = new HashSet<>();
 		for (Sememe sememe : sememes) {
@@ -169,7 +169,7 @@ public class SynGroupController extends EntityController<SynGroup, Integer>
 
 		String filterText = request.getFilter();
 		if (filterText != null && !filterText.isEmpty()) {
-			final Pair<String, String> filterResult = LexemeController.buildFilterStatementAndText(request.getFilter(),
+			final Pair<String, String> filterResult = LexemesController.buildFilterStatementAndText(request.getFilter(),
 				request.getTextSearchType());
 			final String filterStatement = filterResult.getLeft();
 			filterText = filterResult.getRight();
@@ -216,7 +216,7 @@ public class SynGroupController extends EntityController<SynGroup, Integer>
 
 		String filterText = request.getFilter();
 		if (filterText != null && !filterText.isEmpty()) {
-			final Pair<String, String> filterResult = LexemeController.buildFilterStatementAndText(request.getFilter(),
+			final Pair<String, String> filterResult = LexemesController.buildFilterStatementAndText(request.getFilter(),
 				request.getTextSearchType());
 			final String filterStatement = filterResult.getLeft();
 			filterText = filterResult.getRight();

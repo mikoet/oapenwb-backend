@@ -17,11 +17,11 @@ import dk.ule.oapenwb.entity.content.lexemes.SynGroup;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
-import dk.ule.oapenwb.logic.admin.LangPairController;
-import dk.ule.oapenwb.logic.admin.TagController;
+import dk.ule.oapenwb.logic.admin.LangPairsController;
+import dk.ule.oapenwb.logic.admin.TagsController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
-import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeController;
-import dk.ule.oapenwb.logic.admin.syngroup.SynGroupController;
+import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
+import dk.ule.oapenwb.logic.admin.syngroup.SynGroupsController;
 import dk.ule.oapenwb.logic.context.Context;
 import dk.ule.oapenwb.util.CurrentUser;
 import dk.ule.oapenwb.util.HibernateUtil;
@@ -42,11 +42,11 @@ public class LexemeUpdater
 	//private final Context context;
 	private final CGEntityController<LexemeFormType, Integer, Integer> lftController;
 	private final CGEntityController<LemmaTemplate, Integer, Integer> ltController;
-	private final TagController tagController;
-	private final SynGroupController synGroupController;
-	private final LangPairController langPairsController;
-	private final LexemeController lexemeController;
-	private final SememeController sememeController;
+	private final TagsController tagsController;
+	private final SynGroupsController synGroupsController;
+	private final LangPairsController langPairsController;
+	private final LexemesController lexemesController;
+	private final SememesController sememesController;
 
 	// Maps to map the internal, negative IDs to the real given IDs after persisting
 	private final Map<Long, Long> variantIdMapping = new HashMap<>();
@@ -58,18 +58,18 @@ public class LexemeUpdater
 		//final Context context,
 		final CGEntityController<LexemeFormType, Integer, Integer> lftController,
 		final CGEntityController<LemmaTemplate, Integer, Integer> ltController,
-		final TagController tagController, final SynGroupController synGroupController,
-		final LangPairController langPairsController, final LexemeController lexemeController,
-		final SememeController sememeController)
+		final TagsController tagsController, final SynGroupsController synGroupsController,
+		final LangPairsController langPairsController, final LexemesController lexemesController,
+		final SememesController sememesController)
 	{
 		//this.context = context;
 		this.lftController = lftController;
 		this.ltController = ltController;
-		this.tagController = tagController;
-		this.synGroupController = synGroupController;
+		this.tagsController = tagsController;
+		this.synGroupsController = synGroupsController;
 		this.langPairsController = langPairsController;
-		this.lexemeController = lexemeController;
-		this.sememeController = sememeController;
+		this.lexemesController = lexemesController;
+		this.sememesController = sememesController;
 	}
 
 	public LexemeSlimDTO update(final Session session, final Long id, final LexemeDetailedDTO lexemeDTO,
@@ -150,13 +150,13 @@ public class LexemeUpdater
 					tagsToUnuse.remove(tag);
 				} else {
 					// this tag is new in use
-					tagController.useTag(session, tag);
+					tagsController.useTag(session, tag);
 				}
 			}
 		}
 		// Unuse the old tags that aren't used anymore
 		for (String tag : tagsToUnuse) {
-			tagController.unuseTag(session, tag);
+			tagsController.unuseTag(session, tag);
 		}
 	}
 
@@ -441,10 +441,10 @@ public class LexemeUpdater
 			synGroup.setSememeIDs(synGroup.getSememeIDs().stream().map(id -> id < 0 ? this.sememeIdMapping.get(id) : id)
 										  .collect(Collectors.toCollection(LinkedHashSet::new)));
 		} else {
-			// in this case the SynGroup will be deleted by the SynGroupController
+			// in this case the SynGroup will be deleted by the SynGroupsController
 		}
 		// Do the good
-		synGroupController.persist(synGroup, Context.USE_OUTER_TRANSACTION_CONTEXT);
+		synGroupsController.persist(synGroup, Context.USE_OUTER_TRANSACTION_CONTEXT);
 		// Put the synGroupID into the sememe
 		sememe.setSynGroupID(synGroup.getId());
 
@@ -514,7 +514,7 @@ public class LexemeUpdater
 				}
 				// Check if the sememes are compatible with each other (languages of the lexemes checked against
 				// the langPair). It also exchanges internal sememe IDs against the real ones.
-				checkMappingCompatibility(session, sememeController, lexemeDTO.getLexeme(), mapping);
+				checkMappingCompatibility(session, sememesController, lexemeDTO.getLexeme(), mapping);
 				// Persist
 				Long internalID = mapping.getId();
 				mapping.setId(null);
@@ -532,7 +532,7 @@ public class LexemeUpdater
 				oldMappings.removeIf(var -> var.getId().equals(mapping.getId()));
 				// Check if the sememes are compatible with each other (languages of the lexemes checked against
 				// the langPair). It also exchanges internal sememe IDs against the real ones.
-				checkMappingCompatibility(session, sememeController, lexemeDTO.getLexeme(), mapping);
+				checkMappingCompatibility(session, sememesController, lexemeDTO.getLexeme(), mapping);
 				// Update / TODO merge?
 				mapping.setChanged(false);
 				session.update(mapping);
@@ -541,7 +541,7 @@ public class LexemeUpdater
 		}
 	}
 
-	private void checkMappingCompatibility(final Session session, final SememeController sememeController,
+	private void checkMappingCompatibility(final Session session, final SememesController sememesController,
 		final Lexeme thisLexeme, final Mapping mapping) throws CodeException {
 		// Exchange the sememe IDs if neccessary (temporary internal against real)
 		if (mapping.getSememeOneID() < 0) {
@@ -551,7 +551,7 @@ public class LexemeUpdater
 			mapping.setSememeTwoID(this.sememeIdMapping.get(mapping.getSememeTwoID()));
 		}
 		// Load the two sememes
-		List<Sememe> sememes = sememeController.loadByIDs(Set.of(mapping.getSememeOneID(), mapping.getSememeTwoID()));
+		List<Sememe> sememes = sememesController.loadByIDs(Set.of(mapping.getSememeOneID(), mapping.getSememeTwoID()));
 		final Sememe sememeOne =
 			sememes.stream().filter(sememe -> sememe.getId().equals(mapping.getSememeOneID()))
 				.findFirst()
@@ -565,7 +565,7 @@ public class LexemeUpdater
 		if (thisLexeme.getId().equals(sememeOne.getLexemeID())) {
 			lexemeOneLangID = thisLexeme.getLangID();
 		} else {
-			LexemeSlimDTO slimLexeme = lexemeController.getOneSlim(sememeOne.getLexemeID());
+			LexemeSlimDTO slimLexeme = lexemesController.getOneSlim(sememeOne.getLexemeID());
 			if (slimLexeme == null) {
 				throw new RuntimeException("Lexeme for linked sememe in mapping does not exist.");
 			}
@@ -575,7 +575,7 @@ public class LexemeUpdater
 		if (thisLexeme.getId().equals(sememeTwo.getLexemeID())) {
 			lexemeTwoLangID = thisLexeme.getLangID();
 		} else {
-			LexemeSlimDTO slimLexeme = lexemeController.getOneSlim(sememeTwo.getLexemeID());
+			LexemeSlimDTO slimLexeme = lexemesController.getOneSlim(sememeTwo.getLexemeID());
 			if (slimLexeme == null) {
 				throw new RuntimeException("Lexeme for linked sememe in mapping does not exist.");
 			}

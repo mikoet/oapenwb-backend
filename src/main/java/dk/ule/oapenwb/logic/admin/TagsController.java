@@ -12,7 +12,7 @@ import dk.ule.oapenwb.logic.admin.lexeme.LexemeUpdater;
 import org.hibernate.Session;
 
 /**
- * <p>The TagController exists to manage the tags that can be assigned to
+ * <p>The TagsController exists to manage the tags that can be assigned to
  * {@link Lexeme}s.
  *
  * <ul>
@@ -27,9 +27,9 @@ import org.hibernate.Session;
  * </p>
  */
 @Singleton
-public class TagController extends EntityController<Tag, String>
+public class TagsController extends EntityController<Tag, String>
 {
-	public TagController()
+	public TagsController()
 	{
 		super(Tag::new, Tag.class, ids -> ids[0], false);
 	}

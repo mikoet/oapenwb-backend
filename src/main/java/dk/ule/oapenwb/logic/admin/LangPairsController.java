@@ -30,9 +30,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * </p>
  */
 @Singleton
-public class LangPairController extends EntityController<LangPair, String>
+public class LangPairsController extends EntityController<LangPair, String>
 {
-	private static final Logger LOG = LoggerFactory.getLogger(LangPairController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LangPairsController.class);
 
 	// Caches that may only be accessed if readLock or writeLock are getting locked for read/write access
 	private Map<String, LangPair> directCache = new LinkedHashMap<>();
@@ -47,7 +47,7 @@ public class LangPairController extends EntityController<LangPair, String>
 	private final CEntityController<Language, Integer> languagesController;
 
 	@Inject
-	public LangPairController(
+	public LangPairsController(
 		@Named(AdminControllers.CONTROLLER_LANGUAGES) CEntityController<Language, Integer> languagesController)
 	{
 		super(LangPair::new, LangPair.class, ids -> ids[0], false);

@@ -8,7 +8,7 @@ import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.logic.admin.generic.EntityController;
-import dk.ule.oapenwb.logic.admin.lexeme.LexemeController;
+import dk.ule.oapenwb.logic.admin.lexeme.LexemesController;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.JsonUtil;
 import dk.ule.oapenwb.util.Pair;
@@ -36,13 +36,13 @@ import java.util.Set;
  * </ul>
  */
 @Singleton
-public class SememeController extends EntityController<Sememe, Long>
+public class SememesController extends EntityController<Sememe, Long>
 {
-	private static final Logger LOG = LoggerFactory.getLogger(SememeController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SememesController.class);
 
 	private static final int MAX_LEXEMES = 10;
 
-	public SememeController()
+	public SememesController()
 	{
 		super(Sememe::new, Sememe.class, ids -> Long.parseLong(ids[0]), true);
 	}
@@ -116,7 +116,7 @@ public class SememeController extends EntityController<Sememe, Long>
 
 		String filterText = request.getFilter();
 		if (filterText != null && !filterText.isEmpty()) {
-			final Pair<String, String> filterResult = LexemeController.buildFilterStatementAndText(request.getFilter(),
+			final Pair<String, String> filterResult = LexemesController.buildFilterStatementAndText(request.getFilter(),
 				request.getTextSearchType());
 			final String filterStatement = filterResult.getLeft();
 			filterText = filterResult.getRight();

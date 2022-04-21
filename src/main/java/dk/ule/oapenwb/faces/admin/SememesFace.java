@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SSearchRequest;
-import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeController;
+import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
 import dk.ule.oapenwb.util.json.Response;
 import dk.ule.oapenwb.util.json.ResponseStatus;
 import io.javalin.http.Context;
@@ -15,19 +15,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Javalin face to the {@link SememeController}.
+ * Javalin face to the {@link SememesController}.
  */
-public class SememeFace extends EntityFace<Sememe, Long>
+public class SememesFace extends EntityFace<Sememe, Long>
 {
-	private static final Logger LOG = LoggerFactory.getLogger(SememeFace.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SememesFace.class);
 
 	@Override
-	protected SememeController getController() {
-		return (SememeController) super.getController();
+	protected SememesController getController() {
+		return (SememesController) super.getController();
 	}
 
 	@Inject
-	public SememeFace(SememeController controller)
+	public SememesFace(SememesController controller)
 	{
 		super(controller);
 	}

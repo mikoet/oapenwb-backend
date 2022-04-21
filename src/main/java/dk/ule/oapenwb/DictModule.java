@@ -12,16 +12,16 @@ import dk.ule.oapenwb.entity.content.basedata.tlConfig.TypeLanguageConfig;
 import dk.ule.oapenwb.entity.ui.*;
 import dk.ule.oapenwb.faces.*;
 import dk.ule.oapenwb.faces.admin.*;
-import dk.ule.oapenwb.logic.admin.LangPairController;
-import dk.ule.oapenwb.logic.admin.TagController;
-import dk.ule.oapenwb.logic.admin.UiTranslationSetController;
+import dk.ule.oapenwb.logic.admin.LangPairsController;
+import dk.ule.oapenwb.logic.admin.TagsController;
+import dk.ule.oapenwb.logic.admin.UiTranslationSetsController;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
 import dk.ule.oapenwb.logic.admin.generic.EntityController;
-import dk.ule.oapenwb.logic.admin.lexeme.LexemeController;
-import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeController;
+import dk.ule.oapenwb.logic.admin.lexeme.LexemesController;
+import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
 import dk.ule.oapenwb.logic.admin.locking.LockController;
-import dk.ule.oapenwb.logic.admin.syngroup.SynGroupController;
+import dk.ule.oapenwb.logic.admin.syngroup.SynGroupsController;
 import dk.ule.oapenwb.logic.config.ConfigController;
 import dk.ule.oapenwb.logic.l10n.L10nController;
 import dk.ule.oapenwb.logic.presentation.ControllerSet;
@@ -95,7 +95,7 @@ public class DictModule extends AbstractModule
 			EntityController.class, UiTranslationScope.class, String.class);
 
 		// UiTranslationSets controller
-		bind(UiTranslationSetController.class);
+		bind(UiTranslationSetsController.class);
 
 		// UiTranslations controller
 		EntityController<UiTranslation, UiTranslationKey> uiTranslationCtrl = new EntityController<>(
@@ -161,7 +161,7 @@ public class DictModule extends AbstractModule
 			CEntityController.class, Language.class, Integer.class);
 
 		// LangPairs controller
-		bind(LangPairController.class);
+		bind(LangPairsController.class);
 
 		// LexemeTypes controller
 		EntityController<LexemeType, Integer> lexemeTypesCtrl = new EntityController<>(
@@ -254,10 +254,10 @@ public class DictModule extends AbstractModule
 		/* !! Content data !! */
 
 		// Tags controller
-		bind(TagController.class);
-		bind(SynGroupController.class);
-		bind(SememeController.class);
-		bind(LexemeController.class);
+		bind(TagsController.class);
+		bind(SynGroupsController.class);
+		bind(SememesController.class);
+		bind(LexemesController.class);
 		bind(LockController.class);
 		bind(ControllerSet.class);
 
@@ -273,7 +273,7 @@ public class DictModule extends AbstractModule
 		bindAnnotatedTypeWithInstance(AdminFaces.FACE_UI_SCOPES, new EntityFace<>(uiScopeCtrl),
 			EntityFace.class, UiTranslationScope.class, String.class);
 
-		bind(UiTranslationSetFace.class);
+		bind(UiTranslationSetsFace.class);
 
 		bindAnnotatedTypeWithInstance(AdminFaces.FACE_UI_RESULT_CATEGORIES, new EntityFace<>(uiResultCategoryCtrl),
 			EntityFace.class, UiResultCategory.class, Integer.class);
@@ -288,7 +288,7 @@ public class DictModule extends AbstractModule
 		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LANGUAGES, new EntityFace<>(languagesCtrl),
 			EntityFace.class, Language.class, Integer.class);
 
-		bind(LangPairFace.class);
+		bind(LangPairsFace.class);
 
 		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LEXEME_TYPES, new EntityFace<>(lexemeTypesCtrl),
 			EntityFace.class, LexemeType.class, Integer.class);
@@ -310,9 +310,9 @@ public class DictModule extends AbstractModule
 		/* !! Content data !! */
 
 		bind(TagsFace.class);
-		bind(SynGroupFace.class);
-		bind(SememeFace.class);
-		bind(LexemeFace.class);
+		bind(SynGroupsFace.class);
+		bind(SememesFace.class);
+		bind(LexemesFace.class);
 	}
 
 	/**

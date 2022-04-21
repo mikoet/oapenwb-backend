@@ -11,7 +11,7 @@ import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.basedata.Level;
 import dk.ule.oapenwb.entity.content.basedata.Orthography;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
-import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeController;
+import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -44,7 +44,7 @@ public class ControllerSet implements IControllerSet
 
 	@Getter
 	@Inject
-	private SememeController sememeController;
+	private SememesController sememesController;
 
 	// For use in testing without Guice
 	public void setControllers(
@@ -52,12 +52,12 @@ public class ControllerSet implements IControllerSet
 		CEntityController<Language, Integer> languagesController,
 		CEntityController<Category, Integer> categoriesController,
 		CEntityController<Level, Integer> unitLevelsController,
-		SememeController sememeController)
+		SememesController sememesController)
 	{
 		this.orthographiesController = orthographiesController;
 		this.languagesController = languagesController;
 		this.categoriesController = categoriesController;
 		this.unitLevelsController = unitLevelsController;
-		this.sememeController = sememeController;
+		this.sememesController = sememesController;
 	}
 }

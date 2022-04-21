@@ -3,7 +3,7 @@
 package dk.ule.oapenwb.logic.admin.generic;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dk.ule.oapenwb.logic.admin.UiTranslationSetController;
+import dk.ule.oapenwb.logic.admin.UiTranslationSetsController;
 
 /**
  * <p>Interface that must be implemented by entities that are to be managed by a generic controller,
@@ -11,7 +11,7 @@ import dk.ule.oapenwb.logic.admin.UiTranslationSetController;
  *
  * <ul>
  *   <li>TODO Compound IDs (embeddables) may not work 100% at all times in the controllers. This is actually to be
- *     tested. But so far the {@link UiTranslationSetController makes use of
+ *     tested. But so far the {@link UiTranslationSetsController makes use of
  *     a standard EntityController.}</li>
  * </ul>
  *

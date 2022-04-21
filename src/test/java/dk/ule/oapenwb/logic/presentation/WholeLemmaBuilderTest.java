@@ -10,7 +10,7 @@ import dk.ule.oapenwb.entity.content.basedata.Orthography;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
-import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeController;
+import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
 import dk.ule.oapenwb.logic.presentation.options.WholeLemmaOptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -72,7 +72,7 @@ public class WholeLemmaBuilderTest
 		@Mock CEntityController<Language, Integer> languagesController,
 		@Mock CEntityController<Category, Integer> categoriesController,
 		@Mock CEntityController<Level, Integer> levelsController,
-		@Mock SememeController sememeController
+		@Mock SememesController sememesController
 	) throws CodeException
 	{
 		// Setting up mocking for orthographies controller
@@ -97,7 +97,7 @@ public class WholeLemmaBuilderTest
 
 		ControllerSet controllerSet = new ControllerSet();
 		controllerSet.setControllers(orthographiesController, languagesController, categoriesController,
-			levelsController, sememeController);
+			levelsController, sememesController);
 		this.controllerSet = controllerSet;
 	}
 

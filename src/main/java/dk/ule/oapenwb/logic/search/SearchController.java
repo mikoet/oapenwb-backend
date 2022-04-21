@@ -6,7 +6,7 @@ import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
-import dk.ule.oapenwb.logic.admin.LangPairController;
+import dk.ule.oapenwb.logic.admin.LangPairsController;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
 import dk.ule.oapenwb.util.TimeUtil;
@@ -32,9 +32,9 @@ public class SearchController
 
 	// TODO Hm. This was not as designed, eh? Using an admin controller
 	//   Maybe they could get a read-only interface.
-	private /*final*/ LangPairController langPairsController;
+	private /*final*/ LangPairsController langPairsController;
 
-	public SearchController(/*LangPairController langPairsController*/)
+	public SearchController(/*LangPairsController langPairsController*/)
 	{
 		//this.langPairsController = langPairsController;
 	}

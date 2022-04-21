@@ -20,11 +20,11 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Tag;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
-import dk.ule.oapenwb.logic.admin.LangPairController;
-import dk.ule.oapenwb.logic.admin.TagController;
+import dk.ule.oapenwb.logic.admin.LangPairsController;
+import dk.ule.oapenwb.logic.admin.TagsController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
-import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeController;
-import dk.ule.oapenwb.logic.admin.syngroup.SynGroupController;
+import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
+import dk.ule.oapenwb.logic.admin.syngroup.SynGroupsController;
 import dk.ule.oapenwb.logic.context.Context;
 import dk.ule.oapenwb.logic.context.ITransaction;
 import dk.ule.oapenwb.util.HibernateUtil;
@@ -47,7 +47,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * <p>The LexemeController handles:
+ * <p>The LexemesController handles:
  * <ol>
  * <li>Loading of lexemes, including paging and filtering as well as supplying the substructures like
  *   {@link Tag}s, {@link SynGroup}s,
@@ -60,32 +60,32 @@ import java.util.stream.Collectors;
  * </p>
  */
 @Singleton
-public class LexemeController
+public class LexemesController
 {
-	private static final Logger LOG = LoggerFactory.getLogger(LexemeController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LexemesController.class);
 
 	private final CGEntityController<LexemeFormType, Integer, Integer> lftController;
 	private final CGEntityController<LemmaTemplate, Integer, Integer> ltController;
-	private final TagController tagController;
-	private final SynGroupController synGroupController;
-	private final LangPairController langPairsController;
-	private final SememeController sememeController;
+	private final TagsController tagsController;
+	private final SynGroupsController synGroupsController;
+	private final LangPairsController langPairsController;
+	private final SememesController sememesController;
 
 	private final Context _context;
 
 	@Inject
-	public LexemeController(
+	public LexemesController(
 		@Named(AdminControllers.CONTROLLER_LEXEME_FORM_TYPES) CGEntityController<LexemeFormType, Integer, Integer> lftController,
 		@Named(AdminControllers.CONTROLLER_LEMMA_TEMPLATES) CGEntityController<LemmaTemplate, Integer, Integer> ltController,
-		TagController tagController, final SynGroupController synGroupController,
-		LangPairController langPairsController, final SememeController sememeController)
+		TagsController tagsController, final SynGroupsController synGroupsController,
+		LangPairsController langPairsController, final SememesController sememesController)
 	{
 		this.lftController = lftController;
 		this.ltController = ltController;
-		this.tagController = tagController;
-		this.synGroupController = synGroupController;
+		this.tagsController = tagsController;
+		this.synGroupsController = synGroupsController;
 		this.langPairsController = langPairsController;
-		this.sememeController = sememeController;
+		this.sememesController = sememesController;
 		this._context = new Context(true);
 	}
 
@@ -203,8 +203,8 @@ public class LexemeController
 		// The whole storing of the detailed lexeme including its variations etc. shall be done within one transaction
 		ITransaction transaction = context.beginTransaction();
 		try {
-			result = new LexemeCreator(lftController, ltController, tagController, synGroupController,
-				langPairsController, this, sememeController).create(session, lexemeDTO);
+			result = new LexemeCreator(lftController, ltController, tagsController, synGroupsController,
+				langPairsController, this, sememesController).create(session, lexemeDTO);
 			// If everything went fine, commit the transaction
 			context.setRevisionComment("Created lexeme with ID " + result.getId());
 			transaction.commit();
@@ -235,8 +235,8 @@ public class LexemeController
 			// Associations with the old lexemes must be removed from the sessions in order
 			// to store the updated lexeme objects
 			session.clear();
-			result = new LexemeUpdater(lftController, ltController, tagController, synGroupController,
-				langPairsController, this, sememeController).update(
+			result = new LexemeUpdater(lftController, ltController, tagsController, synGroupsController,
+				langPairsController, this, sememesController).update(
 					session, id, lexemeDTO, oldLexemeDTO);
 			// If everything went fine, commit the transaction
 			context.setRevisionComment("Updated lexeme with ID " + id);
@@ -683,8 +683,8 @@ public class LexemeController
 
 		// Load the slim sememes for each mapping
 		for (Mapping mapping : lexemeDTO.getMappings()) {
-			mapping.setSememeOne(sememeController.getOneSlim(mapping.getSememeOneID()));
-			mapping.setSememeTwo(sememeController.getOneSlim(mapping.getSememeTwoID()));
+			mapping.setSememeOne(sememesController.getOneSlim(mapping.getSememeOneID()));
+			mapping.setSememeTwo(sememesController.getOneSlim(mapping.getSememeTwoID()));
 		}
 	}
 
@@ -700,7 +700,7 @@ public class LexemeController
 	{
 		if (sememe.getSynGroupID() != null) {
 			try {
-				sememe.setSynGroup(this.synGroupController.get(sememe.getSynGroupID()));
+				sememe.setSynGroup(this.synGroupsController.get(sememe.getSynGroupID()));
 			} catch (CodeException e) {
 				LOG.error("This should not have happened. The SynGroup with ID {} was there and then not.",
 					sememe.getSynGroupID());

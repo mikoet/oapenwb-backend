@@ -7,7 +7,7 @@ import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.base.error.Message;
 import dk.ule.oapenwb.base.error.MultiCodeException;
-import dk.ule.oapenwb.logic.admin.lexeme.LexemeController;
+import dk.ule.oapenwb.logic.admin.lexeme.LexemesController;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemeDetailedDTO;
 import dk.ule.oapenwb.logic.admin.lexeme.SearchRequest;
 import dk.ule.oapenwb.util.Pair;
@@ -23,15 +23,15 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 
 /**
- * Javalin face to the {@link LexemeController}.
+ * Javalin face to the {@link LexemesController}.
  */
-public class LexemeFace
+public class LexemesFace
 {
-	private static final Logger LOG = LoggerFactory.getLogger(LexemeFace.class);
-	private final LexemeController controller;
+	private static final Logger LOG = LoggerFactory.getLogger(LexemesFace.class);
+	private final LexemesController controller;
 
 	@Inject
-	public LexemeFace(LexemeController controller)
+	public LexemesFace(LexemesController controller)
 	{
 		this.controller = controller;
 	}

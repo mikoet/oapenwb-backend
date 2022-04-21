@@ -21,7 +21,7 @@ import dk.ule.oapenwb.util.Pair;
 import java.util.*;
 
 /**
- * <p>The UiTranslationSetController manages the {@link UiTranslation}s by combining the entities with the same
+ * <p>The UiTranslationSetsController manages the {@link UiTranslation}s by combining the entities with the same
  * key properties (scope, uitID) plus the locale into entities of the type {@link UiTranslationSet} which are then
  * the objects received and send to over the REST interface.
  *
@@ -31,7 +31,7 @@ import java.util.*;
  * </p>
  */
 @Singleton
-public class UiTranslationSetController implements IRestController<UiTranslationSet, String>
+public class UiTranslationSetsController implements IRestController<UiTranslationSet, String>
 {
 	private final EntityController<UiTranslation, UiTranslationKey> uitController;
 	private final Context _context;
@@ -41,7 +41,7 @@ public class UiTranslationSetController implements IRestController<UiTranslation
 	}
 
 	@Inject
-	public UiTranslationSetController(
+	public UiTranslationSetsController(
 		@Named(AdminControllers.CONTROLLER_UI_TRANSLATIONS) EntityController<UiTranslation, UiTranslationKey> uitController)
 	{
 		this.uitController = uitController;
