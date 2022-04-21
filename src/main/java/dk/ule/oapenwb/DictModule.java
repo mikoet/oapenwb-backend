@@ -31,6 +31,10 @@ import dk.ule.oapenwb.logic.users.ViolationController;
 
 import java.lang.reflect.ParameterizedType;
 
+/**
+ * <p>Configures all controllers, faces and necessary additional classes of the dictionary including the admin
+ * API in one module to function in Guice.</p>
+ */
 public class DictModule extends AbstractModule
 {
 	@Override
@@ -59,7 +63,7 @@ public class DictModule extends AbstractModule
 	}
 
 	/**
-	 * TODO ENHANCE: Are there indices on all columns of default ordering?
+	 * TODO ENHANCE: Are there indices on all columns of default ordering of the controllers' tables?
 	 */
 	private void configureAdminClasses()
 	{
@@ -273,6 +277,10 @@ public class DictModule extends AbstractModule
 
 		bindAnnotatedTypeWithInstance(AdminFaces.FACE_UI_RESULT_CATEGORIES, new EntityFace<>(uiResultCategoryCtrl),
 			EntityFace.class, UiResultCategory.class, Integer.class);
+
+
+		/* !! Dictionary data !! */
+
 		bindAnnotatedTypeWithInstance(AdminFaces.FACE_ORTHOGRAPHIES, new EntityFace<>(orthographiesCtrl),
 			EntityFace.class, Orthography.class, Integer.class);
 		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LO_MAPPINGS, new EntityFace<>(loMappingsCtrl),
@@ -298,12 +306,27 @@ public class DictModule extends AbstractModule
 		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LINK_TYPES, new EntityFace<>(linkTypesCtrl),
 			EntityFace.class, LinkType.class, Integer.class);
 
+
+		/* !! Content data !! */
+
 		bind(TagsFace.class);
 		bind(SynGroupFace.class);
 		bind(SememeFace.class);
 		bind(LexemeFace.class);
 	}
 
+	/**
+	 * <p>Binds the type T consisting of a raw type A with B..Z parameter types to an instance that will be used as a
+	 * singleton (as its always with bind(...).toInstance(...)).</p>
+	 * <p>Type example: `A&lt;B, C, D&gt;` or concrete `EntityController&lt;SomeEntity, Integer&gt;`<br>
+	 * I.e. the instance given into this method must be of that type.</p>
+	 *
+	 * @param annotatedWith String used in the Named annotation
+	 * @param instance this method will always bind to one instance (singleton)
+	 * @param rawType the raw type of the instance
+	 * @param paramClasses the parameter types or classes of the instance
+	 * @param <T> the raw type with its parameter types of the instance
+	 */
 	private <T> void bindAnnotatedTypeWithInstance(String annotatedWith, T instance, Class<?> rawType, Class<?>... paramClasses)
 	{
 		ParameterizedType parameterizedButler = Types.newParameterizedType(rawType, paramClasses);
