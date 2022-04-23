@@ -30,6 +30,9 @@ public class AppConfig
 	@Getter
 	private String secret = null;
 
+	@Getter
+	private boolean verbose = false;
+
 	/**
 	 * Shall emails be sent when a user registers, for notifications, etc.?
 	 */
