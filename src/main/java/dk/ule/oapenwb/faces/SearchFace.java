@@ -30,9 +30,8 @@ public class SearchFace
 
 	public void executeQuery(@NotNull Context ctx) throws Exception
 	{
-		LOG.info("Got search query");
 		QueryObject queryData = ctx.bodyAsClass(QueryObject.class);
-		ResultObject result = this.controller.executeQuery(queryData);
+		ResultObject result = this.controller.find(queryData);
 		Response res = new Response();
 		res.setData(result);
 		ctx.json(res);

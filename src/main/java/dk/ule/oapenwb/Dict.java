@@ -197,7 +197,7 @@ public class Dict
 		// Configure the routes, connect the Javalin faces
 		app.routes(() -> {
 
-			post("list", faces.getSearch()::executeQuery, allRoles);
+			post("searchResults", faces.getSearch()::executeQuery, allRoles);
 
 			path("l10n", () -> {
 				get("__reload__", faces.getL10n()::reloadTranslations, allRoles);

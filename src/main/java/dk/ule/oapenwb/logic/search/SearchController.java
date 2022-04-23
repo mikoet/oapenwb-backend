@@ -2,23 +2,34 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.search;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
+import dk.ule.oapenwb.entity.content.basedata.LangPair;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
+import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
+import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.LangPairsController;
+import dk.ule.oapenwb.logic.admin.lexeme.VariantController;
+import dk.ule.oapenwb.logic.presentation.ControllerSet;
+import dk.ule.oapenwb.logic.presentation.PresentationBuilder;
+import dk.ule.oapenwb.logic.presentation.WholeLemmaBuilder;
+import dk.ule.oapenwb.logic.presentation.options.PresentationOptions;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
 import dk.ule.oapenwb.util.TimeUtil;
+import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
+import org.hibernate.query.Query;
 import org.hibernate.type.LongType;
 import org.hibernate.type.ShortType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
+import java.util.*;
 
 /**
  * <p>SearchController in an early stadium.</p>
@@ -30,64 +41,141 @@ public class SearchController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
 
-	// TODO Hm. This was not as designed, eh? Using an admin controller
-	//   Maybe they could get a read-only interface.
-	private /*final*/ LangPairsController langPairsController;
-
-	public SearchController(/*LangPairsController langPairsController*/)
+	@AllArgsConstructor
+	private static class MappingResult
 	{
-		//this.langPairsController = langPairsController;
+		Long sememeOneID;
+		Long sememeTwoID;
+		short weight;
+	}
+
+	private final AppConfig appConfig;
+	// TODO ENHANCE Maybe create a read-only interface
+	private final LangPairsController langPairsController;
+	private final ControllerSet lemmaControllers;
+	private final VariantController variantsController = new VariantController();
+
+	@Inject
+	public SearchController(
+		AppConfig appConfig,
+		LangPairsController langPairsController,
+		ControllerSet lemmaControllers)
+	{
+		this.appConfig = appConfig;
+		this.langPairsController = langPairsController;
+		this.lemmaControllers = lemmaControllers;
 	}
 
 	public ResultObject find(final QueryObject request) throws CodeException
 	{
 		ResultObject result = new ResultObject();
 		try {
+			if (appConfig.isVerbose()) {
+				LOG.info(String.format("New search request with data: pair = %s, direction = %s, term = %s",
+					request.getPair(), request.getDirection(), request.getTerm()));
+
+				TimeUtil.startTimeMeasure();
+			}
+
+			// Get the LangPair, or throw an exception
+			LangPair langPair = this.langPairsController.get(request.getPair());
+			if (langPair == null) {
+				throw new CodeException(ErrorCode.Search_QueryParameterInvalid,
+					Arrays.asList(new Pair<>("param", "pair"),
+						new Pair<>("value", request.getPair())));
+			}
+
+			if (appConfig.isVerbose()) {
+				LOG.info(String.format("Lang pair loaded with ID %s, langOneID = %d, langTwoID = %d",
+					langPair.getId(), langPair.getLangOneID(), langPair.getLangTwoID()));
+			}
+
 			// Query the Mappings
-			/*
-			List<SynGroupItem> synGroupList = new LinkedList<>();
-			NativeQuery<?> synGroupQuery = createSearchQuery(request);
-			List<Object[]> synGroupRows = HibernateUtil.listAndCast(synGroupQuery);
-			for (Object[] row : synGroupRows) {
-				synGroupList.add(new SynGroupItem(
-					(Integer) row[0],	// id
-					(String) row[1],	// description
-					(String) row[2]		// presentation
-				));
-			}
-			 */
-			// -- result.setSynGroups(synGroupList);
+			List<MappingResult> mappingsList = new LinkedList<>();
+			Map<Long, Sememe> sememesMap = new HashMap<>();
 
-			/*
-			// Query the Sememe / Lexeme data
-			List<LexemeSlimPlus> lexemesList = new LinkedList<>();
-			NativeQuery<?> lexemesQuery = createLexemesQuery(request);
-			List<Object[]> lexemeRows = HibernateUtil.listAndCast(lexemesQuery);
-			for (Object[] row : lexemeRows) {
-				LexemeSlimPlus lexemeSlimPlus = new LexemeSlimPlus(
-					(Long) row[0],		// id
-					(String) row[1],	// parserID
-					(Long) row[2],		// typeID
-					(Integer) row[3],	// langID
-					(String) row[4],	// pre
-					(String) row[5],	// main
-					(String) row[6],	// post
-					(Boolean) row[7],	// active
-					(Integer) row[8],	// condition
-					JsonUtil.convertJsonbStringToLinkedHashSet((String) row[9]) // tags
+			NativeQuery<?> mappingsQuery = createMappingsSearchQuery(request, langPair);
+			List<Object[]> mappingsRows = HibernateUtil.listAndCast(mappingsQuery);
+			for (Object[] row : mappingsRows) {
+				MappingResult mappingResult = new MappingResult(
+					(Long) row[0],    // sememeOneID
+					(Long) row[1],    // sememeTwoID
+					(short) row[2]    // weight
 				);
-				lexemesList.add(lexemeSlimPlus);
+				mappingsList.add(mappingResult);
+				// Add all sememeIDs to the sememesMap for later loading of the sememes
+				sememesMap.put(mappingResult.sememeOneID, null);
+				sememesMap.put(mappingResult.sememeTwoID, null);
 
-				// Query the sememes for each lexeme
-				Session session = HibernateUtil.getSession();
-				Query<Sememe> query = session.createQuery(
-					"FROM " + Sememe.class.getSimpleName() + " S WHERE S.lexemeID = :lexemeID ORDER BY S.id ASC", Sememe.class);
-				query.setParameter("lexemeID", lexemeSlimPlus.getId());
-				lexemeSlimPlus.setSememes(query.list());
-
+				if (appConfig.isVerbose())
+					LOG.info(String.format("Mapping with sememeOne %d, sememeTwo %d and weight %d",
+						mappingResult.sememeOneID, mappingResult.sememeTwoID, mappingResult.weight));
 			}
-			result.setLexemes(lexemesList);
-			 */
+
+			if (appConfig.isVerbose()) {
+				LOG.info(String.format("Number of mappings found: %d", mappingsList.size()));
+			}
+
+			if (mappingsList.size() > 0) {
+				// Query the sememes
+				Session session = HibernateUtil.getSession();
+				Query<Sememe> sememesQuery = session.createQuery("FROM Sememe s WHERE s.id IN (:sememeIDs)",
+					Sememe.class);
+				sememesQuery.setParameterList("sememeIDs", sememesMap.keySet());
+				List<Sememe> sememes = sememesQuery.list();
+
+				// Load all variants of the just loaded sememes
+				Set<Long> variantIDs = new HashSet<>();
+				for (Sememe sememe : sememes) {
+					if (appConfig.isVerbose()) {
+						LOG.info(String.format("Sememe with id %d", sememe.getId()));
+					}
+					// Replace the null value in the sememesMap and collect all variant IDs
+					sememesMap.put(sememe.getId(), sememe);
+					variantIDs.addAll(sememe.getVariantIDs());
+				}
+				HashMap<Long, Variant> allVariantsMap = PresentationBuilder.variantListToHashMap(
+					variantsController.loadByIDs(variantIDs));
+
+				// Build and fill the resultEntryList
+				WholeLemmaBuilder lemmaBuilder = new WholeLemmaBuilder();
+				List<ResultObject.ResultEntry> resultEntryList = new LinkedList<>();
+				for (MappingResult mappingResult : mappingsList) {
+					Sememe sememeOne = sememesMap.get(mappingResult.sememeOneID);
+					Sememe sememeTwo = sememesMap.get(mappingResult.sememeTwoID);
+
+					if (sememeOne == null || sememeTwo == null) {
+						LOG.error(String.format("Sememe with ID %d could not be loaded",
+							sememeOne == null ? mappingResult.sememeOneID : mappingResult.sememeTwoID));
+						LOG.error(String.format("Request data: pair = %s, direction = %s, term = %s",
+							request.getPair(), request.getDirection(), request.getTerm()));
+						continue;
+					}
+
+					ResultObject.ResultEntry entry = new ResultObject.ResultEntry();
+					// SememeEntry 1
+					entry.sememeOne = new ResultObject.SememeEntry();
+					entry.sememeOne.lemma = lemmaBuilder.build(
+						PresentationOptions.DEFAULT_PRESENTATION_OPTIONS, lemmaControllers, sememeOne, allVariantsMap);
+					// SememeEntry 2
+					entry.sememeTwo = new ResultObject.SememeEntry();
+					entry.sememeTwo.lemma = lemmaBuilder.build(
+						PresentationOptions.DEFAULT_PRESENTATION_OPTIONS, lemmaControllers, sememeTwo, allVariantsMap);
+					// Further properties
+					entry.typeID = 0; // TODO How to get the typeID(s)? They are stored on the lexemes.
+					entry.weight = mappingResult.weight;
+
+					// Add entry to resultEntryList
+					resultEntryList.add(entry);
+				}
+				result.setEntries(resultEntryList);
+			}
+
+			if (appConfig.isVerbose()) {
+				LOG.info(String.format("Search request took %d ms", TimeUtil.durationInMilis()));
+			}
+
+			// TODO Create and store SearchRun instance
 		} catch (Exception e) {
 			LOG.error("Error fetching instances of type " + Lexeme.class.getSimpleName(), e);
 			throw new CodeException(ErrorCode.Admin_EntityOperation,
@@ -96,7 +184,7 @@ public class SearchController
 		return result;
 	}
 
-	private NativeQuery<?> createSearchQuery(final QueryObject request)
+	private NativeQuery<?> createMappingsSearchQuery(final QueryObject request, final LangPair langPair)
 	{
 		StringBuilder sb = new StringBuilder();
 
@@ -107,7 +195,6 @@ public class SearchController
 			sb.append("from Mappings\n");
 			sb.append("where sememeOneID in (\n");
 			sb.append("\tselect s.id from Sememes s inner join Lexemes l on s.lexemeID = l.id,\n");
-			sb.append("\t\tjsonb_array_elements(s.variantIDs) va(variantID)\n");
 			sb.append("\t\tjsonb_array_elements(s.variantIDs) va(variantID)\n");
 			sb.append("\twhere l.langID = :langOneID and variantID\n");
 			sb.append(HibernateUtil.CONSTANT_INT); // escape the :: (!)
@@ -156,10 +243,10 @@ public class SearchController
 		query.setParameter("term", request.getTerm());
 
 		if (request.getDirection() == Direction.Both || request.getDirection() == Direction.Right) {
-			query.setParameter("langOneID", 1 /* TODO Take from the LangPair */);
+			query.setParameter("langOneID", langPair.getLangOneID());
 		}
 		if (request.getDirection() == Direction.Both || request.getDirection() == Direction.Left) {
-			query.setParameter("langTwoID", 2 /* TODO Take from the LangPair */);
+			query.setParameter("langTwoID", langPair.getLangTwoID());
 		}
 
 		//query.setParameter("offset", 0);
@@ -167,6 +254,7 @@ public class SearchController
 
 		return query;
 	}
+
 
 
 	// ------ Olden kråm -------
@@ -190,39 +278,7 @@ public class SearchController
 			throw new CodeException(ErrorCode.Search_QueryDataInconsistent);
 		}
 
-		Session session = HibernateUtil.getSession();
-		/* Search the LexemeForms for the search text */
-
-		String sql =
-			"SELECT em.sememeOneId, em.sememeTwoId FROM Mapping em " +
-			"WHERE" +
-			"  em.lexemeOneId IN (SELECT e.id FROM Lexeme e WHERE e.id IN (" +
-			"    SELECT ef.lexemeId FROM LexemeForm ef" +
-			"    WHERE MATCH (ef.text) AGAINST (:terms IN NATURAL LANGUAGE MODE)" +
-			"      AND ef.orthoId IN (:orthosLangOne))" +
-			"    AND e.langID = :langOneID)" +
-			"  OR" +
-			"  em.lexemeTwoId IN (SELECT e.id FROM Lexeme e WHERE e.id IN (" +
-			"    SELECT ef.lexemeId FROM LexemeForm ef" +
-			"    WHERE MATCH (ef.text) AGAINST (:terms IN NATURAL LANGUAGE MODE)" +
-			"      AND ef.orthoId IN (orthosLangTwo))" +
-			"    AND e.langID = :langTwoID)";
-
-		NativeQuery query = session.createSQLQuery(sql)
-			.addScalar("emp_id", new LongType())
-			.addScalar("emp_id", new LongType());
-
-		query.setParameter("", "");
-
-		Stream<Object[]> mappings = query.stream();
-		mappings.map(m -> (Long) m[0] + ", " + (Long)m[1])
-			.forEach(m -> LOG.info("Found Mapping: " + m));
-		mappings.close();
-
-		/*List<Object[]> rows = query.list();
-		for(Object[] row : rows) {
-			LOG.info("Found Mapping: " + (Long) row[0] + ", " + (Long) row[1]);
-		}*/
+		// ...
 
 		// TODO Create and store SearchRun instance
 
@@ -238,44 +294,4 @@ public class SearchController
 		return true;
 	}
 
-	/*
-	public static QueryObject createQueryObject() throws CodeException {
-		QueryObject q = new QueryObject();
-
-		String langPairStr = ""; // TODO request.params(":pair");
-		if (langPairStr == null || !langPairStr.matches("[0-9]+")) {
-			throw new CodeException(ErrorCode.Search_ParameterNotNumeric, new Object[]{"lang pair", langPairStr});
-		}
-
-		// Maximum length of search text is 100 characters
-		String searchText = ""; // TODO request.params(":str").substring(0, 100);
-
-//		int direction = readNumbericQueryParam(request, "d", "0");
-//		int occurence = readNumbericQueryParam(request, "o", "0");
-//		int dialectOne = readNumbericQueryParam(request, "d1", null);
-//		int dialectTwo = readNumbericQueryParam(request, "d2", null);
-//
-//		int displayOrthoOne = readNumbericQueryParam(request, "do1", null);
-//		int displayOrthoTwo = readNumbericQueryParam(request, "do2", null);
-
-//		q.setLangPair(Integer.parseInt(langPairStr));
-//		q.setSearchText(searchText);
-//		q.setDirection(direction);
-//		q.setOccurrence(occurence);
-
-		return q;
-	}
-	*/
-
-	/*
-	private int readNumbericQueryParam(Request request, String key, String defaultValue) throws CodeException {
-		String value = defaultValue != null
-				? request.queryParamOrDefault(key, defaultValue)
-				: request.params(key);
-		if (value == null || !value.matches("[0-9]+")) {
-			throw new CodeException(ErrorCode.Search_ParameterNotNumeric, new Object[]{key, value});
-		}
-		return Integer.parseInt(value);
-	}
-	 */
 }
