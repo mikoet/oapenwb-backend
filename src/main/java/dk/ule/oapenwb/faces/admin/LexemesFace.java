@@ -9,7 +9,7 @@ import dk.ule.oapenwb.base.error.Message;
 import dk.ule.oapenwb.base.error.MultiCodeException;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemesController;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemeDetailedDTO;
-import dk.ule.oapenwb.logic.admin.lexeme.SearchRequest;
+import dk.ule.oapenwb.logic.admin.lexeme.LSearchRequest;
 import dk.ule.oapenwb.util.Pair;
 import dk.ule.oapenwb.util.json.MultiResponse;
 import dk.ule.oapenwb.util.json.PaginatedResponse;
@@ -40,7 +40,7 @@ public class LexemesFace
 	{
 		PaginatedResponse res = new PaginatedResponse();
 		try {
-			SearchRequest request = ctx.bodyAsClass(SearchRequest.class);
+			LSearchRequest request = ctx.bodyAsClass(LSearchRequest.class);
 			res.setData(controller.list(res.getPagination(), request));
 		} catch (CodeException e) {
 			res.setMessage(e);

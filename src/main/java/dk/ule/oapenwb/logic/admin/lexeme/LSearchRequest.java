@@ -13,7 +13,7 @@ import java.util.Optional;
  * Lexeme Search Request from the administration interface.
  */
 @Data
-public class SearchRequest
+public class LSearchRequest
 {
 	@NotNull
 	@JsonView(Views.REST.class)

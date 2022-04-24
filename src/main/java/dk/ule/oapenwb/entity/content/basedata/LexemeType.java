@@ -14,7 +14,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 
 /**
- * The LexemeType specifies a type of a lexeme like noun, verb, adjective and so on.
+ * <p>The LexemeType specifies a type of a lexeme like noun, verb, adjective and so on.</p>
  */
 @Data
 @Entity
@@ -24,6 +24,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class LexemeType implements IEntity<Integer>
 {
+	// -- Standard Parts of Speech as defined by https://universaldependencies.org/u/pos/
 	public static final String TYPE_ADJ = "ADJ";
 	public static final String TYPE_ADP = "ADP";
 	public static final String TYPE_ADV = "ADV";
@@ -41,10 +42,20 @@ public class LexemeType implements IEntity<Integer>
 	//public static final String TYPE_SYM = "SYM";
 	public static final String TYPE_VERB = "VERB";
 	public static final String TYPE_X = "X";
-	// Internal types
-	public static final String TYPE_I_CG = "iCG"; // case government
-	// Custom types
-	public static final String TYPE_C_UTDR = "UTDR"; // multi-word expressions
+
+	// -- Internal types
+	/**
+	 * <p>Case government (Rektioon)</p>
+	 */
+	public static final String TYPE_I_CG = "iCG";
+
+	// -- Custom types
+	/**
+	 * <p>Multi-word expressions</p>
+	 * <p>Since sometimes a word in one language can only be expressed by an multi-word expression in another,
+	 * this type must be mappable to all other kinds of LexemeTypes besides iCG.</p>
+	 */
+	public static final String TYPE_C_UTDR = "UTDR";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lexemetype_seq")

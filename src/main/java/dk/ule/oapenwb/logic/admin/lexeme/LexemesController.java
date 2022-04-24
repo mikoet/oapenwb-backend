@@ -96,7 +96,7 @@ public class LexemesController
 
 	public List<LexemeSlimDTO> list(
 		final Pagination pagination,
-		final SearchRequest request) throws CodeException
+		final LSearchRequest request) throws CodeException
 	{
 		List<LexemeSlimDTO> lexemes = new LinkedList<>();
 		try {
@@ -115,7 +115,7 @@ public class LexemesController
 		return lexemes;
 	}
 
-	private void checkParameters(final SearchRequest request, final Pagination pagination)
+	private void checkParameters(final LSearchRequest request, final Pagination pagination)
 	{
 		String filter = request.getFilter() == null || request.getFilter().isEmpty()
 							? null : request.getFilter();
@@ -359,7 +359,7 @@ public class LexemesController
 		return query;
 	}
 
-	private void loadLexemesWithFilter(List<LexemeSlimDTO> resultList, final SearchRequest request,
+	private void loadLexemesWithFilter(List<LexemeSlimDTO> resultList, final LSearchRequest request,
 		final Pagination pagination) throws JsonProcessingException
 	{
 		// Get the count
@@ -404,7 +404,7 @@ public class LexemesController
 
 	//
 
-	private NativeQuery<?> createFilteredCountQuery(final SearchRequest request)
+	private NativeQuery<?> createFilteredCountQuery(final LSearchRequest request)
 	{
 		StringBuilder sb = new StringBuilder();
 		// Basis query
@@ -467,7 +467,7 @@ public class LexemesController
 		return countQuery;
 	}
 
-	private NativeQuery<?> createFilteredQuery(final SearchRequest request)
+	private NativeQuery<?> createFilteredQuery(final LSearchRequest request)
 	{
 		StringBuilder sb = new StringBuilder();
 

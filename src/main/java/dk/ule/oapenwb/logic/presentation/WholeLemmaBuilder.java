@@ -17,7 +17,7 @@ import java.util.*;
  * <p>This class will stick together the single lemmata built by the SingleLemmaBuilder, do some
  * kind of ordering / sorting of the single lemmata, and add additional information such as the
  * catgories and the levels. It could also be called SememeLemmaBuilder as it builds the lemma
- * for a sememe.</p>
+ * for a sememe with all its assigned variants.</p>
  * <p>Examples of WholeLemmata:
  * <ul>
  *   <li>eaten^NSS, etten^NSS</li>
