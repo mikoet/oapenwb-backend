@@ -24,7 +24,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class LexemeType implements IEntity<Integer>
 {
-	public static final String TYPE_I_CG = "iCG";
 	public static final String TYPE_ADJ = "ADJ";
 	public static final String TYPE_ADP = "ADP";
 	public static final String TYPE_ADV = "ADV";
@@ -42,6 +41,10 @@ public class LexemeType implements IEntity<Integer>
 	//public static final String TYPE_SYM = "SYM";
 	public static final String TYPE_VERB = "VERB";
 	public static final String TYPE_X = "X";
+	// Internal types
+	public static final String TYPE_I_CG = "iCG"; // case government
+	// Custom types
+	public static final String TYPE_C_UTDR = "UTDR"; // multi-word expressions
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lexemetype_seq")

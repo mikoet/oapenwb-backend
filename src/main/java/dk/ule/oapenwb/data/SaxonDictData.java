@@ -284,15 +284,15 @@ public class SaxonDictData implements DataStrategy {
 		session.save(lpSaxonFinnish);
 	}
 
-	private void createLexemeTypes(Session session) {
+	private void createLexemeTypes(Session session)
+	{
+		// TODO Create more UiResultCategories
 		UiResultCategory uiRC_verbs = new UiResultCategory(null, null, "verbs", "urc:verbs", (short) 1);
 		UiResultCategory uiRC_nouns = new UiResultCategory(null, null, "nouns", "urc:nouns", (short) 1);
 		session.save(uiRC_verbs);
 		session.save(uiRC_nouns);
 
 		/* Setup LexemeTypes */
-		// Internal Lexeme Type to map rektion (case government) for high variant languages like Low Saxon
-		LexemeType ltCg = new LexemeType(null, null, LexemeType.TYPE_I_CG, uiRC_verbs.getId(), "lt:icg");
 
 		// The 'Part of Speech' types as classified by Universal Dependencies
 		LexemeType ltAdj = new LexemeType(null, null, LexemeType.TYPE_ADJ, uiRC_verbs.getId(), "lt:adj");
@@ -309,12 +309,17 @@ public class SaxonDictData implements DataStrategy {
 		LexemeType ltPropn = new LexemeType(null, null, LexemeType.TYPE_PROPN, uiRC_verbs.getId(), "lt:propn");
 		LexemeType ltPunct = new LexemeType(null, null, LexemeType.TYPE_PUNCT, uiRC_verbs.getId(), "lt:punct");
 		LexemeType ltSconj = new LexemeType(null, null, LexemeType.TYPE_SCONJ, uiRC_verbs.getId(), "lt:sconj");
-		// Symbool bruket wy ni sea Janine (dat sünt teykens etc.)
+		// Symbool bruket wy ni (dat sünt teykens etc.)
 		//LexemeType ltSym = new LexemeType(null, null, LexemeType.TYPE_SYM, uiRC_verbs.getId(), "lt:sym");
 		LexemeType ltVerb = new LexemeType(null, null, LexemeType.TYPE_VERB, uiRC_verbs.getId(), "lt:verb");
 		LexemeType ltX = new LexemeType(null, null, LexemeType.TYPE_X, uiRC_verbs.getId(), "lt:x");
 
-		session.save(ltCg);
+		// Internal types to map rektioon (case government) for high variant languages like Low Saxon
+		LexemeType ltCg = new LexemeType(null, null, LexemeType.TYPE_I_CG, uiRC_verbs.getId(), "lt:icg");
+
+		// Custom types
+		LexemeType ltUTDR = new LexemeType(null, null, LexemeType.TYPE_C_UTDR, uiRC_verbs.getId(), "lt:utdr");
+
 		session.save(ltAdj);
 		session.save(ltAdp);
 		session.save(ltAdv);
@@ -332,6 +337,9 @@ public class SaxonDictData implements DataStrategy {
 		//session.save(ltSym);
 		session.save(ltVerb);
 		session.save(ltX);
+
+		session.save(ltCg);
+		session.save(ltUTDR);
 
 		// iCG: Case Government (rektioon)
 		LexemeFormType lftCgBase = new LexemeFormType(null, null, ltCg.getId(), "bf", "baseForm",
@@ -450,9 +458,6 @@ public class SaxonDictData implements DataStrategy {
 
 
 		// Create UiTranslations
-		DataInitializer.createUiTranslations(session, "full", "lt:icg", true, new Pair<>("nds", "Rektioon"),
-			new Pair<>("de", "Rektion"), new Pair<>("en", "Case Government"));
-
 		DataInitializer.createUiTranslations(session, "full", "urc:verbs", true, new Pair<>("nds", "Verben"),
 			new Pair<>("de", "Verben"), new Pair<>("en", "Verbs"));
 		DataInitializer.createUiTranslations(session, "full", "urc:nouns", true, new Pair<>("nds", "Nomen"),
@@ -492,6 +497,11 @@ public class SaxonDictData implements DataStrategy {
 			new Pair<>("de", "Verb"), new Pair<>("en", "Verb"));
 		DataInitializer.createUiTranslations(session, "full", "lt:x", true, new Pair<>("nds", "Ander"),
 			new Pair<>("de", "Sonstige"), new Pair<>("en", "Other"));
+
+		DataInitializer.createUiTranslations(session, "full", "lt:icg", true, new Pair<>("nds", "Rektioon"),
+			new Pair<>("de", "Rektion"), new Pair<>("en", "Case Government"));
+		DataInitializer.createUiTranslations(session, "full", "lt:utdr", true, new Pair<>("nds", "Meyrwoorduutdrükke"),
+			new Pair<>("de", "Mehrwortausdrücke"), new Pair<>("en", "Multi-word expression"));
 
 		// Öäversettings vöär de lekseemfoormtypen
 		DataInitializer.createUiTranslations(session, "formType", "baseForm", true, new Pair<>("nds", "Grundfoorm"),
