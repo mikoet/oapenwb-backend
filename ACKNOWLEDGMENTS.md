@@ -758,8 +758,11 @@ More on <https://github.com/vladmihalcea/hibernate-types>.
 
 More on <https://github.com/FasterXML/jackson-databind>.
 
+    License: Apache License 2.0
 
 ## Jackson Databind
 
 More on <https://github.com/FasterXML/jackson-databind>.
+
+    License: Apache License 2.0
 
