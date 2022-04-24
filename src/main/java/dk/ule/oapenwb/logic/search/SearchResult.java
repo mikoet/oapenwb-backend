@@ -7,15 +7,16 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * TODO REFACT
+ * <p>The SearchResult for a search request in the dictionary's frontend.</p>
  */
 @Data
-public class ResultObject
+public class SearchResult
 {
 	@Data
 	static class SememeEntry
 	{
 		//long id; // only needed later once details for sememes can be viewed
+		int typeID;
 		String lemma;
 	}
 
@@ -24,7 +25,6 @@ public class ResultObject
 	{
 		SememeEntry sememeOne;
 		SememeEntry sememeTwo;
-		int typeID;
 		short weight;
 	}
 

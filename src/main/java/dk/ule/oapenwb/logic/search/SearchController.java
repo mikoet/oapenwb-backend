@@ -66,9 +66,9 @@ public class SearchController
 		this.lemmaControllers = lemmaControllers;
 	}
 
-	public ResultObject find(final QueryObject request) throws CodeException
+	public SearchResult find(final SearchRequest request) throws CodeException
 	{
-		ResultObject result = new ResultObject();
+		SearchResult result = new SearchResult();
 		try {
 			if (appConfig.isVerbose()) {
 				LOG.info(String.format("New search request with data: pair = %s, direction = %s, term = %s",
@@ -139,7 +139,7 @@ public class SearchController
 
 				// Build and fill the resultEntryList
 				WholeLemmaBuilder lemmaBuilder = new WholeLemmaBuilder();
-				List<ResultObject.ResultEntry> resultEntryList = new LinkedList<>();
+				List<SearchResult.ResultEntry> resultEntryList = new LinkedList<>();
 				for (MappingResult mappingResult : mappingsList) {
 					Sememe sememeOne = sememesMap.get(mappingResult.sememeOneID);
 					Sememe sememeTwo = sememesMap.get(mappingResult.sememeTwoID);
@@ -152,17 +152,18 @@ public class SearchController
 						continue;
 					}
 
-					ResultObject.ResultEntry entry = new ResultObject.ResultEntry();
+					SearchResult.ResultEntry entry = new SearchResult.ResultEntry();
 					// SememeEntry 1
-					entry.sememeOne = new ResultObject.SememeEntry();
+					entry.sememeOne = new SearchResult.SememeEntry();
+					entry.sememeOne.typeID = 0; // TODO How to get the typeID? They are stored on the lexemes.
 					entry.sememeOne.lemma = lemmaBuilder.build(
 						PresentationOptions.DEFAULT_PRESENTATION_OPTIONS, lemmaControllers, sememeOne, allVariantsMap);
 					// SememeEntry 2
-					entry.sememeTwo = new ResultObject.SememeEntry();
+					entry.sememeTwo = new SearchResult.SememeEntry();
+					entry.sememeTwo.typeID = 0; // TODO How to get the typeID? They are stored on the lexemes.
 					entry.sememeTwo.lemma = lemmaBuilder.build(
 						PresentationOptions.DEFAULT_PRESENTATION_OPTIONS, lemmaControllers, sememeTwo, allVariantsMap);
 					// Further properties
-					entry.typeID = 0; // TODO How to get the typeID(s)? They are stored on the lexemes.
 					entry.weight = mappingResult.weight;
 
 					// Add entry to resultEntryList
@@ -184,7 +185,7 @@ public class SearchController
 		return result;
 	}
 
-	private NativeQuery<?> createMappingsSearchQuery(final QueryObject request, final LangPair langPair)
+	private NativeQuery<?> createMappingsSearchQuery(final SearchRequest request, final LangPair langPair)
 	{
 		StringBuilder sb = new StringBuilder();
 
@@ -264,9 +265,9 @@ public class SearchController
 	 *
 	 * @throws Exception
 	 */
-	public ResultObject executeQuery(QueryObject queryData) throws Exception
+	public SearchResult executeQuery(SearchRequest queryData) throws Exception
 	{
-		ResultObject result = new ResultObject();
+		SearchResult result = new SearchResult();
 
 		TimeUtil.startTimeMeasure();
 
@@ -289,7 +290,7 @@ public class SearchController
 	}
 
 
-	private boolean checkQueryObject(QueryObject queryData) {
+	private boolean checkQueryObject(SearchRequest queryData) {
 		// TODO implement the checks here
 		return true;
 	}

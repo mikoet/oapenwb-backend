@@ -4,8 +4,8 @@ package dk.ule.oapenwb.faces;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import dk.ule.oapenwb.logic.search.QueryObject;
-import dk.ule.oapenwb.logic.search.ResultObject;
+import dk.ule.oapenwb.logic.search.SearchRequest;
+import dk.ule.oapenwb.logic.search.SearchResult;
 import dk.ule.oapenwb.logic.search.SearchController;
 import dk.ule.oapenwb.util.json.Response;
 import io.javalin.http.Context;
@@ -30,8 +30,8 @@ public class SearchFace
 
 	public void executeQuery(@NotNull Context ctx) throws Exception
 	{
-		QueryObject queryData = ctx.bodyAsClass(QueryObject.class);
-		ResultObject result = this.controller.find(queryData);
+		SearchRequest queryData = ctx.bodyAsClass(SearchRequest.class);
+		SearchResult result = this.controller.find(queryData);
 		Response res = new Response();
 		res.setData(result);
 		ctx.json(res);

@@ -114,44 +114,39 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.5.8.Final</version>
+			<version>5.6.8.Final</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-envers -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-envers</artifactId>
-			<version>5.5.8.Final</version>
+			<version>5.6.8.Final</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-hikaricp -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-hikaricp</artifactId>
-			<version>5.6.1.Final</version>
+			<version>5.6.8.Final</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
-		<!--<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>4.0.3</version>
-		</dependency>-->
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-			<version>5.0.0</version>
+			<version>5.0.1</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.vladmihalcea/hibernate-types-55 -->
 		<dependency>
 			<groupId>com.vladmihalcea</groupId>
 			<artifactId>hibernate-types-55</artifactId>
-			<version>2.14.1-SNAPSHOT</version>
+			<version>2.16.1</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.2.19</version>
+			<version>42.3.4</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
@@ -286,6 +281,9 @@
 						<class>dk.ule.oapenwb.logic.admin.syngroup.SGSearchRequest</class>
 						<class>dk.ule.oapenwb.logic.admin.syngroup.SGSearchResult</class>
 						<class>dk.ule.oapenwb.logic.admin.syngroup.SynGroupItem</class>
+
+						<class>dk.ule.oapenwb.logic.search.SearchRequest</class>
+						<class>dk.ule.oapenwb.logic.search.SearchResult</class>
 
 						<class>dk.ule.oapenwb.entity.content.basedata.Language</class>
 						<class>dk.ule.oapenwb.entity.content.basedata.LangOrthoMapping</class>

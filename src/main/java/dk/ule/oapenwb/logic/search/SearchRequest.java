@@ -5,11 +5,11 @@ package dk.ule.oapenwb.logic.search;
 import lombok.Data;
 
 /**
- * <p>The QueryObject contains all information that is transmitted for a search query from the dictionary's
- * frontend on thethe client to the backend.</p>
+ * <p>The SearchRequest contains all information that is transmitted for a search query from the dictionary's
+ * frontend on the client to the backend.</p>
  */
 @Data
-public class QueryObject
+public class SearchRequest
 {
 	/*
 	 * Keep it simple: we're gonna start with only three properties and will add those later on that are really
