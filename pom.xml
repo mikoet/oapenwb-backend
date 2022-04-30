@@ -16,10 +16,6 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
 		<exec.mainClass>dk.ule.oapenwb.Dict</exec.mainClass>
-
-		<typescript-generator.version>2.32.889</typescript-generator.version>
-		<pac4j.version>3.2.0</pac4j.version>
-		<!--<karate.version>0.9.4</karate.version>-->
 	</properties>
 
 	<prerequisites>
@@ -174,20 +170,6 @@
 			<version>2.12.4</version>
 		</dependency>
 
-		<!-- The next two dependencies help generating TypeScript interfaces for JSON classes -->
-		<!-- https://mvnrepository.com/artifact/cz.habarta.typescript-generator/typescript-generator-core -->
-		<dependency>
-			<groupId>cz.habarta.typescript-generator</groupId>
-			<artifactId>typescript-generator-core</artifactId>
-			<version>${typescript-generator.version}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/cz.habarta.typescript-generator/typescript-generator-maven-plugin -->
-		<dependency>
-			<groupId>cz.habarta.typescript-generator</groupId>
-			<artifactId>typescript-generator-maven-plugin</artifactId>
-			<version>${typescript-generator.version}</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/com.restfb/restfb -->
 		<!--<dependency>
 			<groupId>com.restfb</groupId>
@@ -236,91 +218,14 @@
 	</dependencies>
 
 	<build>
-		<!-- Without this lexeme here Karate test features always succeed -->
-		<!--
-		<testResources>
-			<testResource>
-				<directory>src/test/java</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</testResource>
-		</testResources>
-		-->
-
 		<plugins>
-			<plugin>
-				<groupId>cz.habarta.typescript-generator</groupId>
-				<artifactId>typescript-generator-maven-plugin</artifactId>
-				<version>${typescript-generator.version}</version>
-				<executions>
-					<execution>
-						<id>generate</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<phase>process-classes</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<jsonLibrary>jackson2</jsonLibrary>
-					<jackson2Configuration>
-						<view>dk.ule.oapenwb.base.Views$REST</view>
-					</jackson2Configuration>
-					<classes>
-						<class>dk.ule.oapenwb.logic.admin.lexeme.LSearchRequest</class>
-						<class>dk.ule.oapenwb.logic.admin.lexeme.FilterOptions</class>
-						<class>dk.ule.oapenwb.logic.admin.lexeme.LexemeSlimDTO</class>
-						<class>dk.ule.oapenwb.logic.admin.lexeme.LexemeDetailedDTO</class>
-
-						<class>dk.ule.oapenwb.logic.admin.lexeme.sememe.SSearchRequest</class>
-						<class>dk.ule.oapenwb.logic.admin.lexeme.sememe.SSearchResult</class>
-						<class>dk.ule.oapenwb.logic.admin.lexeme.sememe.LexemeSlimPlus</class>
-						<class>dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeSlim</class>
-
-						<class>dk.ule.oapenwb.logic.admin.syngroup.SGSearchRequest</class>
-						<class>dk.ule.oapenwb.logic.admin.syngroup.SGSearchResult</class>
-						<class>dk.ule.oapenwb.logic.admin.syngroup.SynGroupItem</class>
-
-						<class>dk.ule.oapenwb.logic.search.SearchRequest</class>
-						<class>dk.ule.oapenwb.logic.search.SearchResult</class>
-
-						<class>dk.ule.oapenwb.entity.content.basedata.Language</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.LangOrthoMapping</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.LangPair</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.Orthography</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.LexemeType</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.LexemeFormType</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.tlConfig.FormTypePos</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.tlConfig.TypeLanguageConfig</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.LemmaTemplate</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.Category</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.Level</class>
-
-						<class>dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.lexeme.Tag</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.LexemeForm</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.Link</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.Mapping</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.MetaInfo</class>
-
-						<class>dk.ule.oapenwb.entity.ui.UiLanguage</class>
-						<class>dk.ule.oapenwb.entity.ui.UiResultCategory</class>
-						<class>dk.ule.oapenwb.entity.ui.UiTranslationScope</class>
-						<class>dk.ule.oapenwb.entity.ui.UiTranslationSet</class>
-					</classes>
-					<outputKind>module</outputKind>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
-					<source>14</source>
-					<target>14</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 				</configuration>
 			</plugin>
 		</plugins>
