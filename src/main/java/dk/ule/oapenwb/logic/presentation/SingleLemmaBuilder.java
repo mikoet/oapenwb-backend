@@ -62,6 +62,8 @@ public class SingleLemmaBuilder
 		 */
 
 		Lemma lemma = variant.getLemma();
+
+		sb.append('{');
 		// Add the pre text is there is one
 		String pre = lemma.getPre();
 		if (pre != null && !pre.isEmpty())
@@ -80,6 +82,8 @@ public class SingleLemmaBuilder
 			sb.append(' ');
 			sb.append(post);
 		}
+
+		sb.append('}');
 
 		// Add the orthography if set
 		if (options.includeOrthography)
