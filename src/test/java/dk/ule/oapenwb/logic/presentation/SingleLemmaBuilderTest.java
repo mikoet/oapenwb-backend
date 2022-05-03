@@ -90,7 +90,7 @@ public class SingleLemmaBuilderTest
 		{
 			// Check 1: one single dialect is in use at both the variant and the sememe
 			final String checkResult = String.format(
-				"eaten^[%s] ((%s))", oNSS.getAbbreviation(), lMoensterlaendsk.getUitID_abbr()
+				"{eaten}^[%s] ((%s))", oNSS.getAbbreviation(), lMoensterlaendsk.getUitID_abbr()
 			);
 			assertEquals(checkResult, builder.build(
 				PresentationOptions.DEFAULT_PRESENTATION_OPTIONS,
@@ -104,7 +104,7 @@ public class SingleLemmaBuilderTest
 		{
 			// Check 2: two dialects on the variant, but only one of them is used at the sememe
 			final String checkResult = String.format(
-				"eaten^[%s] ((%s))", oNSS.getAbbreviation(), lMoensterlaendsk.getUitID_abbr()
+				"{eaten}^[%s] ((%s))", oNSS.getAbbreviation(), lMoensterlaendsk.getUitID_abbr()
 			);
 			assertEquals(checkResult, builder.build(
 				PresentationOptions.DEFAULT_PRESENTATION_OPTIONS,
@@ -118,7 +118,7 @@ public class SingleLemmaBuilderTest
 		{
 			// Check 3: one dialect on the variant, but two are used at the sememe
 			final String checkResult = String.format(
-				"eaten^[%s] ((%s))", oNSS.getAbbreviation(), lMoensterlaendsk.getUitID_abbr()
+				"{eaten}^[%s] ((%s))", oNSS.getAbbreviation(), lMoensterlaendsk.getUitID_abbr()
 			);
 			assertEquals(checkResult, builder.build(
 				PresentationOptions.DEFAULT_PRESENTATION_OPTIONS,
@@ -132,7 +132,7 @@ public class SingleLemmaBuilderTest
 		{
 			// Check 4: two dialects on the variant, and those two are used on the sememe
 			final String checkResult = String.format(
-				"eaten^[%s] ((%s, %s))",
+				"{eaten}^[%s] ((%s, %s))",
 				oNSS.getAbbreviation(), lMoensterlaendsk.getUitID_abbr(), lDitmarsk.getUitID_abbr()
 			);
 			assertEquals(checkResult, builder.build(
