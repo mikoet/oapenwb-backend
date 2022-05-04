@@ -63,19 +63,24 @@ public class Dict
 	{
 		RunMode runMode = RunMode.Normal;
 
+		boolean error = false;
 		if (args.length > 0) {
 			switch (args[0]) {
 				case "dev" -> runMode = RunMode.Development;
 				case "test" -> runMode = RunMode.Testing;
-				default -> {
-					System.out.println("Supported first argument values are:");
-					System.out.println("  'dev' for using development configuration (config.dev.json)");
-					System.out.println("  'test' for using testing configuration (config.test.json)");
-					System.out.println("If no value is given the normal (productive) configuration will be used " +
-						"(config.json).");
-					System.exit(1);
-				}
+				default -> error = true;
 			}
+		} else {
+			error = true;
+		}
+
+		if (error) {
+			System.out.println("Supported first argument values are:");
+			System.out.println("  'dev' for using development configuration (config.dev.json)");
+			System.out.println("  'test' for using testing configuration (config.test.json)");
+			System.out.println("If no value is given the normal (productive) configuration will be used " +
+								   "(config.json).");
+			System.exit(1);
 		}
 
 		Dict dict = new Dict();
