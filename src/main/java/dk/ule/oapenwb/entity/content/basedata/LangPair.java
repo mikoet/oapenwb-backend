@@ -54,7 +54,7 @@ public class LangPair implements IEntity<String>
 	@JsonView({Views.BaseConfig.class, Views.REST.class})
 	private int langOneID;
 	@JoinColumn(name = "langOneID", insertable = false, updatable = false)
-	@ManyToOne(targetEntity = Language.class, fetch = FetchType.LAZY)
+	@ManyToOne(targetEntity = Language.class, fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Language langOne;
 
@@ -62,7 +62,7 @@ public class LangPair implements IEntity<String>
 	@JsonView({Views.BaseConfig.class, Views.REST.class})
 	private int langTwoID;
 	@JoinColumn(name = "langTwoID", insertable = false, updatable = false)
-	@ManyToOne(targetEntity = Language.class, fetch = FetchType.LAZY)
+	@ManyToOne(targetEntity = Language.class, fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Language langTwo;
 

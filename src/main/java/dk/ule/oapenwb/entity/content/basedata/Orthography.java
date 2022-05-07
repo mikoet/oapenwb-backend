@@ -67,7 +67,7 @@ public class Orthography implements IEntity<Integer>
 	@JsonView({Views.BaseConfig.class, Views.REST.class})
 	private Integer parentID;
 	@JoinColumn(name = "parentID", insertable = false, updatable = false)
-	@ManyToOne(targetEntity = Orthography.class, fetch = FetchType.LAZY) // FetchType.EAGER instead?
+	@ManyToOne(targetEntity = Orthography.class, fetch = FetchType.EAGER)
 	@JsonView(Views.Exclude.class)
 	private Orthography parent;
 
