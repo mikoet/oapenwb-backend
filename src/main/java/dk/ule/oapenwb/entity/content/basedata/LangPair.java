@@ -54,6 +54,7 @@ public class LangPair implements IEntity<String>
 	@JsonView({Views.BaseConfig.class, Views.REST.class})
 	private int langOneID;
 	@JoinColumn(name = "langOneID", insertable = false, updatable = false)
+	// When lazy loading is used: https://github.com/FasterXML/jackson-datatype-hibernate
 	@ManyToOne(targetEntity = Language.class, fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Language langOne;
