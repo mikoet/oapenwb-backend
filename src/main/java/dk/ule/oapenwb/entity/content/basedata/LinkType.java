@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The LinkType specifies the type of a link between Lexemes – realized by {@link Link} – as well as between
- * synonym groups – realized by {@link SynLink}.
+ * The LinkType specifies the type of a link between Sememes – realized by {@link Link} – as well as between
+ * SynGroups – realized by {@link SynLink}.
  */
 @Data
 @Entity
@@ -82,10 +82,11 @@ public class LinkType implements IEntity<Integer>
 	/**
 	 * Possible properties
 	 *
-	 * For target Lexeme:
-	 * - startLangIDs: IDs of allowed language for the start lexeme. If not existent all languages are allowed.
-	 * - endLangIDs: IDs of allowed language for the end lexeme. If not existent all languages are allowed.
-	 * - selfReferring: can the end lexeme be of the same language as the start language?
+	 * For target Sememe:
+	 * - startLangIDs: IDs of allowed language for the start sememe/lexeme. If not existent all languages are allowed.
+	 * - endLangIDs: IDs of allowed language for the end sememe/lexeme. If not existent all languages are allowed.
+	 * - selfReferring: can the end sememe/lexeme be of the same language as the start language? (choose a different
+	 *   name like languageInternal, or something like that)
 	 *
 	 * For target SynGroup:
 	 * - …

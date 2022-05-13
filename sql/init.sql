@@ -621,21 +621,21 @@ create table Links (
 	id int4 not null,
 	version int4 not null,
 	typeID int4 not null,
-	startLexemeID int8 not null,
-	endLexemeID int8 not null,
+	startSememeID int8 not null,
+	endSememeID int8 not null,
 	primary key (id),
-	constraint check_lexemesAreNotSame check (startLexemeID <> endLexemeID)
+	constraint check_sememesAreNotSame check (startSememeID <> endSememeID)
 );
 alter table if exists Links add constraint FK_Links_typeID foreign key (typeID) references LinkTypes;
-alter table if exists Links add constraint FK_Links_startLexemeID foreign key (startLexemeID) references Lexemes;
-alter table if exists Links add constraint FK_Links_endLexemeID foreign key (endLexemeID) references Lexemes;
+alter table if exists Links add constraint FK_Links_startSememeID foreign key (startSememeID) references Sememes;
+alter table if exists Links add constraint FK_Links_endSememeID foreign key (endSememeID) references Sememes;
 
 create table Links_AUD (
 	id int4 not null,
 	REV int8 not null,
 	REVTYPE int2,
-	endLexemeID int8,
-	startLexemeID int8,
+	endSememeID int8,
+	startSememeID int8,
 	typeID int4,
 	primary key (id, REV)
 );
@@ -652,7 +652,7 @@ create table SynGroups (
 	presentation varchar(2048) not null,
 	updatedAt timestamp,
 	primary key (id),
-	constraint check_lexemeIDs check (sememeIDs is null or jsonb_typeof(sememeIDs) = 'array')
+	constraint check_sememeIDs check (sememeIDs is null or jsonb_typeof(sememeIDs) = 'array')
 );
 create index IDX_SynGroups_sememeIDs on SynGroups using GIN (sememeIDs jsonb_path_ops);
 

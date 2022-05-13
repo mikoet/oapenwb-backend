@@ -7,6 +7,7 @@ import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.LinkType;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
+import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.logic.admin.lexeme.IRPCEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,9 +17,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
- * A Link resembles a link between two {@link Lexeme}s.
+ * A Link resembles a link between two {@link Sememe}s. of two different {@link Lexeme}s.
  * The type – meaning – of a link is defined by the {@link LinkType} and free to set by the editors.
- * In this way Links could be used to map relations between Lexemes like:<br>
+ * In this way Links could be used to map relations between Sememes like:<br>
  * <ul>
  * <li>Antonyms</li>
  * </ul>
@@ -49,12 +50,12 @@ public class Link implements IRPCEntity<Integer>
 	@NotNull
 	@Column(nullable = false)
 	@JsonView(Views.REST.class)
-	private long startLexemeID;
+	private long startSememeID;
 
 	@NotNull
 	@Column(nullable = false)
 	@JsonView(Views.REST.class)
-	private long endLexemeID;
+	private long endSememeID;
 
 	@Transient
 	@NotNull
