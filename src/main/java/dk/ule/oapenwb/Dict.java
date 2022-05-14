@@ -151,7 +151,7 @@ public class Dict
 		AdminFaces adminFaces = injector.getInstance(AdminFaces.class);
 
 		// Create and setup the Javalin instance
-		Javalin app = Javalin.create(config -> {
+		final Javalin app = Javalin.create(config -> {
 			//config.enableRouteOverview("overview", role);
 			config.accessManager(accessManager);
 			config.showJavalinBanner = false;
@@ -164,6 +164,10 @@ public class Dict
 			// Pass the customly configured object mapper over to Javalin
 			config.jsonMapper(new JavalinJackson(objMapper));
 		}).start(appConfig.getPort());
+
+		// Set a shutdown hook to know when the application was terminated
+		Thread shutdownHook = new Thread(() -> shutdownHook(app));
+		Runtime.getRuntime().addShutdownHook(shutdownHook);
 
 		// Create predefined role sets
 		RoleType[] anyoneRole = { RoleType.Anyone };
@@ -476,5 +480,22 @@ public class Dict
 			HibernateUtil.closeSession();
 		}
 		LOG.debug("End of run()");
+	}
+
+	/**
+	 * Shutdown hook to know (e.g. on log files) when the app was shut down.
+	 * 
+	 * @param app the Javalin app instance
+	 */
+	private void shutdownHook(final Javalin app)
+	{
+		try {
+			LOG.info("Shutting down application…");
+			app.stop();
+			Thread.sleep(1000);
+			LOG.info("Done.");
+		} catch (InterruptedException e) {
+			LOG.error("Failed", e);
+		}
 	}
 }
