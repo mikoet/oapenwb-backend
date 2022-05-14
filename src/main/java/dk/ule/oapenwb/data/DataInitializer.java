@@ -15,6 +15,7 @@ import dk.ule.oapenwb.entity.ui.UiLanguage;
 import dk.ule.oapenwb.entity.ui.UiTranslation;
 import dk.ule.oapenwb.entity.ui.UiTranslationScope;
 import dk.ule.oapenwb.util.*;
+import dk.ule.oapenwb.util.io.FilesProcessor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

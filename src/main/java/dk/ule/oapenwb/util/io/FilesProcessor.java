@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-only
-package dk.ule.oapenwb.util;
+package dk.ule.oapenwb.util.io;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
