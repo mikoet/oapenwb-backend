@@ -45,6 +45,9 @@ public class AppConfig
 	@Getter
 	private DbConfig dbConfig = new DbConfig();
 
+	@Getter
+	private ImportConfig importConfig = new ImportConfig();
+
 	public class DbConfig
 	{
 		@Getter
@@ -89,5 +92,14 @@ public class AppConfig
 		 */
 		@Getter
 		private int poolConnectionTimeout = 20_000;
+	}
+
+	public class ImportConfig
+	{
+		@Getter
+		private String inputDir;
+
+		@Getter
+		private String outputDir;
 	}
 }

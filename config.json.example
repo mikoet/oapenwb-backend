@@ -30,5 +30,9 @@
 		"maxPoolSize": 32,
 		"poolIdleTimeout": 120000,
 		"poolConnectionTimeout": 20000
+	},
+	"importConfig": {
+		"inputDir": "",
+		"outputDir": ""
 	}
 }
