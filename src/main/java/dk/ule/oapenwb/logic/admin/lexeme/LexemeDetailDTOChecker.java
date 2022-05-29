@@ -85,12 +85,10 @@ public class LexemeDetailDTOChecker
 	private void checkVariations(Collection<Variant> variants)
 	{
 		switch (op) {
-			case Create:
-			case Update:
-			case Delete:
+			case Create, Update, Delete -> {
 				assert variants != null;
 				variants.forEach(this::checkVariant);
-				break;
+			}
 		}
 	}
 
@@ -114,12 +112,10 @@ public class LexemeDetailDTOChecker
 	private void checkSememes(Collection<Sememe> sememes)
 	{
 		switch (op) {
-			case Create:
-			case Update:
-			case Delete:
+			case Create, Update, Delete -> {
 				assert sememes != null;
 				sememes.forEach(this::checkSememe);
-				break;
+			}
 		}
 	}
 
@@ -146,20 +142,18 @@ public class LexemeDetailDTOChecker
 	private void checkLinks(Collection<Link> links)
 	{
 		switch (op) {
-			case Create:
-			case Update:
-			case Delete:
+			case Create, Update, Delete -> {
 				assert links != null;
 				links.forEach(this::checkLink);
-				break;
+			}
 		}
 	}
 
 	private void checkLink(Link link)
 	{
-		Long lexemeID = lexemeDTO.getLexeme().getId();
 		/*
-		if (link.getStartLexemeID() != lexemeID && link.getEndLexemeID() != lexemeID)
+		Long lexemeID = lexemeDTO.getLexeme().getId();
+		if (link.getStartSememeID() != sememeID && link.getEndSememeID() != sememeID)
 		{
 			messages.add(new Message(ErrorCode.Admin_EntityBrokenLexemeID,
 				Collections.singletonList(new Pair<>("type", "link"))));
@@ -171,12 +165,10 @@ public class LexemeDetailDTOChecker
 	private void checkMappings(Collection<Mapping> mappings)
 	{
 		switch (op) {
-			case Create:
-			case Update:
-			case Delete:
+			case Create, Update, Delete -> {
 				assert mappings != null;
 				mappings.forEach(this::checkMapping);
-				break;
+			}
 		}
 	}
 
