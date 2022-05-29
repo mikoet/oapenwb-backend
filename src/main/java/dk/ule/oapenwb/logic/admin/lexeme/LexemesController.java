@@ -666,19 +666,23 @@ public class LexemesController
 		lexemeDTO.getSememes().forEach(sem -> loadSynGroup(session, sem));
 
 
-		// Load links
-		Query<Link> qLinks = session.createQuery(
-			"FROM Link L WHERE (L.startLexemeID = :lexemeID or L.endLexemeID = :lexemeID)" +
-			"order by L.typeID, L.startLexemeID, L.endLexemeID", Link.class);
-		qLinks.setParameter("lexemeID", lexemeDTO.getLexeme().getId());
-		lexemeDTO.setLinks(qLinks.list());
+		// Load links for each sememe
+		List<Link> linkList = new LinkedList<>();
+		lexemeDTO.getSememes().forEach(sem -> {
+			Query<Link> qLinks = session.createQuery(
+				"FROM Link L WHERE (L.startSememeID = :sememeID or L.endSememeID = :sememeID)" +
+					"order by L.typeID, L.startSememeID, L.endSememeID", Link.class);
+			qLinks.setParameter("sememeID", sem.getId());
+			linkList.addAll(qLinks.list());
+		});
+		lexemeDTO.setLinks(linkList);
 
 		// Load mappings
 		Query<Mapping> qMappings = session.createQuery(
 			"FROM Mapping M WHERE M.sememeOneID in (:sememeIDs) or M.sememeTwoID in (:sememeIDs)" +
 			" ORDER by M.weight", Mapping.class);
 		qMappings.setParameterList("sememeIDs",
-			lexemeDTO.getSememes().stream().map(sememe -> sememe.getId()).collect(Collectors.toList()));
+			lexemeDTO.getSememes().stream().map(Sememe::getId).collect(Collectors.toList()));
 		lexemeDTO.setMappings(qMappings.list());
 
 		// Load the slim sememes for each mapping
