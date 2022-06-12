@@ -15,7 +15,8 @@ import java.util.Map;
 /**
  * Initial data specific to the (Low) Saxon dictionary.
  */
-public class SaxonDictData implements DataStrategy {
+public class SaxonDictData implements DataStrategy
+{
 	private Map<String, Language> langMap = new HashMap<>();
 
 	@Override
@@ -422,11 +423,45 @@ public class SaxonDictData implements DataStrategy {
 			null, true, (short) 0);
 		session.save(lftSconjBase);
 
-		// VERB
-		LexemeFormType lftVerbInf = new LexemeFormType(null, null, ltVerb.getId(), "inf", "verbInf",
-			null, true, (short) 0);
-		session.save(lftVerbInf);
-		// TODO
+		// !! VERB
+		createFormType(session, ltVerb.getId(), "inf", "verbInf", "Infinitive", true, 0);
+		createFormType(session, ltVerb.getId(), "inf_div", "verbInfDiv", "Infinitive with divider", false, 1);
+		createFormType(session, ltVerb.getId(), "inf_max", "verbInfMax", "Infinitive in maximal version", false, 2);
+
+		createFormType(session, ltVerb.getId(), "s1ps", "verbS1ps", "Singular 1st person present", false, 3);
+		createFormType(session, ltVerb.getId(), "s2ps", "verbS2ps", "Singular 2nd person present", false, 4);
+		createFormType(session, ltVerb.getId(), "s3ps", "verbS3ps", "Singular 3rd person present", false, 5);
+		createFormType(session, ltVerb.getId(), "p1ps", "verbP1ps", "Plural 1st person present", false, 6);
+		createFormType(session, ltVerb.getId(), "p2ps", "verbP2ps", "Plural 2nd person present", false, 7);
+		createFormType(session, ltVerb.getId(), "p3ps", "verbP3ps", "Plural 3rd person present", false, 8);
+
+		createFormType(session, ltVerb.getId(), "s1pt", "verbS1pt", "Singular 1st person past tense", false, 9);
+		createFormType(session, ltVerb.getId(), "s2pt", "verbS2pt", "Singular 2nd person past tense", false, 10);
+		createFormType(session, ltVerb.getId(), "s3pt", "verbS3pt", "Singular 3rd person past tense", false, 11);
+		createFormType(session, ltVerb.getId(), "p1pt", "verbP1pt", "Plural 1st person past tense", false, 12);
+		createFormType(session, ltVerb.getId(), "p2pt", "verbP2pt", "Plural 2nd person past tense", false, 13);
+		createFormType(session, ltVerb.getId(), "p3pt", "verbP3pt", "Plural 3rd person past tense", false, 14);
+
+		createFormType(session, ltVerb.getId(), "ptc1", "verbPtc1", "Participle I", false, 15);
+		createFormType(session, ltVerb.getId(), "ptc2", "verbPtc2", "Participle II", false, 16);
+
+		createFormType(session, ltVerb.getId(), "simp", "verbSimp", "Singular imperative", false, 18);
+		createFormType(session, ltVerb.getId(), "pimp", "verbPimp", "Plural imperative", false, 19);
+
+		createFormType(session, ltVerb.getId(), "s1s1", "verbS1s1", "Singular 1st person subjunctive I", false, 21);
+		createFormType(session, ltVerb.getId(), "s2s1", "verbS2s1", "Singular 2nd person subjunctive I", false, 22);
+		createFormType(session, ltVerb.getId(), "s3s1", "verbS3s1", "Singular 3rd person subjunctive I", false, 23);
+		createFormType(session, ltVerb.getId(), "p1s1", "verbP1s1", "Plural 1st person subjunctive I", false, 24);
+		createFormType(session, ltVerb.getId(), "p2s1", "verbP2s1", "Plural 2nd person subjunctive I", false, 25);
+		createFormType(session, ltVerb.getId(), "p3s1", "verbP3s1", "Plural 3rd person subjunctive I", false, 26);
+
+		createFormType(session, ltVerb.getId(), "s1s2", "verbS1s2", "Singular 1st person subjunctive II", false, 27);
+		createFormType(session, ltVerb.getId(), "s2s2", "verbS2s2", "Singular 2nd person subjunctive II", false, 28);
+		createFormType(session, ltVerb.getId(), "s3s2", "verbS3s2", "Singular 3rd person subjunctive II", false, 29);
+		createFormType(session, ltVerb.getId(), "p1s2", "verbP1s2", "Plural 1st person subjunctive II", false, 30);
+		createFormType(session, ltVerb.getId(), "p2s2", "verbP2s2", "Plural 2nd person subjunctive II", false, 31);
+		createFormType(session, ltVerb.getId(), "p3s2", "verbP3s2", "Plural 3rd person subjunctive II", false, 32);
+		// !! / VERB
 
 		// X
 		LexemeFormType lftXBase = new LexemeFormType(null, null, ltX.getId(), "bf", "baseForm",
@@ -516,8 +551,75 @@ public class SaxonDictData implements DataStrategy {
 
 		DataInitializer.createUiTranslations(session, "formType", "sinNom", true, new Pair<>("nds", "Singulaar / Nominativ"),
 			new Pair<>("de", "Singular / Nominativ"), new Pair<>("en", "Singular / Nominative"));
+
 		DataInitializer.createUiTranslations(session, "formType", "verbInf", true, new Pair<>("nds", "Infinitiv"),
 			new Pair<>("de", "Infinitiv"), new Pair<>("en", "Infinitive"));
+		DataInitializer.createUiTranslations(session, "formType", "verbInfDiv", true, new Pair<>("nds", "Infinitiv (trenteyken/s)"),
+			new Pair<>("de", "Infinitiv (Trennzeichen)"), new Pair<>("en", "Infinitive (divider/s)"));
+		DataInitializer.createUiTranslations(session, "formType", "verbInfMax", true, new Pair<>("nds", "Infinitiv (maks.)"),
+			new Pair<>("de", "Infinitiv (max.)"), new Pair<>("en", "Infinitive (max.)"));
+
+		DataInitializer.createUiTranslations(session, "formType", "verbS1ps", true, new Pair<>("nds", "Singulaar 1 presens"),
+			new Pair<>("de", "Singular 1. Präsens"), new Pair<>("en", "Singular 1st present"));
+		DataInitializer.createUiTranslations(session, "formType", "verbS2ps", true, new Pair<>("nds", "Singulaar 2 presens"),
+			new Pair<>("de", "Singular 2. Präsens"), new Pair<>("en", "Singular 2nd present"));
+		DataInitializer.createUiTranslations(session, "formType", "verbS3ps", true, new Pair<>("nds", "Singulaar 3 presens"),
+			new Pair<>("de", "Singular 3. Präsens"), new Pair<>("en", "Singular 3rd present"));
+		DataInitializer.createUiTranslations(session, "formType", "verbP1ps", true, new Pair<>("nds", "Pluraal 1 presens"),
+			new Pair<>("de", "Plural 1. Präsens"), new Pair<>("en", "Plural 1st present"));
+		DataInitializer.createUiTranslations(session, "formType", "verbP2ps", true, new Pair<>("nds", "Pluraal 2 presens"),
+			new Pair<>("de", "Plural 2. Präsens"), new Pair<>("en", "Plural 2nd present"));
+		DataInitializer.createUiTranslations(session, "formType", "verbP3ps", true, new Pair<>("nds", "Pluraal 3 presens"),
+			new Pair<>("de", "Plural 3. Präsens"), new Pair<>("en", "Plural 3rd present"));
+
+		DataInitializer.createUiTranslations(session, "formType", "verbS1pt", true, new Pair<>("nds", "Singulaar 1 preteritum"),
+			new Pair<>("de", "Singular 1. Präteritum"), new Pair<>("en", "Singular 1st preterite"));
+		DataInitializer.createUiTranslations(session, "formType", "verbS2pt", true, new Pair<>("nds", "Singulaar 2 preteritum"),
+			new Pair<>("de", "Singular 2. Präteritum"), new Pair<>("en", "Singular 2nd preterite"));
+		DataInitializer.createUiTranslations(session, "formType", "verbS3pt", true, new Pair<>("nds", "Singulaar 3 preteritum"),
+			new Pair<>("de", "Singular 3. Präteritum"), new Pair<>("en", "Singular 3rd preterite"));
+		DataInitializer.createUiTranslations(session, "formType", "verbP1pt", true, new Pair<>("nds", "Pluraal 1 preteritum"),
+			new Pair<>("de", "Plural 1. Präteritum"), new Pair<>("en", "Plural 1st preterite"));
+		DataInitializer.createUiTranslations(session, "formType", "verbP2pt", true, new Pair<>("nds", "Pluraal 2 preteritum"),
+			new Pair<>("de", "Plural 2. Präteritum"), new Pair<>("en", "Plural 2nd preterite"));
+		DataInitializer.createUiTranslations(session, "formType", "verbP3pt", true, new Pair<>("nds", "Pluraal 3 preteritum"),
+			new Pair<>("de", "Plural 3. Präteritum"), new Pair<>("en", "Plural 3rd preterite"));
+
+		DataInitializer.createUiTranslations(session, "formType", "verbPtc1", true, new Pair<>("nds", "Participe I"),
+			new Pair<>("de", "Partizip I"), new Pair<>("en", "Participle I"));
+		DataInitializer.createUiTranslations(session, "formType", "verbPtc2", true, new Pair<>("nds", "Participe II"),
+			new Pair<>("de", "Partizip II"), new Pair<>("en", "Participle II"));
+
+		DataInitializer.createUiTranslations(session, "formType", "verbSimp", true, new Pair<>("nds", "Singulaar imperativ"),
+			new Pair<>("de", "Singular Imperativ"), new Pair<>("en", "Singular imperative"));
+		DataInitializer.createUiTranslations(session, "formType", "verbPimp", true, new Pair<>("nds", "Pluraal imperativ"),
+			new Pair<>("de", "Plural Imperativ"), new Pair<>("en", "Plural imperative"));
+
+		DataInitializer.createUiTranslations(session, "formType", "verbS1s1", true, new Pair<>("nds", "Singulaar 1 konjunktiv I"),
+			new Pair<>("de", "Singular 1. Konjunktiv I"), new Pair<>("en", "Singular 1st subjunctive I"));
+		DataInitializer.createUiTranslations(session, "formType", "verbS2s1", true, new Pair<>("nds", "Singulaar 2 konjunktiv I"),
+			new Pair<>("de", "Singular 2. Konjunktiv I"), new Pair<>("en", "Singular 2nd subjunctive I"));
+		DataInitializer.createUiTranslations(session, "formType", "verbS3s1", true, new Pair<>("nds", "Singulaar 3 konjunktiv I"),
+			new Pair<>("de", "Singular 3. Konjunktiv I"), new Pair<>("en", "Singular 3rd subjunctive I"));
+		DataInitializer.createUiTranslations(session, "formType", "verbP1s1", true, new Pair<>("nds", "Pluraal 1 konjunktiv I"),
+			new Pair<>("de", "Plural 1. Konjunktiv I"), new Pair<>("en", "Plural 1st subjunctive I"));
+		DataInitializer.createUiTranslations(session, "formType", "verbP2s1", true, new Pair<>("nds", "Pluraal 2 konjunktiv I"),
+			new Pair<>("de", "Plural 2. Konjunktiv I"), new Pair<>("en", "Plural 2nd subjunctive I"));
+		DataInitializer.createUiTranslations(session, "formType", "verbP3s1", true, new Pair<>("nds", "Pluraal 3 konjunktiv I"),
+			new Pair<>("de", "Plural 3. Konjunktiv I"), new Pair<>("en", "Plural 3rd subjunctive I"));
+
+		DataInitializer.createUiTranslations(session, "formType", "verbS1s2", true, new Pair<>("nds", "Singulaar 1 konjunktiv II"),
+			new Pair<>("de", "Singular 1. Konjunktiv II"), new Pair<>("en", "Singular 1st subjunctive II"));
+		DataInitializer.createUiTranslations(session, "formType", "verbS2s2", true, new Pair<>("nds", "Singulaar 2 konjunktiv II"),
+			new Pair<>("de", "Singular 2. Konjunktiv II"), new Pair<>("en", "Singular 2nd subjunctive II"));
+		DataInitializer.createUiTranslations(session, "formType", "verbS3s2", true, new Pair<>("nds", "Singulaar 3 konjunktiv II"),
+			new Pair<>("de", "Singular 3. Konjunktiv II"), new Pair<>("en", "Singular 3rd subjunctive II"));
+		DataInitializer.createUiTranslations(session, "formType", "verbP1s2", true, new Pair<>("nds", "Pluraal 1 konjunktiv II"),
+			new Pair<>("de", "Plural 1. Konjunktiv II"), new Pair<>("en", "Plural 1st subjunctive II"));
+		DataInitializer.createUiTranslations(session, "formType", "verbP2s2", true, new Pair<>("nds", "Pluraal 2 konjunktiv II"),
+			new Pair<>("de", "Plural 2. Konjunktiv II"), new Pair<>("en", "Plural 2nd subjunctive II"));
+		DataInitializer.createUiTranslations(session, "formType", "verbP3s2", true, new Pair<>("nds", "Pluraal 3 konjunktiv II"),
+			new Pair<>("de", "Plural 3. Konjunktiv II"), new Pair<>("en", "Plural 3rd subjunctive II"));
 
 		/*
 		List of al Lexeme types to be created later:
@@ -561,5 +663,13 @@ public class SaxonDictData implements DataStrategy {
 			session.save(lftBaseAlt3);
 		}
 		 */
+	}
+
+	private void createFormType(Session session, Integer lexemeTypeID, String name, String uitID, String description,
+		boolean mandatory, int position)
+	{
+		LexemeFormType formType = new LexemeFormType(null, null, lexemeTypeID, name, uitID, description, mandatory,
+			(short) position);
+		session.save(formType);
 	}
 }
