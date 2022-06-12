@@ -389,9 +389,8 @@ public class SaxonDictData implements DataStrategy
 		session.save(lftIntjBase);
 
 		// NOUN
-		LexemeFormType lftNounSingNom = new LexemeFormType(null, null, ltNoun.getId(), "sn", "sinNom",
-			null, true, (short) 0);
-		session.save(lftNounSingNom);
+		createFormType(session, ltNoun.getId(), "sn", "nounSinNom", "Singular nominative", true, 0);
+		createFormType(session, ltNoun.getId(), "pn", "nounPluNom", "Plural nominative", false, 1);
 
 		// NUM
 		LexemeFormType lftNumBase = new LexemeFormType(null, null, ltNum.getId(), "bf", "baseForm",
@@ -549,8 +548,10 @@ public class SaxonDictData implements DataStrategy
 		DataInitializer.createUiTranslations(session, "formType", "superlative", true, new Pair<>("nds", "Superlativ"),
 			new Pair<>("de", "Superlativ"), new Pair<>("en", "Superlative"));
 
-		DataInitializer.createUiTranslations(session, "formType", "sinNom", true, new Pair<>("nds", "Singulaar / Nominativ"),
-			new Pair<>("de", "Singular / Nominativ"), new Pair<>("en", "Singular / Nominative"));
+		DataInitializer.createUiTranslations(session, "formType", "nounSinNom", true, new Pair<>("nds", "Singulaar nominativ"),
+			new Pair<>("de", "Singular Nominativ"), new Pair<>("en", "Singular nominative"));
+		DataInitializer.createUiTranslations(session, "formType", "nounPluNom", true, new Pair<>("nds", "Pluraal nominativ"),
+			new Pair<>("de", "Plural Nominativ"), new Pair<>("en", "Plural nominative"));
 
 		DataInitializer.createUiTranslations(session, "formType", "verbInf", true, new Pair<>("nds", "Infinitiv"),
 			new Pair<>("de", "Infinitiv"), new Pair<>("en", "Infinitive"));
