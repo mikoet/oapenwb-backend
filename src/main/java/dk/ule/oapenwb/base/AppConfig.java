@@ -48,7 +48,7 @@ public class AppConfig
 	@Getter
 	private ImportConfig importConfig = new ImportConfig();
 
-	public class DbConfig
+	public static class DbConfig
 	{
 		@Getter
 		private String hostname;
@@ -94,7 +94,7 @@ public class AppConfig
 		private int poolConnectionTimeout = 20_000;
 	}
 
-	public class ImportConfig
+	public static class ImportConfig
 	{
 		@Getter
 		private String inputDir;
