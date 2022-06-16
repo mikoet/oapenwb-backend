@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * <p>Request object for the {@link dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter}.</p>
@@ -22,7 +23,7 @@ public class CrbiRequest
 	@Getter
 	private boolean simulate;
 	@Getter
-	private String tagName;
+	private Set<String> tagNames;
 	@Getter
 	private Optional<Integer> transactionSkipCount = Optional.empty();
 }

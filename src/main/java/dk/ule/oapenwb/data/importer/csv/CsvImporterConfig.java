@@ -2,14 +2,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.data.importer.csv;
 
-import dk.ule.oapenwb.data.importer.csv.modules.ImportCondition;
+import dk.ule.oapenwb.data.importer.csv.components.*;
 import lombok.Data;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
- * Contains the settings
+ * Contains the configuration for a {@link CsvRowBasedImporter}.
  */
 @Data
 public class CsvImporterConfig
@@ -45,6 +44,21 @@ public class CsvImporterConfig
 	private CheckType checkType = CheckType.EverythingBeforeImport;
 
 	/**
+	 * If true no data will be persisted.
+	 */
+	private boolean simulate;
+
+	/**
+	 * Name of the filename the log will be written to.
+	 */
+	private String logFilename;
+
+	/**
+	 * List of tag names that all created lexemes will be tagged with.
+	 */
+	private Set<String> tagNames;
+
+	/**
 	 * Add the indices of the rows to be skipped on import.
 	 */
 	private Set<Integer> skipRows = new HashSet<>();
@@ -62,7 +76,23 @@ public class CsvImporterConfig
 	 */
 	private ImportCondition importCondition = null;
 
-	//private HashMap<LexemeProvider> lexemeProviders;
-	//private List<MappingMaker> mappingMakers;
-	//
+	/**
+	 *
+	 */
+	private Map<String, LexemeProvider> lexemeProviders = new HashMap<>();
+
+	/**
+	 *
+	 */
+	private Map<String, MultiLexemeProvider> multiLexemeProviders = new HashMap<>();
+
+	/**
+	 *
+	 */
+	private List<MappingMaker> mappingMakers = new LinkedList<>();
+
+	/**
+	 *
+	 */
+	private List<LinkMaker> linkMakers = new LinkedList<>();
 }

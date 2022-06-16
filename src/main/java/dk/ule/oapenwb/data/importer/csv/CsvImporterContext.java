@@ -2,9 +2,17 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.data.importer.csv;
 
+import dk.ule.oapenwb.data.importer.messages.MessageContainer;
+import dk.ule.oapenwb.entity.content.basedata.Language;
 import lombok.Data;
 
+import java.util.HashMap;
+
 @Data
-class CsvImporterContext
+public class CsvImporterContext
 {
+	private final CsvImporterConfig config;
+	private final MessageContainer messages = new MessageContainer();
+
+	private final HashMap<String, Language> languages = new HashMap<>();
 }
