@@ -49,4 +49,20 @@ public class Lemma
 	@Column(nullable = false)
 	@NotNull
 	private int fillLemma = FILL_LEMMA_AUTOMATICALLY;
+
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+		if (pre != null && pre.length() > 0) {
+			sb.append(pre);
+			sb.append(" ");
+		}
+		sb.append(main);
+		if (post != null && post.length() > 0) {
+			sb.append(" ");
+			sb.append(post);
+		}
+		return sb.toString();
+	}
 }

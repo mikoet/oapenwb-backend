@@ -17,6 +17,9 @@ import dk.ule.oapenwb.data.DataInitializer;
 import dk.ule.oapenwb.data.importer.FileImporter;
 import dk.ule.oapenwb.data.importer.ImportConfig;
 import dk.ule.oapenwb.data.importer.ImportResult;
+import dk.ule.oapenwb.data.importer.csv.CheckType;
+import dk.ule.oapenwb.data.importer.csv.CsvImporterConfig;
+import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.sheet.SheetConfig;
 import dk.ule.oapenwb.data.importer.sheet.SheetFileImporter;
 import dk.ule.oapenwb.data.importer.sheet.SheetResult;
@@ -25,6 +28,7 @@ import dk.ule.oapenwb.logic.users.LoginToken;
 import dk.ule.oapenwb.util.CurrentUser;
 import dk.ule.oapenwb.util.EmailUtil;
 import dk.ule.oapenwb.util.HibernateUtil;
+import dk.ule.oapenwb.util.SecurityUtil;
 import io.javalin.Javalin;
 import io.javalin.core.security.RouteRole;
 import io.javalin.http.Handler;
@@ -45,6 +49,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -456,11 +461,33 @@ public class Dict
 						ImportResult result = importer.run();
 						ctx.json(result);
 					}, adminRole);
+
 					path("sheet", () -> post(ctx -> {
 						final SheetConfig cfg = ctx.bodyAsClass(SheetConfig.class);
 						final SheetFileImporter importer = new SheetFileImporter(cfg, adminControllers);
 						SheetResult result = importer.run();
 						ctx.json(result);
+					}, adminRole));
+
+					path("newVersion", () -> get(ctx -> {
+						CsvImporterConfig cfg = new CsvImporterConfig();
+						cfg.setFilename("220521_0022_importliste_test.tsv");
+						cfg.setColumnCount(14);
+						cfg.setMinColumnCount(8);
+						cfg.setCheckType(CheckType.EverythingBeforeImport);
+						cfg.setSimulate(true);
+						cfg.setLogFilename(SecurityUtil.createRandomString(12, SecurityUtil.ALPHABET_AND_NUMBERS));
+						cfg.setTagNames(Set.of("imported", "loup1"));
+						cfg.setSkipRows(Set.of(1));
+						cfg.setPosColIndex(5);
+						cfg.setImportCondition(row -> {
+							String firstPart = row.getParts()[0];
+							return firstPart == null || firstPart.isEmpty();
+						});
+
+						CsvRowBasedImporter importer = new CsvRowBasedImporter(appConfig, adminControllers, cfg);
+						importer.run();
+
 					}, adminRole));
 				});
 			});
