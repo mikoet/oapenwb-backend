@@ -80,9 +80,16 @@ from Sememes S inner join Lexemes L on S.lexemeID = L.id
   inner join Variants V on (L.id = V.lexemeID and V.mainVariant)
 where S.id = :sememeID
 
--- Q900
+-- Q900 TODO deprecated
 -- FileImporter / Existence Checker -> lexemeExists (simple check)
-select 1 from Lexemes l
-  inner join Variants v on l.id = v.lexemeID
+SELECT 1 FROM Lexemes l
+  INNER JOIN Variants v ON l.id = v.lexemeID
   where v.mainVariant and v.main = :lemma
     and l.typeID = :typeID and l.langID = :langID;
+
+-- Q901 / T_Lexemes T_Variants
+-- FileImporter / Check for existence of a lexeme via the lemma of a variant
+SELECT distinct l.id AS id FROM Lexemes l
+  INNER JOIN Variants v ON l.id = v.lexemeID
+  WHERE v.pre = :pre AND v.main = :main AND v.post = :post AND v.also = :also
+
