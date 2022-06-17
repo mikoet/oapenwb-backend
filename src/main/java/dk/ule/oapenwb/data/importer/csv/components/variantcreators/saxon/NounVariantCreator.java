@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-only
-package dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.multi;
+package dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon;
 
 import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterContext;
@@ -54,7 +54,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 	}
 
 	/**
-	 * Examples of input:
+	 * Examples of input for NSS mode:
 	 *
 	 * deepde, deepden f
 	 * deert, deerten ~ deerter
@@ -64,6 +64,17 @@ public class NounVariantCreator extends AbstractVariantCreator
 	 * hauptanklaagde (f, m)
 	 * minsk ~ minske, minsken (m, n)
 	 * byspil (n)
+	 *
+	 * Examples of input for DBO mode:
+	 * de Kärmse~Karmse
+	 * de(n) kastangappel
+	 * Kegelrubb
+	 * de Dogg(e)
+	 * dat Binnenland
+	 * de Dänne, -n
+	 * Bootshall, -en
+	 * dat Gordencenter, -s
+	 * de(n) Deef, Deev/Deven    <--- sügt uut nå formaatfeyler?
 	 *
 	 * @param context the importer context instance
 	 * @param rowData the current rowData instance

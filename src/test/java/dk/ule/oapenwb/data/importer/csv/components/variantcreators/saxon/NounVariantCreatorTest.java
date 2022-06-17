@@ -1,9 +1,10 @@
 // SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-only
-package dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.multi;
+package dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon;
 
 import dk.ule.oapenwb.data.importer.VariantUtil;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
+import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.NounVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.*;
