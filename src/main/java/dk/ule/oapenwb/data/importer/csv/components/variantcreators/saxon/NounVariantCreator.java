@@ -21,6 +21,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 	public static final String FT_SINGULAR_NOMINATIVE = "sn"; // singular nominative
 	public static final String FT_PLURAL_NOMINATIVE = "pn"; // plural nominative
 
+	private final ImportMode mode;
 	private final int orthographyID;
 
 	// FormTypes are the same for every language
@@ -34,12 +35,14 @@ public class NounVariantCreator extends AbstractVariantCreator
 	public NounVariantCreator(
 		AdminControllers adminControllers,
 		CsvRowBasedImporter.TypeFormPair typeFormsPair,
+		ImportMode mode,
 		int orthographyID,
 		int columnIndex,
 		int dialectsColumnIndex)
 	{
 		super(adminControllers, typeFormsPair, columnIndex);
 
+		this.mode = mode;
 		this.orthographyID = orthographyID;
 
 		// Trek de formtypen ruut
@@ -54,6 +57,23 @@ public class NounVariantCreator extends AbstractVariantCreator
 	}
 
 	/**
+	 * @param context the importer context instance
+	 * @param rowData the current rowData instance
+	 * @return a list of variants found in the rowData via columnIndex
+	 */
+	@Override
+	public List<Variant> create(CsvImporterContext context, RowData rowData)
+	{
+		List<Variant> result;
+		switch (this.mode) {
+			case NSS -> result = createNSS(context, rowData);
+			case DBO -> result = createDBO(context, rowData);
+			default -> throw new RuntimeException(String.format("Unsupported mode '%s'", this.mode));
+		}
+		return result;
+	}
+
+	/**
 	 * Examples of input for NSS mode:
 	 *
 	 * deepde, deepden f
@@ -65,23 +85,11 @@ public class NounVariantCreator extends AbstractVariantCreator
 	 * minsk ~ minske, minsken (m, n)
 	 * byspil (n)
 	 *
-	 * Examples of input for DBO mode:
-	 * de Kärmse~Karmse
-	 * de(n) kastangappel
-	 * Kegelrubb
-	 * de Dogg(e)
-	 * dat Binnenland
-	 * de Dänne, -n
-	 * Bootshall, -en
-	 * dat Gordencenter, -s
-	 * de(n) Deef, Deev/Deven    <--- sügt uut nå formaatfeyler?
-	 *
 	 * @param context the importer context instance
 	 * @param rowData the current rowData instance
 	 * @return a list of variants found in the rowData via columnIndex
 	 */
-	@Override
-	public List<Variant> create(CsvImporterContext context, RowData rowData)
+	private List<Variant> createNSS(CsvImporterContext context, RowData rowData)
 	{
 		String text = rowData.getParts()[this.columnIndex - 1];
 
@@ -145,7 +153,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 
 					// the second part is special in that it might contain one or more genera
 					String partTwo = parts[1].trim();
-					Pair<String, Set<String>> generaPair = extractGenera(partTwo);
+					Pair<String, Set<String>> generaPair = extractGeneraNSS(partTwo);
 
 					String pluNom = CreatorUtils.getVariantForm(generaPair.getLeft(), i);
 
@@ -164,7 +172,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 
 				// the second part is special in that it might contain one or more genera
 				String partTwo = parts[1].trim();
-				Pair<String, Set<String>> generaPair = extractGenera(partTwo);
+				Pair<String, Set<String>> generaPair = extractGeneraNSS(partTwo);
 
 				String pluNom = CreatorUtils.getVariantForm(generaPair.getLeft(), 0);
 
@@ -188,7 +196,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 				boolean first = true;
 				for (int i = 0; i < numberOfVariants; i++) {
 					// the second part is special in that it might contain one or more genera
-					Pair<String, Set<String>> generaPair = extractGenera(text);
+					Pair<String, Set<String>> generaPair = extractGeneraNSS(text);
 					String sinNom = CreatorUtils.getVariantForm(generaPair.getLeft(), i);
 
 					Variant variant = createVariant(context, sinNom);
@@ -202,7 +210,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 			} else {
 				// 3.a) It only contains one variant
 				// the second part is special in that it might contain one or more genera
-				Pair<String, Set<String>> generaPair = extractGenera(text);
+				Pair<String, Set<String>> generaPair = extractGeneraNSS(text);
 				String sinNom = CreatorUtils.getVariantForm(generaPair.getLeft(), 0);
 
 				Variant variant = createVariant(context, sinNom);
@@ -217,7 +225,150 @@ public class NounVariantCreator extends AbstractVariantCreator
 		return result;
 	}
 
-	private Pair<String, Set<String>> extractGenera(String partTwo)
+	/**
+	 * Examples of input for DBO mode:
+	 *
+	 * Kegelrubb
+	 * de Dogg(e)
+	 * de(n) kastangappel
+	 * dat Binnenland
+	 * de Kärmse~Karmse
+	 *
+	 * Disch, Dischen
+	 * Bootshall, -en
+	 * de Dänne, -n
+	 * dat Gordencenter, -s
+	 * de(n) Deef, Deev/Deven    <--- sügt uut nå formaatfeyler? (FIX)
+	 *
+	 * @param context the importer context instance
+	 * @param rowData the current rowData instance
+	 * @return a list of variants found in the rowData via columnIndex
+	 */
+	private List<Variant> createDBO(CsvImporterContext context, RowData rowData)
+	{
+		String text = rowData.getParts()[this.columnIndex - 1];
+
+		List<Variant> result = new LinkedList<>();
+		if (text.isBlank()) {
+			return result;
+		}
+
+		if (text.contains(",")) {
+			// !! Processing of nouns with 2 parts definition + optional genera in one of the two specification forms.
+			// !! Nouns in this format may also contain multiple variants separated via ~.
+
+			// FIX Some variants seem to be described via / instead of ~.
+			text = text.replace("/", "~");
+
+			// 1) Check for the 2 parts
+			String[] parts = text.split(",");
+			if (parts.length != 2) {
+				throw new RuntimeException("Noun '" + text + "' in text " + rowData.getLineNumber() + " does not consist of 2 parts");
+			}
+
+			// 2) Check if it has variants (char ~ will be part of the text)
+			boolean hasMultipleVariants = text.contains("~");
+			if (hasMultipleVariants) {
+				// 3.a) It has multiple variants.
+				// Find the number of variants within the text (find the largest number of variants within one part)
+				int numberOfVariants = 1;
+				for (String part : parts) {
+					if (part.contains("~")) {
+						int variantsOfPart = StringUtils.countMatches(part, "~") + 1;
+						if (variantsOfPart > numberOfVariants) {
+							numberOfVariants = variantsOfPart;
+						}
+					}
+				}
+
+				// 3.b) Create the variants
+				boolean first = true;
+				for (int i = 0; i < numberOfVariants; i++) {
+					// the first part is special in that it might contain the genus
+					String partOne = parts[0];
+					Pair<String, Set<String>> generaPair = extractGeneraDBO(partOne);
+					String sinNom = CreatorUtils.getVariantForm(generaPair.getLeft(), i);
+
+					String pluNom = CreatorUtils.getVariantForm(parts[1], i);
+					if (pluNom.startsWith("-") && StringUtils.countMatches(pluNom, '-') == 1) {
+						pluNom = pluNom.replace("-", sinNom);
+					} else if (StringUtils.countMatches(pluNom, '-') > 1) {
+						throw new RuntimeException(String.format("Plural definition not understandable: '%s'", pluNom));
+					}
+
+					Variant variant = createVariant(context, sinNom, pluNom);
+					if (first) {
+						variant.setMainVariant(true);
+						first = false;
+					}
+					variant.getProperties().put("genera", generaPair.getRight());
+					result.add(variant);
+				}
+			} else {
+				// 4.a) It only contains one variant
+				// Create it.
+				// the first part is special in that it might contain the genus
+				String partOne = parts[0];
+				Pair<String, Set<String>> generaPair = extractGeneraDBO(partOne);
+				String sinNom = CreatorUtils.getVariantForm(generaPair.getLeft(), 0);
+
+				String pluNom = CreatorUtils.getVariantForm(parts[1], 0);
+				if (pluNom.startsWith("-") && StringUtils.countMatches(pluNom, '-') == 1) {
+					pluNom = pluNom.replace("-", sinNom);
+				} else if (StringUtils.countMatches(pluNom, '-') > 1) {
+					throw new RuntimeException(String.format("Plural definition not understandable: '%s'", pluNom));
+				}
+
+				Variant variant = createVariant(context, sinNom, pluNom);
+				variant.setMainVariant(true);
+				variant.getProperties().put("genera", generaPair.getRight());
+				result.add(variant);
+			}
+		} else {
+			// !! Processing of nouns with 1 part definition only + optional genera.
+			// !! Nouns in this format may also contain multiple variants separated via ~.
+
+			// 1) Check if it has variants (char ~ will be part of the text)
+			boolean hasMultipleVariants = text.contains("~");
+			if (hasMultipleVariants) {
+				// 2.a) It has multiple variants.
+				// Find the number of variants within the text (find the largest number of variants within one part)
+				int numberOfVariants = StringUtils.countMatches(text, "~") + 1;
+
+				// 2.b) Create the variants
+				boolean first = true;
+				for (int i = 0; i < numberOfVariants; i++) {
+					// the first part is special in that it might contain the genus
+					Pair<String, Set<String>> generaPair = extractGeneraDBO(text);
+					String sinNom = CreatorUtils.getVariantForm(generaPair.getLeft(), i);
+
+					Variant variant = createVariant(context, sinNom);
+					if (first) {
+						variant.setMainVariant(true);
+						first = false;
+					}
+					variant.getProperties().put("genera", generaPair.getRight());
+					result.add(variant);
+				}
+			} else {
+				// 3.a) It only contains one variant
+				// the first part is special in that it might contain the genus
+				Pair<String, Set<String>> generaPair = extractGeneraDBO(text);
+				String sinNom = CreatorUtils.getVariantForm(generaPair.getLeft(), 0);
+
+				Variant variant = createVariant(context, sinNom);
+				variant.setMainVariant(true);
+				variant.getProperties().put("genera", generaPair.getRight());
+				result.add(variant);
+			}
+		}
+
+		CreatorUtils.readAndApplyDialects(result, rowData, this.dialectsColumnIndex);
+
+		return result;
+	}
+
+	private Pair<String, Set<String>> extractGeneraNSS(String partTwo)
 	{
 		Set<String> genera = new HashSet<>();
 		partTwo = partTwo.trim();
@@ -255,6 +406,31 @@ public class NounVariantCreator extends AbstractVariantCreator
 		}
 
 		return new Pair<>(partTwo, genera);
+	}
+
+	private Pair<String, Set<String>> extractGeneraDBO(String partOne)
+	{
+		Set<String> genera = new HashSet<>();
+		partOne = partOne.trim();
+
+		if (partOne.startsWith("de ")) {
+			partOne = partOne.substring(3);
+			genera.add("f");
+		} else if (partOne.startsWith("de(n) ")) {
+			partOne = partOne.substring(6);
+			genera.add("m");
+		} else if (partOne.startsWith("dat ")) {
+			partOne = partOne.substring(4);
+			genera.add("n");
+		}
+
+		for (var genus : genera) {
+			if (!allowedGenera.contains(genus)) {
+				throw new RuntimeException(String.format("Specified genus '%s' is unknown.", genus));
+			}
+		}
+
+		return new Pair<>(partOne, genera);
 	}
 
 	private Variant createVariant(CsvImporterContext context, String sinNom, String pluNom)

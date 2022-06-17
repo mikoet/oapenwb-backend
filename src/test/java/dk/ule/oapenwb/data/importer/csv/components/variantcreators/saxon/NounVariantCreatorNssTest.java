@@ -4,7 +4,6 @@ package dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon;
 
 import dk.ule.oapenwb.data.importer.VariantUtil;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
-import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.NounVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.*;
@@ -23,7 +22,7 @@ import java.util.Set;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
-public class NounVariantCreatorTest
+public class NounVariantCreatorNssTest
 {
 	private final static int oNSS_ID = 1;
 	private final static int COLUMN_INDEX = 1;
@@ -53,7 +52,8 @@ public class NounVariantCreatorTest
 	@Test
 	void testSingleFormDefinitions()
 	{
-		NounVariantCreator creator = new NounVariantCreator(null, typeFormsPair, oNSS_ID, COLUMN_INDEX, DIALECT_COLUMN_INDEX);
+		NounVariantCreator creator = new NounVariantCreator(null, typeFormsPair, ImportMode.NSS, oNSS_ID, COLUMN_INDEX,
+			DIALECT_COLUMN_INDEX);
 
 		{
 			// Check 1: one single form definition w/o multiple variants and w/o genera
@@ -167,7 +167,8 @@ public class NounVariantCreatorTest
 	@Test
 	void testMultiFormDefinitions()
 	{
-		NounVariantCreator creator = new NounVariantCreator(null, typeFormsPair, oNSS_ID, COLUMN_INDEX, DIALECT_COLUMN_INDEX);
+		NounVariantCreator creator = new NounVariantCreator(null, typeFormsPair, ImportMode.NSS, oNSS_ID, COLUMN_INDEX,
+			DIALECT_COLUMN_INDEX);
 
 		{
 			// Check 1: one multi form definition w/o multiple variants and w/o genera
