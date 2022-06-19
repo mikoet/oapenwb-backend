@@ -40,11 +40,11 @@ public class VerbVariantCreator extends AbstractVariantCreator
 	private final int orthographyID;
 
 	// FormTypes are the same for every language
-	private final LexemeFormType ftInf;
-	private final LexemeFormType ftInfDiv;
-	private final LexemeFormType ftForm1; // 1st person singular, present time
-	private final LexemeFormType ftForm2; // 1st person singular, past time
-	private final LexemeFormType ftForm3; // particip perfect / II
+	private LexemeFormType ftInf;
+	private LexemeFormType ftInfDiv;
+	private LexemeFormType ftForm1; // 1st person singular, present time
+	private LexemeFormType ftForm2; // 1st person singular, past time
+	private LexemeFormType ftForm3; // particip perfect / II
 
 	private final int dialectsColumnIndex;
 
@@ -53,14 +53,24 @@ public class VerbVariantCreator extends AbstractVariantCreator
 
 	public VerbVariantCreator(
 		AdminControllers adminControllers,
-		CsvRowBasedImporter.TypeFormPair typeFormsPair,
+		String partOfSpeech,
 		int orthographyID,
 		int columnIndex,
 		int dialectsColumnIndex)
 	{
-		super(adminControllers, typeFormsPair, columnIndex);
+		super(adminControllers, partOfSpeech, columnIndex);
 
 		this.orthographyID = orthographyID;
+
+		this.dialectsColumnIndex = dialectsColumnIndex;
+
+		allowedAuxilaries.put("hevven", "hevven_v");
+		allowedAuxilaries.put("weasen", "weasen_v");
+	}
+
+	@Override
+	public AbstractVariantCreator initialise(CsvRowBasedImporter.TypeFormPair typeFormsPair) {
+		super.initialise(typeFormsPair);
 
 		// Trek de formtypen ruut
 		this.ftInf = typeFormsPair.getRight().get(FT_INFINITIVE);
@@ -69,10 +79,7 @@ public class VerbVariantCreator extends AbstractVariantCreator
 		this.ftForm2 = typeFormsPair.getRight().get(FT_FORM2);
 		this.ftForm3 = typeFormsPair.getRight().get(FT_FORM3);
 
-		this.dialectsColumnIndex = dialectsColumnIndex;
-
-		allowedAuxilaries.put("hevven", "hevven_v");
-		allowedAuxilaries.put("weasen", "weasen_v");
+		return this;
 	}
 
 	/**

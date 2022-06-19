@@ -4,10 +4,11 @@ package dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon;
 
 import dk.ule.oapenwb.data.importer.VariantUtil;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
-import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.VerbVariantCreator;
+import dk.ule.oapenwb.data.importer.csv.components.variantcreators.AbstractVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.entity.basis.ApiAction;
-import dk.ule.oapenwb.entity.content.basedata.*;
+import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
+import dk.ule.oapenwb.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import org.junit.jupiter.api.BeforeAll;
@@ -62,7 +63,8 @@ public class VerbVariantCreatorTest
 	@Test
 	void testSingleFormDefinitions()
 	{
-		VerbVariantCreator creator = new VerbVariantCreator(null, typeFormsPair, oNSS_ID, COLUMN_INDEX, DIALECT_COLUMN_INDEX);
+		AbstractVariantCreator creator = new VerbVariantCreator(null, LexemeType.TYPE_VERB, oNSS_ID, COLUMN_INDEX,
+			DIALECT_COLUMN_INDEX).initialise(typeFormsPair);
 
 		{
 			// Check 1: one single form definition w/o divider, w/o multiple variants and w/o auxilary verbs
@@ -168,7 +170,8 @@ public class VerbVariantCreatorTest
 	@Test
 	void testMultiFormDefinitions()
 	{
-		VerbVariantCreator creator = new VerbVariantCreator(null, typeFormsPair, oNSS_ID, COLUMN_INDEX, DIALECT_COLUMN_INDEX);
+		AbstractVariantCreator creator = new VerbVariantCreator(null, LexemeType.TYPE_VERB, oNSS_ID, COLUMN_INDEX,
+			DIALECT_COLUMN_INDEX).initialise(typeFormsPair);
 
 		{
 			// Check 1: one multi form definition w/o divider, w/o multiple variants and with auxilary verb

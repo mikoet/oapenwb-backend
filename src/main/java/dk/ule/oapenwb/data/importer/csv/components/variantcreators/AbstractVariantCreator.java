@@ -10,6 +10,7 @@ import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -22,23 +23,42 @@ public abstract class AbstractVariantCreator
 	private static long NEXT_VARIANT_ID = -1L;
 
 	protected final AdminControllers adminControllers;
-	protected final CsvRowBasedImporter.TypeFormPair typeFormsPair;
+
+	@Getter
+	protected final String partOfSpeech;
+
+	@Getter
 	protected final int columnIndex;
+
+	protected CsvRowBasedImporter.TypeFormPair typeFormsPair;
 
 	public abstract List<Variant> create(CsvImporterContext context, RowData rowData);
 
 	public AbstractVariantCreator(
 		AdminControllers adminControllers,
-		CsvRowBasedImporter.TypeFormPair typeFormsPair,
+		String partOfSpeech,
 		int columnIndex)
+	{
+		this.adminControllers = adminControllers;
+		this.partOfSpeech = partOfSpeech;
+		this.columnIndex = columnIndex;
+	}
+
+	/**
+	 * <p>Unfortunately we do not really have the typeFormsPair when creating the creator in a setting. That is why
+	 * initialise has to be called to a later time and before the method create(…) will be called(!).</p>
+	 *
+	 * @param typeFormsPair
+	 * @return itself
+	 */
+	public AbstractVariantCreator initialise(CsvRowBasedImporter.TypeFormPair typeFormsPair)
 	{
 		if (typeFormsPair == null) {
 			throw new RuntimeException("Something went wrong as the type-form pair is null. Maybe the PoS is unknown?");
 		}
-
-		this.adminControllers = adminControllers;
 		this.typeFormsPair = typeFormsPair;
-		this.columnIndex = columnIndex;
+
+		return this;
 	}
 
 	protected Variant createVariant(CsvImporterContext context, List<LexemeForm> lexemeForms,

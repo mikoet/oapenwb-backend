@@ -4,6 +4,7 @@ package dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon;
 
 import dk.ule.oapenwb.data.importer.VariantUtil;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
+import dk.ule.oapenwb.data.importer.csv.components.variantcreators.AbstractVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
@@ -53,8 +54,8 @@ public class NounVariantCreatorDboTest
 	@Test
 	void testSingleFormDefinitions()
 	{
-		NounVariantCreator creator = new NounVariantCreator(null, typeFormsPair, ImportMode.DBO, oDBO_ID, COLUMN_INDEX,
-			DIALECT_COLUMN_INDEX);
+		AbstractVariantCreator creator = new NounVariantCreator(null, LexemeType.TYPE_NOUN, ImportMode.DBO, oDBO_ID,
+			COLUMN_INDEX, DIALECT_COLUMN_INDEX).initialise(typeFormsPair);
 
 		{
 			// Check 1: one single form definition w/o multiple variants and w/o genera
@@ -141,8 +142,8 @@ public class NounVariantCreatorDboTest
 	@Test
 	void testMultiFormDefinitions()
 	{
-		NounVariantCreator creator = new NounVariantCreator(null, typeFormsPair, ImportMode.DBO, oDBO_ID, COLUMN_INDEX,
-			DIALECT_COLUMN_INDEX);
+		AbstractVariantCreator creator = new NounVariantCreator(null, LexemeType.TYPE_NOUN, ImportMode.DBO, oDBO_ID,
+			COLUMN_INDEX, DIALECT_COLUMN_INDEX).initialise(typeFormsPair);
 
 		{
 			// Check 1: one multi form definition w/o multiple variants and w/o genus

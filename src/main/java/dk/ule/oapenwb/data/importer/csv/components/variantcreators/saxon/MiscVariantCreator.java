@@ -11,34 +11,37 @@ import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
-import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 public class MiscVariantCreator extends AbstractVariantCreator
 {
 	private final int orthographyID;
 
 	// FormTypes are the same for every language
-	private final LexemeFormType ftFirst; // form type depending on the LexemeType
+	private LexemeFormType ftFirst; // form type depending on the LexemeType
 
 	private final int dialectsColumnIndex;
 
-	@Getter
-	private final String partOfSpeech;
-
 	public MiscVariantCreator(
 		AdminControllers adminControllers,
-		CsvRowBasedImporter.TypeFormPair typeFormsPair,
+		String partOfSpeech,
 		int orthographyID,
 		int columnIndex,
-		int dialectsColumnIndex,
-		String partOfSpeech)
+		int dialectsColumnIndex)
 	{
-		super(adminControllers, typeFormsPair, columnIndex);
+		super(adminControllers, partOfSpeech, columnIndex);
 
 		this.orthographyID = orthographyID;
+		this.dialectsColumnIndex = dialectsColumnIndex;
+	}
+
+	@Override
+	public AbstractVariantCreator initialise(CsvRowBasedImporter.TypeFormPair typeFormsPair) {
+		super.initialise(typeFormsPair);
 
 		// Trek den eyrsten formtypen ruut
 		Optional<LexemeFormType> optFormType = typeFormsPair.getRight().values().stream().findFirst();
@@ -49,8 +52,7 @@ public class MiscVariantCreator extends AbstractVariantCreator
 				"First (i.e. default) form type could not be found for PoS '%s'.", partOfSpeech));
 		}
 
-		this.dialectsColumnIndex = dialectsColumnIndex;
-		this.partOfSpeech = partOfSpeech;
+		return this;
 	}
 
 	/**

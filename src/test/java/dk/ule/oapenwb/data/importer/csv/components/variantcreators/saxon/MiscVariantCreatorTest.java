@@ -4,10 +4,11 @@ package dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon;
 
 import dk.ule.oapenwb.data.importer.VariantUtil;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
-import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.MiscVariantCreator;
+import dk.ule.oapenwb.data.importer.csv.components.variantcreators.AbstractVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.entity.basis.ApiAction;
-import dk.ule.oapenwb.entity.content.basedata.*;
+import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
+import dk.ule.oapenwb.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import org.junit.jupiter.api.BeforeAll;
@@ -50,8 +51,8 @@ public class MiscVariantCreatorTest
 	@Test
 	void testVariousAdjectives()
 	{
-		MiscVariantCreator creator = new MiscVariantCreator(null, typeFormsPair, oNSS_ID, COLUMN_INDEX,
-			DIALECT_COLUMN_INDEX, "ADJ");
+		AbstractVariantCreator creator = new MiscVariantCreator(null, LexemeType.TYPE_ADJ, oNSS_ID, COLUMN_INDEX,
+			DIALECT_COLUMN_INDEX).initialise(typeFormsPair);
 
 		{
 			// Check 1: definition w/o multiple variants

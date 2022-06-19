@@ -25,8 +25,8 @@ public class NounVariantCreator extends AbstractVariantCreator
 	private final int orthographyID;
 
 	// FormTypes are the same for every language
-	private final LexemeFormType ftSn; // singular nominative
-	private final LexemeFormType ftPn; // plural nominative
+	private LexemeFormType ftSn; // singular nominative
+	private LexemeFormType ftPn; // plural nominative
 
 	private final int dialectsColumnIndex;
 
@@ -34,26 +34,33 @@ public class NounVariantCreator extends AbstractVariantCreator
 
 	public NounVariantCreator(
 		AdminControllers adminControllers,
-		CsvRowBasedImporter.TypeFormPair typeFormsPair,
+		String partOfSpeech,
 		ImportMode mode,
 		int orthographyID,
 		int columnIndex,
 		int dialectsColumnIndex)
 	{
-		super(adminControllers, typeFormsPair, columnIndex);
+		super(adminControllers, partOfSpeech, columnIndex);
 
 		this.mode = mode;
 		this.orthographyID = orthographyID;
-
-		// Trek de formtypen ruut
-		this.ftSn = typeFormsPair.getRight().get(FT_SINGULAR_NOMINATIVE);
-		this.ftPn = typeFormsPair.getRight().get(FT_PLURAL_NOMINATIVE);
 
 		this.dialectsColumnIndex = dialectsColumnIndex;
 
 		allowedGenera.add("f");
 		allowedGenera.add("m");
 		allowedGenera.add("n");
+	}
+
+	@Override
+	public AbstractVariantCreator initialise(CsvRowBasedImporter.TypeFormPair typeFormsPair) {
+		super.initialise(typeFormsPair);
+
+		// Trek de formtypen ruut
+		this.ftSn = typeFormsPair.getRight().get(FT_SINGULAR_NOMINATIVE);
+		this.ftPn = typeFormsPair.getRight().get(FT_PLURAL_NOMINATIVE);
+
+		return this;
 	}
 
 	/**
