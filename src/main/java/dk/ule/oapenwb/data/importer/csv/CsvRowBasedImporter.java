@@ -113,14 +113,6 @@ public class CsvRowBasedImporter
 	 */
 	private void initialise() throws CodeException
 	{
-		// Find the languages referenced in the LexemeProviders and MultiLexemeProviders
-		for (var provider : config.getLexemeProviders().values()) {
-			context.getLanguages().put(provider.getLang(), getLanguage(provider.getLang()));
-		}
-		for (var provider : config.getMultiLexemeProviders().values()) {
-			context.getLanguages().put(provider.getLang(), getLanguage(provider.getLang()));
-		}
-
 		// Find the binominal nomenc. LinkType
 		/* TODO This is something the LinkMaker should handle
 		for (LinkType linkType : adminControllers.getLinkTypesController().list()) {
@@ -154,9 +146,16 @@ public class CsvRowBasedImporter
 			}
 		}
 
-		// TODO Create the lexeme creators
-		// this.nounCreator = new NounVariantCreator();
-		// this.verbCreator = new VerbVariantCreator(adminControllers, typeFormMap.get(LexemeType.TYPE_VERB));
+		// Find the languages referenced in the LexemeProviders and MultiLexemeProviders
+		// and call initialise() on each of them
+		for (var provider : config.getLexemeProviders().values()) {
+			context.getLanguages().put(provider.getLang(), getLanguage(provider.getLang()));
+			provider.initialise(typeFormMap);
+		}
+		for (var provider : config.getMultiLexemeProviders().values()) {
+			context.getLanguages().put(provider.getLang(), getLanguage(provider.getLang()));
+			// TODO provider.initialise(typeFormMap);
+		}
 	}
 
 	private Language getLanguage(String locale) throws CodeException {
@@ -169,7 +168,7 @@ public class CsvRowBasedImporter
 	}
 
 	public CrbiResult run() {
-		CrbiResult result = new CrbiResult();
+		context.setResult(new CrbiResult());
 		try {
 			// De ID-prövings uutstellen
 			HibernateUtil.setDisableJsonIdChecks(true);
@@ -181,17 +180,30 @@ public class CsvRowBasedImporter
 			if (!config.isSimulate()) {
 				// TODO saveData(result, directives);
 			}
-			result.setSuccessful(true);
+			context.getResult().setSuccessful(true);
 		} catch (IOException /*| CodeException */ e) {
 			LOG.error("Import was aborted");
 		}
 
 		HibernateUtil.setDisableJsonIdChecks(false);
 
+		// Save the recorded messages to file system
+		try {
+			Path outputFilePath = Paths.get(appConfig.getImportConfig().getOutputDir(), config.getLogFilename());
+			dk.ule.oapenwb.util.io.Logger msgLogger = new dk.ule.oapenwb.util.io.Logger(outputFilePath.toString());
+			context.getMessages().printToLogger(msgLogger);
+			msgLogger.close();
+		} catch (IOException e) {
+			LOG.error("Writing message log to file failed", e);
+		}
+
+		// Return the result and reset it on the context
+		CrbiResult result = context.getResult();
 		LOG.info("readCount: " + result.getReadCount());
 		LOG.info("saveCount: " + result.getSaveCount());
 		LOG.info("skipCount: " + result.getSkipCount());
 		LOG.info("successful: " + result.isSuccessful());
+		context.setResult(null);
 
 		return result;
 	}
@@ -211,11 +223,14 @@ public class CsvRowBasedImporter
 
 				// Skip row if configured to do so
 				if (skipRows.contains(lineNumber)) {
+					// TODO Add INFO message
+					context.getResult().incSkipCount();
 					continue;
 				}
 
 				// Empty and blank lines will be skipped, too
 				if (line.isBlank()) {
+					context.getResult().incSkipCount();
 					continue;
 				}
 
@@ -227,11 +242,14 @@ public class CsvRowBasedImporter
 					// We'll not save it here to save a little memory.
 					String PoS = parts[config.getPosColIndex() - 1];
 					if (PoS == null || PoS.isBlank()) {
-						throw new RuntimeException("PoS is empty");
+						throw new RuntimeException("PoS is empty. Skipping row.");
+					}
+					if (!config.getAllowedPos().contains(PoS)) {
+						throw new RuntimeException(String.format("PoS '%s' is not allowed. Skipping row.", PoS));
 					}
 					TypeFormPair typeFormPair = this.typeFormMap.get(PoS);
 					if (typeFormPair == null || typeFormPair.getLeft() == null) {
-						throw new RuntimeException(String.format("PoS '%s' is not known", PoS));
+						throw new RuntimeException(String.format("PoS '%s' is not (fully) configured in database", PoS));
 					}
 
 					// Create the RowData instance
@@ -239,6 +257,10 @@ public class CsvRowBasedImporter
 
 					if (config.getImportCondition() == null || config.getImportCondition().meetsCondition(row)) {
 						result.add(row);
+						context.getResult().incReadCount();
+					} else {
+						// TODO Add INFO message
+						context.getResult().incSkipCount();
 					}
 				/*
 				} catch (CodeException e) {
@@ -284,8 +306,7 @@ public class CsvRowBasedImporter
 	private void buildStructures(List<RowData> rowDataList)
 	{
 		LOG.info("Building structures");
-		for (RowData row : rowDataList) {
-
+		rowLoop: for (RowData row : rowDataList) {
 			try {
 				// Get the LexemeType
 				String PoS = row.getParts()[config.getPosColIndex() - 1];
@@ -322,13 +343,29 @@ public class CsvRowBasedImporter
 				 */
 
 				for (var provider : config.getLexemeProviders().values()) {
-					LexemeDetailedDTO dto = provider.provide(context, typeFormPair, row);
+					try {
+						LexemeDetailedDTO dto = provider.provide(context, typeFormPair, row);
+						if (provider.isMustProvide() && dto == null) {
+							// If an empty lexeme is provided we will skip this row
+							String message = String.format("Row was skipped since %s returned no lexeme",
+								provider.getMessageContext());
+							context.getMessages().add("build structures", MessageType.Warning, message,
+								row.getLineNumber(), -1);
+							continue rowLoop;
+						}
+						// TOWO hwa
+					} catch (Exception e) {
+						String message = String.format("Row was skipped since %s reported a problem: %s",
+							provider.getMessageContext(), e.getMessage());
+						throw new RuntimeException(message);
+					}
 				}
+
 				for (var provider : config.getMultiLexemeProviders().values()) {
 				}
 
-				LOG.info(String.format("Row with index %d is there and has %d parts",
-					row.getLineNumber(), row.getParts().length));
+				/*LOG.info(String.format("Row with index %d is there and has %d parts",
+					row.getLineNumber(), row.getParts().length));*/
 			} catch (Exception e) {
 				context.getMessages().add("build structures", MessageType.Error, e.getMessage(), row.getLineNumber(), -1);
 			}

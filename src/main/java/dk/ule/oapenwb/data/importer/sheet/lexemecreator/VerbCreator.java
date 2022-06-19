@@ -72,7 +72,8 @@ public class VerbCreator extends AbstractCreator
 		// 1) Check for the 4 parts
 		String[] parts = line.split(",");
 		if (parts.length != 4) {
-			throw new RuntimeException("Verb '" + line + "' in line " + config.getLineNo() + " does not consist of 4 parts");
+			throw new RuntimeException(
+				"Verb '" + line + "' in line " + config.getLineNo() + " does not consist of 4 parts");
 		}
 
 		// 2) Check if it has variants (char ~ will be part of the line)

@@ -20,6 +20,7 @@ import dk.ule.oapenwb.data.importer.ImportResult;
 import dk.ule.oapenwb.data.importer.csv.CheckType;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterConfig;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
+import dk.ule.oapenwb.data.importer.csv.setting.SaxonFirstImportSetting;
 import dk.ule.oapenwb.data.importer.sheet.SheetConfig;
 import dk.ule.oapenwb.data.importer.sheet.SheetFileImporter;
 import dk.ule.oapenwb.data.importer.sheet.SheetResult;
@@ -28,7 +29,6 @@ import dk.ule.oapenwb.logic.users.LoginToken;
 import dk.ule.oapenwb.util.CurrentUser;
 import dk.ule.oapenwb.util.EmailUtil;
 import dk.ule.oapenwb.util.HibernateUtil;
-import dk.ule.oapenwb.util.SecurityUtil;
 import io.javalin.Javalin;
 import io.javalin.core.security.RouteRole;
 import io.javalin.http.Handler;
@@ -469,21 +469,13 @@ public class Dict
 						ctx.json(result);
 					}, adminRole));
 
-					path("newVersion", () -> get(ctx -> {
-						CsvImporterConfig cfg = new CsvImporterConfig();
-						cfg.setFilename("220521_0022_importliste_test.tsv");
-						cfg.setColumnCount(14);
-						cfg.setMinColumnCount(8);
+					path("saxonFI", () -> get(ctx -> {
+						SaxonFirstImportSetting setting = new SaxonFirstImportSetting(adminControllers);
+						CsvImporterConfig cfg = setting.getConfig();
+
+						cfg.setFilename("220619_1245_importliste_test.tsv");
 						cfg.setCheckType(CheckType.EverythingBeforeImport);
 						cfg.setSimulate(true);
-						cfg.setLogFilename(SecurityUtil.createRandomString(12, SecurityUtil.ALPHABET_AND_NUMBERS));
-						cfg.setTagNames(Set.of("imported", "loup1"));
-						cfg.setSkipRows(Set.of(1));
-						cfg.setPosColIndex(5);
-						cfg.setImportCondition(row -> {
-							String firstPart = row.getParts()[0];
-							return firstPart == null || firstPart.isEmpty();
-						});
 
 						CsvRowBasedImporter importer = new CsvRowBasedImporter(appConfig, adminControllers, cfg);
 						importer.run();

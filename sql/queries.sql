@@ -89,7 +89,14 @@ SELECT 1 FROM Lexemes l
 
 -- Q901 / T_Lexemes T_Variants
 -- FileImporter / Check for existence of a lexeme via the lemma of a variant
-SELECT distinct l.id AS id FROM Lexemes l
+SELECT distinct l.id AS lexemeID FROM Lexemes l
   INNER JOIN Variants v ON l.id = v.lexemeID
-  WHERE v.pre = :pre AND v.main = :main AND v.post = :post AND v.also = :also
-
+  INNER JOIN LexemeForms lf ON v.id = lf.variantID
+  WHERE l.langID = :langID AND l.typeID = :typeID
+    AND lf.text = :text AND lf.formTypeID = :formTypeID
+--SELECT distinct l.id AS id FROM Lexemes l
+--  INNER JOIN Variants v ON l.id = v.lexemeID
+--  WHERE ((:pre is null AND v.pre is null) OR v.pre = cast(:pre AS text))
+--    AND v.main = :main
+--    AND ((:post is null AND v.post is null) OR v.post = cast(:post AS text))
+--    AND ((:also is null AND v.also is null) OR v.also = cast(:also AS text))

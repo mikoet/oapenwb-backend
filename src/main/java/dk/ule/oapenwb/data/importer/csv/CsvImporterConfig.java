@@ -3,7 +3,10 @@
 package dk.ule.oapenwb.data.importer.csv;
 
 import dk.ule.oapenwb.data.importer.csv.components.*;
+import dk.ule.oapenwb.util.SecurityUtil;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 
 import java.util.*;
 
@@ -49,8 +52,9 @@ public class CsvImporterConfig
 	private boolean simulate;
 
 	/**
-	 * Name of the filename the log will be written to.
+	 * Name of the filename the log will be written to. Will be automatically generated in constructor.
 	 */
+	@Setter(AccessLevel.NONE)
 	private String logFilename;
 
 	/**
@@ -68,6 +72,11 @@ public class CsvImporterConfig
 	 * the {@link dk.ule.oapenwb.entity.content.basedata.LexemeType}.
 	 */
 	private int posColIndex;
+
+	/**
+	 * Contains all allowed Part of Speech values. Rows not having one of these values for PoS will be skipped.
+	 */
+	private Set<String> allowedPos = new HashSet<>();
 
 	// -- Fancy settings
 
@@ -95,4 +104,12 @@ public class CsvImporterConfig
 	 *
 	 */
 	private List<LinkMaker> linkMakers = new LinkedList<>();
+
+	/**
+	 * Default constructor
+	 */
+	public CsvImporterConfig()
+	{
+		this.logFilename = SecurityUtil.createRandomString(12, SecurityUtil.ALPHABET_AND_NUMBERS);
+	}
 }

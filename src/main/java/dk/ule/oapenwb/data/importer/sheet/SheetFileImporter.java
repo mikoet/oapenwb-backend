@@ -143,7 +143,7 @@ public class SheetFileImporter
 		}
 
 		// Create the lexeme creators
-		// TODO this.nounCreator = new NounCreator();
+		// TODO this.nounCreator = new NounVariantCreator();
 		this.verbCreator = new VerbCreator(adminControllers, typeFormMap.get(LexemeType.TYPE_VERB));
 	}
 

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.data.importer.csv;
 
-import dk.ule.oapenwb.entity.content.basedata.Language;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

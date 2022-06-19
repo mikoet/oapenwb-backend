@@ -71,7 +71,12 @@ public enum ErrorCode implements IMessage {
 	Admin_Lexeme_LB_NoAutoTemplate(12102, "No lemma template was found for variant {{variantNo}}."),
 	Admin_Lexeme_LB_TemplateNotFound(12103, "Lemma template with ID {{templateID}} was not found for variant {{variantNo}}."),
 	Admin_Lexeme_LB_MatchNotFound(12104, "Lemma of variant {{variantNo}} could not be filled via template (ID {{templateID}}). No matching word form was found for variable '{{variable}}'."),
-	Admin_Lexeme_LB_NoFormTypesAvailable(12105, "There are no form types available for building the lemmatas.");
+	Admin_Lexeme_LB_NoFormTypesAvailable(12105, "There are no form types available for building the lemmatas."),
+
+	Import_AppPropertyEmpty(20001, "The application property '{{property}}' is not set."),
+	Import_AppPropertyInvalidPath(20002, "The path in application property '{{property}}' is not valid or not writable."),
+	Import_FileNotExists(20003, "File specified in property '{{property}}' does not exist."),
+	Import_FilenameCheckFailed(20010, "Filename in property '{{property}}' contains invalid characters.");
 
 	@Getter
 	final int code;
