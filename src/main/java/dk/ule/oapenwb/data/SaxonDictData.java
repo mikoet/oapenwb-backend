@@ -467,6 +467,9 @@ public class SaxonDictData implements DataStrategy
 			null, true, (short) 0);
 		session.save(lftXBase);
 
+		// UTDR
+		createFormType(session, ltUTDR.getId(), "bf", "baseForm", "Base form", true, 0);
+
 		// Create the lemma templates
 		session.save(new LemmaTemplate(null, null, null, ltCg.getId(), null, null, null, null, "$(bf)", null, null));
 
