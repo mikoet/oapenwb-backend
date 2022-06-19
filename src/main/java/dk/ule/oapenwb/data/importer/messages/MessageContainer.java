@@ -19,7 +19,7 @@ public class MessageContainer
 
 	public void add(String context, MessageType type, String text, int lineNumber, int colNumber)
 	{
-		messages.getOrDefault(context, new LinkedList<>())
+		messages.computeIfAbsent(context, k -> new LinkedList<>())
 			.add(new Message(type, text, lineNumber, colNumber));
 	}
 

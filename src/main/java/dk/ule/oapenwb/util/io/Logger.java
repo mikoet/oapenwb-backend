@@ -36,6 +36,7 @@ public final class Logger
 
 	public void close() {
 		if (writer != null) {
+			writer.flush();
 			writer.close();
 			writer = null;
 		}
