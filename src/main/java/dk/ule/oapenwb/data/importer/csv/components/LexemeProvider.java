@@ -6,8 +6,8 @@ import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterContext;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
-import dk.ule.oapenwb.data.importer.messages.MessageType;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
+import dk.ule.oapenwb.data.importer.messages.MessageType;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
@@ -16,7 +16,7 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemeDetailedDTO;
 import dk.ule.oapenwb.util.HibernateUtil;
-import lombok.Data;
+import lombok.Getter;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.type.LongType;
@@ -28,12 +28,17 @@ import java.util.stream.Collectors;
  * <p>Provides one {@link LexemeDetailedDTO} that will be build by 0..n {@link VariantBuilder}s,
  * or loaded from the database if one of the built variants already exists.</p>
  */
-@Data
 public class LexemeProvider
 {
 	private final AdminControllers adminControllers;
+
+	@Getter
 	private final String lang;
+	
+	@Getter
 	private final String messageContext;
+
+	@Getter
 	private List<VariantBuilder> variantBuilders = new LinkedList<>();
 
 	public LexemeProvider(AdminControllers adminControllers, String lang)
@@ -41,6 +46,19 @@ public class LexemeProvider
 		this.adminControllers = adminControllers;
 		this.lang = lang;
 		this.messageContext = String.format("Lexeme Provider '%s'", lang);
+	}
+
+	/**
+	 * <p>This method has to be called before the first call of method build() in order to initialise the creators
+	 * with their necessary type information.</p>
+	 *
+	 * @param typeFormMap the TypeFormMap containing the LexemeType definitions for each LexemeType (PoS)
+	 */
+	public void initialise(CsvRowBasedImporter.TypeFormMap typeFormMap)
+	{
+		for (var builder : variantBuilders) {
+			builder.initialise(typeFormMap);
+		}
 	}
 
 	public LexemeDetailedDTO provide(
