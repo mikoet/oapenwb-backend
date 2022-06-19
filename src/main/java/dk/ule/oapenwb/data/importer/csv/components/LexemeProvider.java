@@ -10,7 +10,7 @@ import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.data.importer.messages.MessageType;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.Language;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
+import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
@@ -34,6 +34,9 @@ public class LexemeProvider
 
 	@Getter
 	private final String lang;
+
+	@Getter
+	private final boolean mustProvide;
 	
 	@Getter
 	private final String messageContext;
@@ -41,10 +44,11 @@ public class LexemeProvider
 	@Getter
 	private List<VariantBuilder> variantBuilders = new LinkedList<>();
 
-	public LexemeProvider(AdminControllers adminControllers, String lang)
+	public LexemeProvider(AdminControllers adminControllers, String lang, boolean mustProvide)
 	{
 		this.adminControllers = adminControllers;
 		this.lang = lang;
+		this.mustProvide = mustProvide;
 		this.messageContext = String.format("Lexeme Provider '%s'", lang);
 	}
 
@@ -68,8 +72,14 @@ public class LexemeProvider
 	{
 		LexemeDetailedDTO detailedDTO = createDTO(context, typeFormPair,
 			buildVariants(context, typeFormPair, rowData));
+
+		if (detailedDTO.getVariants().size() == 0) {
+			// No variants, no lexeme provided.
+			return null;
+		}
+
 		LexemeDetailedDTO otherDetailedDTO;
-		if ((otherDetailedDTO = lookup(context, rowData.getLineNumber(), detailedDTO.getVariants())) !=  null) {
+		if ((otherDetailedDTO = lookup(context, rowData.getLineNumber(), detailedDTO)) !=  null) {
 			// At least one variant already exists
 			context.getMessages().add(messageContext, MessageType.Info,
 				"Lexeme from database is being used", rowData.getLineNumber(), -1);
@@ -114,6 +124,9 @@ public class LexemeProvider
 			result.setLexeme(lexeme);
 		}
 
+		// Set the variants
+		result.setVariants(variants);
+
 		// Create a common default sememe
 		{
 			Sememe sememe = new Sememe();
@@ -145,22 +158,28 @@ public class LexemeProvider
 
 	// 2. kyken of dat mind. eyn van de bouwden varianten al geaven deit
 	// TODO Müs eygens de lexemeID leaveren soudännig wat dat lexemeDTO laden warden kan
-	private LexemeDetailedDTO lookup(CsvImporterContext context, int lineNumber, List<Variant> variants)
+	private LexemeDetailedDTO lookup(CsvImporterContext context, int lineNumber, LexemeDetailedDTO detailedDTO)
 	{
+		List<Variant> variants = detailedDTO.getVariants();
+		if (variants == null || variants.size() == 0) {
+			// Nothing to look up
+			return null;
+		}
+
+		int langID = detailedDTO.getLexeme().getLangID();
+		int typeID = detailedDTO.getLexeme().getTypeID();
+
 		// For each variant check if it may already exist in the database
 		// and collect the IDs of the lexemes of the already existing variants.
 		Set<Long> allLexemeIDs = new HashSet<>();
 		for (var variant : variants) {
-			NativeQuery<?> checkQuery = createCheckQuery(variant);
-			List<Object[]> rows = HibernateUtil.listAndCast(checkQuery);
+			NativeQuery<?> checkQuery = createCheckQuery(langID, typeID, variant);
+			List<Long> rows = HibernateUtil.listAndCast(checkQuery);
 			if (rows.size() > 0) {
-				Set<Long> lexemeIDs = new HashSet<>();
-				for (Object[] row : rows) {
-					lexemeIDs.add((Long) row[0]);
-				}
+				Set<Long> lexemeIDs = new HashSet<>(rows);
 				allLexemeIDs.addAll(lexemeIDs);
 				context.getMessages().add(this.messageContext, MessageType.Warning,
-					String.format("Specified variant '%s' already exists in database", variant.getLemma()),
+					String.format("Specified variant '%s' already exists in database", variant.getLexemeForms().get(0)),
 					lineNumber, -1);
 			}
 		}
@@ -185,23 +204,38 @@ public class LexemeProvider
 		return null;
 	}
 
-	private NativeQuery<?> createCheckQuery(Variant variant)
+	/**
+	 * <p>Creates the query to look up if a variant for a specific language and type already exists.
+	 * Could be overridden.</p>
+	 *
+	 * @param langID ID of the lexeme's language
+	 * @param typeID ID of the lexeme's type
+	 * @param variant variant to check for existence
+	 * @return the NativeQuery instance
+	 */
+	protected NativeQuery<?> createCheckQuery(int langID, int typeID, Variant variant)
 	{
 		// Q901
 		String sb = """
-			SELECT distinct l.id AS id FROM Lexemes l
+			SELECT distinct l.id AS lexemeID FROM Lexemes l
 			  INNER JOIN Variants v ON l.id = v.lexemeID
-			  WHERE v.pre = :pre AND v.main = :main AND v.post = :post AND v.also = :also""";
+			  INNER JOIN LexemeForms lf ON v.id = lf.variantID
+			  WHERE l.langID = :langID AND l.typeID = :typeID
+			    AND lf.text = :text AND lf.formTypeID = :formTypeID""";
 
 		// Create the query and set parameters
 		Session session = HibernateUtil.getSession();
 		NativeQuery<?> query = session.createSQLQuery(sb)
-			.addScalar("id", new LongType());
-		Lemma lemma = variant.getLemma();
-		query.setParameter("pre", lemma.getPre());
-		query.setParameter("main", lemma.getMain());
-		query.setParameter("post", lemma.getPost());
-		query.setParameter("also", lemma.getAlso());
+			.addScalar("lexemeID", new LongType());
+
+		// Get the first lexeme form
+		LexemeForm form1 = variant.getLexemeForms().get(0);
+		int formTypeID = form1.getFormTypeID();
+
+		query.setParameter("langID", langID);
+		query.setParameter("typeID", typeID);
+		query.setParameter("formTypeID", formTypeID);
+		query.setParameter("text", form1.getText());
 
 		return query;
 	}

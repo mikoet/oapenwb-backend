@@ -135,7 +135,8 @@ public class NounVariantCreator extends AbstractVariantCreator
 				parts = text.split(",");
 			}
 			if (parts.length != 2) {
-				throw new RuntimeException("Noun '" + text + "' in text " + rowData.getLineNumber() + " does not consist of 2 parts");
+				throw new RuntimeException(String.format("Noun '%s' in column %d does not consist of propper 2 parts",
+					text, columnIndex));
 			}
 
 			// 2) Check if it has variants (char ~ will be part of the text)
@@ -270,7 +271,8 @@ public class NounVariantCreator extends AbstractVariantCreator
 			// 1) Check for the 2 parts
 			String[] parts = text.split(",");
 			if (parts.length != 2) {
-				throw new RuntimeException("Noun '" + text + "' in text " + rowData.getLineNumber() + " does not consist of 2 parts");
+				throw new RuntimeException(String.format("Noun '%s' in column %d does not consist of propper 2 parts",
+					text, columnIndex));
 			}
 
 			// 2) Check if it has variants (char ~ will be part of the text)

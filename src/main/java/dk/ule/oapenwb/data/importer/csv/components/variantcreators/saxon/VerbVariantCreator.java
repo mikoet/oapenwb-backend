@@ -65,6 +65,7 @@ public class VerbVariantCreator extends AbstractVariantCreator
 		this.dialectsColumnIndex = dialectsColumnIndex;
 
 		allowedAuxilaries.put("hevven", "hevven_v");
+		allowedAuxilaries.put("hebben", "hevven_v");
 		allowedAuxilaries.put("weasen", "weasen_v");
 	}
 
@@ -138,7 +139,8 @@ public class VerbVariantCreator extends AbstractVariantCreator
 				parts = text.split(",");
 			}
 			if (parts.length != 4) {
-				throw new RuntimeException("Verb '" + text + "' in text " + rowData.getLineNumber() + " does not consist of 4 parts");
+				throw new RuntimeException(String.format("Verb '%s' in column %d does not consist of propper 4 parts",
+					text, columnIndex));
 			}
 
 			// 2) Check if it has variants (char ~ will be part of the text)
