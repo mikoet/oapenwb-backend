@@ -6,13 +6,18 @@ import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterConfig;
 import dk.ule.oapenwb.data.importer.csv.components.LexemeProvider;
+import dk.ule.oapenwb.data.importer.csv.components.MultiLexemeProvider;
 import dk.ule.oapenwb.data.importer.csv.components.VariantBuilder;
+import dk.ule.oapenwb.data.importer.csv.components.variantcreators.multi.MultiVariantCreator;
+import dk.ule.oapenwb.data.importer.csv.components.variantcreators.multi.OperationMode;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.ImportMode;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.MiscVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.NounVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.VerbVariantCreator;
 import dk.ule.oapenwb.entity.content.basedata.LexemeType;
+import dk.ule.oapenwb.entity.content.basedata.Orthography;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -83,6 +88,21 @@ public class SaxonFirstImportSetting
 		// !! Set up LexemeProviders
 		cfg.getLexemeProviders().put("nds", buildLexemeProviderNds());
 
+		// !! Set up MultiLexemeProviders
+		Map<String, MultiLexemeProvider> multiLexemeProviders = cfg.getMultiLexemeProviders();
+		multiLexemeProviders.put("fi", buildMultiLexemeProvider(
+			OperationMode.Default, "fi", Orthography.ABBR_FINNISH, COL_FINISH, false));
+		multiLexemeProviders.put("sv", buildMultiLexemeProvider(
+			OperationMode.Swedish, "sv", Orthography.ABBR_SWEDISH, COL_SWEDISH, false));
+		multiLexemeProviders.put("da", buildMultiLexemeProvider(
+			OperationMode.Danish, "da", Orthography.ABBR_DANISH, COL_DANISH, false));
+		multiLexemeProviders.put("de", buildMultiLexemeProvider(
+			OperationMode.Default, "de", Orthography.ABBR_GERMAN_FEDERAL, COL_GERMAN, false));
+		multiLexemeProviders.put("en", buildMultiLexemeProvider(
+			OperationMode.English, "en", Orthography.ABBR_ENGLISH_BRITISH, COL_ENGLISH, false));
+		multiLexemeProviders.put("nl", buildMultiLexemeProvider(
+			OperationMode.English, "nl", Orthography.ABBR_DUTCH, COL_DUTCH, false));
+
 		return cfg;
 	}
 
@@ -92,14 +112,14 @@ public class SaxonFirstImportSetting
 		// Northern Low Saxon in NSS
 		VariantBuilder variantBuilderNndsNss = setupVariantBuilder(
 			ImportMode.NSS,
-			getOrthographyID("NSS"),
+			getOrthographyID(Orthography.ABBR_SAXON_NYSASSISKE_SKRYVWYSE),
 			COL_NDS_NSS,
 			COL_NDS_NSS_DIALECTS);
 
 		// Westphalian Dutch Low Saxon in NSS
 		VariantBuilder variantBuilderNdsNlNss = setupVariantBuilder(
 			ImportMode.NSS,
-			getOrthographyID("NSS"),
+			getOrthographyID(Orthography.ABBR_SAXON_NYSASSISKE_SKRYVWYSE),
 			COL_NDS_NL_NSS,
 			COL_NDS_NL_NSS_DIALECTS);
 
@@ -107,7 +127,7 @@ public class SaxonFirstImportSetting
 		// TODO The origin should be imported as well
 		VariantBuilder variantBuilderNndsDbo = setupVariantBuilder(
 			ImportMode.DBO,
-			getOrthographyID("DBO"),
+			getOrthographyID(Orthography.ABBR_SAXON_GERMAN_BASED),
 			COL_NDS_DBO,
 			COL_NDS_DBO_DIALECTS);
 
@@ -157,11 +177,66 @@ public class SaxonFirstImportSetting
 			new MiscVariantCreator(adminControllers, partOfSpeech, orthographyID, columnIndex, columnIndexDialects));
 	}
 
+	private MultiLexemeProvider buildMultiLexemeProvider(OperationMode mode, String langCode, String orthography,
+		int columnIndex, boolean mustProvide) throws CodeException
+	{
+		// !! Setup VariantBuilder
+		VariantBuilder variantBuilder = setupVariantMultiBuilder(
+			mode,
+			getOrthographyID(orthography),
+			columnIndex);
+
+		MultiLexemeProvider lexemeProvider = new MultiLexemeProvider(adminControllers, langCode, mustProvide, columnIndex);
+		lexemeProvider.getVariantBuilders().add(variantBuilder);
+
+		return lexemeProvider;
+	}
+
+	private VariantBuilder setupVariantMultiBuilder(OperationMode mode, int orthographyID, int columnIndex)
+	{
+		VariantBuilder variantBuilder = new VariantBuilder();
+
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_ADJ, orthographyID, columnIndex);
+
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_ADP, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_ADV, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_AUX, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_CCONJ, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_DET, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_INTJ, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_NOUN, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_NUM, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_PART, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_PRON, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_PROPN, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_PUNCT, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_SCONJ, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_VERB, orthographyID, columnIndex, mode, false);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_X, orthographyID, columnIndex);
+		addMultiVariantCreator(variantBuilder, LexemeType.TYPE_C_UTDR, orthographyID, columnIndex,
+			OperationMode.Default, true);
+
+		return variantBuilder;
+	}
+
+	private void addMultiVariantCreator(VariantBuilder builder, String partOfSpeech, int orthographyID, int columnIndex,
+		OperationMode mode, boolean multiWord)
+	{
+		builder.getPosToCreator().put(partOfSpeech, new MultiVariantCreator(adminControllers, partOfSpeech,
+			orthographyID, columnIndex, mode, multiWord));
+	}
+
+	private void addMultiVariantCreator(VariantBuilder builder, String partOfSpeech, int orthographyID, int columnIndex)
+	{
+		builder.getPosToCreator().put(partOfSpeech, new MultiVariantCreator(adminControllers, partOfSpeech,
+			orthographyID, columnIndex, OperationMode.Default, false));
+	}
+
 	private int getOrthographyID(String abbreviation) throws CodeException
 	{
 		int id = -1;
 		for (var orthography : adminControllers.getOrthographiesController().list()) {
-			if ("NSS".equals(orthography.getAbbreviation())) {
+			if (orthography.getAbbreviation().equals(abbreviation)) {
 				id = orthography.getId();
 				break;
 			}
