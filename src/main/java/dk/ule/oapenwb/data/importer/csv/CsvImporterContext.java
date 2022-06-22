@@ -8,6 +8,9 @@ import dk.ule.oapenwb.entity.content.basedata.Language;
 import lombok.Data;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Data
 public class CsvImporterContext
@@ -15,7 +18,9 @@ public class CsvImporterContext
 	private final CsvImporterConfig config;
 	private final MessageContainer messages = new MessageContainer();
 
-	private final HashMap<String, Language> languages = new HashMap<>();
+	private final Map<String, Language> languages = new HashMap<>();
+
+	private final Set<Long> loadedLexemeIDs = new HashSet<>();
 
 	private CrbiResult result;
 }

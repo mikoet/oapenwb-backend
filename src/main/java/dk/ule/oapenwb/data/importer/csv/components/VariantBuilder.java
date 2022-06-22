@@ -38,13 +38,51 @@ public class VariantBuilder
 		}
 	}
 
-	public List<Variant> build(CsvImporterContext context, CsvRowBasedImporter.TypeFormPair typeFormPair, RowData rowData)
+	/**
+	 * <p>Calls one of its {@link AbstractVariantCreator} instances to build 0..n variants
+	 * and returns them in a list.</p>
+	 * <p>This method is the right one for the MultiLexemeProvider since it utilises
+	 * the partText parameter that is necessary to build the variants there.</p>
+	 *
+	 * @param context the importer's context
+	 * @param typeFormPair the instance containing the vital type information fitting the current
+	 *   Part of Speech
+	 * @param rowData data of the current row
+	 * @param partText string supplied only by the MultiLexemeProvider for those columns that
+	 *   contain multiple lexemes in one column
+	 * @return a list containing 0..n variants
+	 */
+	public List<Variant> build(
+		CsvImporterContext context,
+		CsvRowBasedImporter.TypeFormPair typeFormPair,
+		RowData rowData,
+		String partText)
 	{
 		final String pos = typeFormPair.getLeft().getName();
 		final AbstractVariantCreator variantCreator = posToCreator.get(pos);
 		if (variantCreator == null) {
 			throw new RuntimeException(String.format("No variant creator configured for PoS '%s'", pos));
 		}
-		return variantCreator.create(context, rowData);
+		return variantCreator.create(context, rowData, partText);
+	}
+
+	/**
+	 * <p>Calls one of its {@link AbstractVariantCreator} instances to build 0..n variants
+	 * and returns them in a list.</p>
+	 * <p>This method is the right one for the LexemeProvider since it doesn't utilise
+	 * the partText parameter.</p>
+	 *
+	 * @param context the importer's context
+	 * @param typeFormPair the instance containing the vital type information fitting the current
+	 *   Part of Speech
+	 * @param rowData data of the current row
+	 * @return a list containing 0..n variants
+	 */
+	public List<Variant> build(
+		CsvImporterContext context,
+		CsvRowBasedImporter.TypeFormPair typeFormPair,
+		RowData rowData)
+	{
+		return build(context, typeFormPair, rowData, null);
 	}
 }
