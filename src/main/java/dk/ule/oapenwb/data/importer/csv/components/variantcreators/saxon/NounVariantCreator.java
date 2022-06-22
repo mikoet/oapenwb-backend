@@ -80,6 +80,11 @@ public class NounVariantCreator extends AbstractVariantCreator
 		return result;
 	}
 
+	@Override
+	public List<Variant> create(CsvImporterContext context, RowData rowData, String partText) {
+		throw new RuntimeException("Not implemented!");
+	}
+
 	/**
 	 * Examples of input for NSS mode:
 	 *

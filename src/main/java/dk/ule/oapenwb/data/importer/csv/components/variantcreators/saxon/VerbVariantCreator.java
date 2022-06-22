@@ -255,6 +255,11 @@ public class VerbVariantCreator extends AbstractVariantCreator
 		return result;
 	}
 
+	@Override
+	public List<Variant> create(CsvImporterContext context, RowData rowData, String partText) {
+		throw new RuntimeException("Not implemented!");
+	}
+
 	/**
 	 * @param partFour string containing the lexeme form with optionally multiple variants and optional specification
 	 *   of auxilary verbs

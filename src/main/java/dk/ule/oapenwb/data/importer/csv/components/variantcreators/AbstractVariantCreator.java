@@ -32,7 +32,25 @@ public abstract class AbstractVariantCreator
 
 	protected CsvRowBasedImporter.TypeFormPair typeFormsPair;
 
+	/**
+	 * <p>Method create for the LexemeProvider environment.</p>
+	 *
+	 * @param context the importer's context
+	 * @param rowData data of the current row
+	 * @return a list containing 0..n variants
+	 */
 	public abstract List<Variant> create(CsvImporterContext context, RowData rowData);
+
+	/**
+	 * <p>Method create for the MultiLexemeProvider environment.</p>
+	 *
+	 * @param context the importer's context
+	 * @param rowData data of the current row
+	 * @param partText string supplied only by the MultiLexemeProvider for those columns that
+	 *   contain multiple lexemes in one column
+	 * @return a list containing 0..n variants
+	 */
+	public abstract List<Variant> create(CsvImporterContext context, RowData rowData, String partText);
 
 	public AbstractVariantCreator(
 		AdminControllers adminControllers,

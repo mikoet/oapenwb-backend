@@ -115,6 +115,11 @@ public class MiscVariantCreator extends AbstractVariantCreator
 		return result;
 	}
 
+	@Override
+	public List<Variant> create(CsvImporterContext context, RowData rowData, String partText) {
+		throw new RuntimeException("Not implemented!");
+	}
+
 	private Variant createVariant(CsvImporterContext context, String sinNom)
 	{
 		// Create the LexemeForm
