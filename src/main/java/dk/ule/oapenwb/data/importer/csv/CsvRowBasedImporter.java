@@ -6,6 +6,7 @@ import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
+import dk.ule.oapenwb.data.importer.csv.data.ProviderData;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.data.importer.csv.dto.CrbiResult;
 import dk.ule.oapenwb.data.importer.messages.MessageType;
@@ -30,6 +31,8 @@ import java.util.*;
 
 public class CsvRowBasedImporter
 {
+	public static final String CONTEXT_BUILD_STRUCTURES = "build structures";
+
 	// TypeDef for the TypeFormMap and reuse of the type.
 	public  static class TypeFormPair extends Pair<LexemeType, LinkedHashMap<String, LexemeFormType>> {
 		public TypeFormPair(LexemeType key, LinkedHashMap<String, LexemeFormType> value) {
@@ -179,6 +182,13 @@ public class CsvRowBasedImporter
 			// Seakern
 			if (!config.isSimulate()) {
 				// TODO saveData(result, directives);
+				/*
+				c.setRevisionComment(String.format(
+					"Import via FileImporter (locale='%s', filename='%s', totalFrequency=%d, "
+						+ "minFrequencyPercentage=%f, transaction#=%d)",
+					config.getLocale(), config.getFilename(), result.getTotalFrequency(),
+					config.getMinFrequencyPercentage(), transactionNumber));
+				 */
 			}
 			context.getResult().setSuccessful(true);
 		} catch (IOException /*| CodeException */ e) {
@@ -306,6 +316,9 @@ public class CsvRowBasedImporter
 	private void buildStructures(List<RowData> rowDataList)
 	{
 		LOG.info("Building structures");
+
+		List<ProviderData> providerDataList = new LinkedList<>();
+
 		rowLoop: for (RowData row : rowDataList) {
 			try {
 				// Get the LexemeType
@@ -342,18 +355,22 @@ public class CsvRowBasedImporter
 				 * -
 				 */
 
+				// Structure for all results of the LexemeProvider instances
+				Map<String, LexemeDetailedDTO> providerResults = new HashMap<>();
+
 				for (var provider : config.getLexemeProviders().values()) {
 					try {
 						LexemeDetailedDTO dto = provider.provide(context, typeFormPair, row);
 						if (provider.isMustProvide() && dto == null) {
 							// If an empty lexeme is provided we will skip this row
-							String message = String.format("Row was skipped since %s returned no lexeme",
+							String message = String.format("Row was skipped since %s returned no lexeme but should have",
 								provider.getMessageContext());
-							context.getMessages().add("build structures", MessageType.Warning, message,
+							context.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Warning, message,
 								row.getLineNumber(), -1);
 							continue rowLoop;
 						}
-						// TOWO hwa
+						// Add the DTO to the providerResults
+						providerResults.put(provider.getLang(), dto);
 					} catch (Exception e) {
 						String message = String.format("Row was skipped since %s reported a problem: %s",
 							provider.getMessageContext(), e.getMessage());
@@ -361,13 +378,38 @@ public class CsvRowBasedImporter
 					}
 				}
 
+				// Structure for all results of the MultiLexemeProvider instances
+				Map<String, List<LexemeDetailedDTO>> multiProviderResults = new HashMap<>();
+
 				for (var provider : config.getMultiLexemeProviders().values()) {
+					try {
+						List<LexemeDetailedDTO> dtoList = provider.provide(context, typeFormPair, row);
+						if (provider.isMustProvide() && (dtoList == null || dtoList.size() == 0)) {
+							// If no or an empty list is provided we will skip this row
+							String message = String.format("Row was skipped since %s returned no lexemes but should have",
+								provider.getMessageContext());
+							context.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Warning, message,
+								row.getLineNumber(), -1);
+							continue rowLoop;
+						}
+						// Add the DTO to the multiProviderResults
+						multiProviderResults.put(provider.getLang(), dtoList);
+					} catch (Exception e) {
+						String message = String.format("Row was skipped since %s reported a problem: %s",
+							provider.getMessageContext(), e.getMessage());
+						throw new RuntimeException(message);
+					}
 				}
+
+				// TODO hwa
+				providerDataList.add(new ProviderData(providerResults, multiProviderResults));
+
+				// TODO commit every XY results...or everything after import (by config)
 
 				/*LOG.info(String.format("Row with index %d is there and has %d parts",
 					row.getLineNumber(), row.getParts().length));*/
 			} catch (Exception e) {
-				context.getMessages().add("build structures", MessageType.Error, e.getMessage(), row.getLineNumber(), -1);
+				context.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Error, e.getMessage(), row.getLineNumber(), -1);
 			}
 		}
 	}
