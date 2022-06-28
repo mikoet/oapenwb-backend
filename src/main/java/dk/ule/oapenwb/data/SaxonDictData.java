@@ -493,6 +493,16 @@ public class SaxonDictData implements DataStrategy
 		session.save(new LemmaTemplate(null, null, null, ltVerb.getId(), null, null, null, null, "$(inf)", null, null));
 		session.save(new LemmaTemplate(null, null, null, ltX.getId(), null, null, null, null, "$(bf)", null, null));
 
+		// LemmaTemplates specifically for Danish
+		session.save(new LemmaTemplate(null, null, null, ltVerb.getId(), langMap.get("da").getId(), null, null, "at",
+			"$(inf)", null, null));
+		// LemmaTemplates specifically for English
+		session.save(new LemmaTemplate(null, null, null, ltVerb.getId(), langMap.get("en").getId(), null, null, "to",
+			"$(inf)", null, null));
+		// LemmaTemplates specifically for Swedish
+		session.save(new LemmaTemplate(null, null, null, ltVerb.getId(), langMap.get("sv").getId(), null, null, "att",
+			"$(inf)", null, null));
+
 
 		// Create UiTranslations
 		DataInitializer.createUiTranslations(session, "full", "urc:verbs", true, new Pair<>("nds", "Verben"),
