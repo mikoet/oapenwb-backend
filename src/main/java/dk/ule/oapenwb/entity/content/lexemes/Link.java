@@ -42,6 +42,10 @@ public class Link implements IRPCEntity<Integer>
 	@JsonView({Views.BaseConfig.class, Views.REST.class})
 	private Integer version;
 
+	@Column(updatable = false)
+	@JsonView(Views.REST.class)
+	private Integer creatorID;
+
 	@NotNull
 	@Column(nullable = false)
 	@JsonView(Views.REST.class)

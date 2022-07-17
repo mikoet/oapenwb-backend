@@ -182,6 +182,7 @@ create table Languages (
 	uitID varchar(64) not null,
 	primary key (id)
 );
+alter table if exists Languages add constraint UK_Languages_locale unique (locale);
 alter table if exists Languages add constraint FK_Languages_mainOrthographyID foreign key (mainOrthographyID) references Orthographies;
 alter table if exists Languages add constraint FK_Languages_parentID foreign key (parentID) references Languages;
 
@@ -620,6 +621,7 @@ create sequence link_seq start 1 increment 1;
 create table Links (
 	id int4 not null,
 	version int4 not null,
+	creatorID int4,
 	typeID int4 not null,
 	startSememeID int8 not null,
 	endSememeID int8 not null,
@@ -634,6 +636,7 @@ create table Links_AUD (
 	id int4 not null,
 	REV int8 not null,
 	REVTYPE int2,
+	creatorID int4,
 	endSememeID int8,
 	startSememeID int8,
 	typeID int4,
