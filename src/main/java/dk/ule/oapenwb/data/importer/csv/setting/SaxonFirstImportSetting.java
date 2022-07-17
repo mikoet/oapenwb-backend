@@ -103,6 +103,24 @@ public class SaxonFirstImportSetting
 		multiLexemeProviders.put("nl", buildMultiLexemeProvider(
 			OperationMode.English, "nl", Orthography.ABBR_DUTCH, COL_DUTCH, false));
 
+		// !! Set up the MappingMakers
+		List<MappingMaker> mappingMakers = cfg.getMappingMakers();
+		mappingMakers.add(createMappingMaker("nds-fi"));
+		mappingMakers.add(createMappingMaker("nds-sv"));
+		mappingMakers.add(createMappingMaker("nds-da"));
+		mappingMakers.add(createMappingMaker("nds-de"));
+		mappingMakers.add(createMappingMaker("nds-en"));
+		mappingMakers.add(createMappingMaker("nds-nl"));
+
+		// !! Set up the LinkMaker
+		Optional<LinkType> ltBino = adminControllers.getLinkTypesController().list().stream().filter(lt -> lt.getDescription().equals(
+			LinkType.DESC_BINOMIAL_NOMEN)).findFirst();
+		if (ltBino.isEmpty()) {
+			throw new RuntimeException(String.format("LinkType '%s' not found", LinkType.DESC_BINOMIAL_NOMEN));
+		}
+		List<LinkMaker> linkMakers = cfg.getLinkMakers();
+		linkMakers.add(new LinkMaker(MakerMode.SingleAndSingle, adminControllers, ltBino.get(), "nds", "bino"));
+
 		return cfg;
 	}
 
@@ -245,5 +263,10 @@ public class SaxonFirstImportSetting
 			throw new RuntimeException(String.format("Orthography not found called '%s'", abbreviation));
 		}
 		return id;
+	}
+
+	private MappingMaker createMappingMaker(String langPair) throws CodeException
+	{
+		return new MappingMaker(MakerMode.SingleAndMulti, adminControllers, langPair, DEFAULT_MAPPING_WEIGHT);
 	}
 }
