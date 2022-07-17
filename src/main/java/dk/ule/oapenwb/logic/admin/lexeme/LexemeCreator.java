@@ -8,16 +8,16 @@ import dk.ule.oapenwb.base.error.IMessage;
 import dk.ule.oapenwb.base.error.Message;
 import dk.ule.oapenwb.base.error.MultiCodeException;
 import dk.ule.oapenwb.entity.basis.ApiAction;
-import dk.ule.oapenwb.entity.content.basedata.LangPair;
-import dk.ule.oapenwb.entity.content.basedata.LemmaTemplate;
-import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
+import dk.ule.oapenwb.entity.content.basedata.*;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
+import dk.ule.oapenwb.entity.content.lexemes.Link;
 import dk.ule.oapenwb.entity.content.lexemes.Mapping;
 import dk.ule.oapenwb.entity.content.lexemes.SynGroup;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.LangPairsController;
+import dk.ule.oapenwb.logic.admin.LinkTypesController;
 import dk.ule.oapenwb.logic.admin.TagsController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
@@ -35,7 +35,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * The LexemeCreator checks and – if OK – persists a freshly supplied {@link LexemeDetailedDTO}.
+ * <p>The LexemeCreator checks and – if OK – persists a freshly supplied {@link LexemeDetailedDTO}.</p>
  */
 public class LexemeCreator
 {
@@ -46,18 +46,20 @@ public class LexemeCreator
 	private final LangPairsController langPairsController;
 	private final LexemesController lexemesController;
 	private final SememesController sememesController;
+	private final LinkTypesController linkTypesController;
 
 	// Maps to map the internal, negative IDs to the real given IDs after persisting
 	private final Map<Long, Long> variantIdMapping = new HashMap<>();
 	private final Map<Long, Long> sememeIdMapping = new HashMap<>();
 	private final Map<Long, Long> mappingIdMapping = new HashMap<>();
+	private final Map<Integer, Integer> linkIdLink = new HashMap<>();
 
 	public LexemeCreator(
 		final CGEntityController<LexemeFormType, Integer, Integer> lftController,
 		final CGEntityController<LemmaTemplate, Integer, Integer> ltController,
 		final TagsController tagsController, final SynGroupsController synGroupsController,
 		final LangPairsController langPairsController, final LexemesController lexemesController,
-		final SememesController sememesController)
+		final SememesController sememesController, LinkTypesController linkTypesController)
 	{
 		this.lftController = lftController;
 		this.ltController = ltController;
@@ -66,6 +68,7 @@ public class LexemeCreator
 		this.langPairsController = langPairsController;
 		this.lexemesController = lexemesController;
 		this.sememesController = sememesController;
+		this.linkTypesController = linkTypesController;
 	}
 
 	public LexemeSlimDTO create(final Session session, final LexemeDetailedDTO lexemeDTO) throws CodeException, MultiCodeException
@@ -111,9 +114,22 @@ public class LexemeCreator
 		// Persist the mappings
 		persistMappings(session, lexemeDTO);
 
+		// Persist the links
+		persistLinks(session, lexemeDTO);
+
+		// Some last checks
+		Optional<Variant> mainVariant = lexemeDTO.getVariants().stream().filter(Variant::isMainVariant).findFirst();
+		Optional<Sememe> firstSememe = lexemeDTO.getSememes().stream().findFirst();
+
+		if (mainVariant.isEmpty()) {
+			throw new RuntimeException("Something went wrong. Could not find the main variant after persisting.");
+		}
+		if (firstSememe.isEmpty()) {
+			throw new RuntimeException("Something went wrong. Could not find the first sememe after persisting.");
+		}
+
 		// Create the result that will be sent to the client
-		return new LexemeSlimDTO(lexeme,
-			lexemeDTO.getVariants().stream().filter(variant -> variant.isMainVariant()).findFirst().get());
+		return new LexemeSlimDTO(lexeme, mainVariant.get(), firstSememe.get());
 	}
 
 	private void handleTags(final Session session, final Set<String> tags) throws CodeException {
@@ -125,7 +141,7 @@ public class LexemeCreator
 	}
 
 	/**
-	 * Will persist the LexemeForms and also set the variantID when needed.
+	 * <p>Will persist the LexemeForms and also set the variantID when needed.</p>
 	 *
 	 * @param session
 	 * @param variant
@@ -282,7 +298,7 @@ public class LexemeCreator
 			} else if (mapping.getId() != null && mapping.getId() > 0) {
 				throw new RuntimeException("Mapping that is marked as new already has an ID.");
 			} else if (mapping.getId() == null || (mapping.getId() != null && mapping.getId() == 0)) {
-				throw new RuntimeException("Variant that is marked as new has not gotten an internal ID.");
+				throw new RuntimeException("Mapping that is marked as new has not gotten an internal ID.");
 			}
 			// Check if the sememes are compatible with each other (languages of the lexemes checked against
 			// the langPair). It also exchanges internal sememe IDs against the real ones.
@@ -350,6 +366,53 @@ public class LexemeCreator
 		if (langPair == null) {
 			throw new RuntimeException("No language pair exists for a mapping for language with ID "
 				+ lexemeOneLangID + " and language with ID " + lexemeTwoLangID);
+		}
+	}
+
+	private void persistLinks(final Session session, final LexemeDetailedDTO lexemeDTO) throws CodeException
+	{
+		if (lexemeDTO.getLinks() == null || lexemeDTO.getLinks().size() == 0) {
+			return;
+		}
+
+		for (final Link link : lexemeDTO.getLinks()) {
+			if (link.getApiAction().equals(ApiAction.Delete)) {
+				continue;
+			} else if (link.getId() != null && link.getId() > 0) {
+				throw new RuntimeException("Link that is marked as new already has an ID.");
+			} else if (link.getId() == null || (link.getId() != null && link.getId() == 0)) {
+				throw new RuntimeException("Link that is marked as new has not gotten an internal ID.");
+			}
+			// Check if the sememes are compatible with each other (languages of the lexemes checked against
+			// the langPair). It also exchanges internal sememe IDs against the real ones.
+			checkLinkCompatibility(link);
+			// Persist
+			Integer internalID = link.getId();
+			link.setId(null);
+			link.setChanged(false);
+			link.setCreatorID(CurrentUser.INSTANCE.get());
+			session.save(link);
+			this.linkIdLink.put(internalID, link.getId());
+		}
+	}
+
+	private void checkLinkCompatibility(final Link link) throws CodeException
+	{
+		// Exchange the sememe IDs if neccessary (temporary internal against real)
+		if (link.getStartSememeID() < 0) {
+			link.setStartSememeID(this.sememeIdMapping.get(link.getStartSememeID()));
+		}
+		if (link.getEndSememeID() < 0) {
+			link.setEndSememeID(this.sememeIdMapping.get(link.getEndSememeID()));
+		}
+
+		// Find the fitting LinkType, and if none is to be found throw an exception
+		LinkType linkType = this.linkTypesController.get(link.getTypeID());
+		if (linkType == null) {
+			throw new RuntimeException(String.format("Link-type with ID %d does not exist.", link.getTypeID()));
+		}
+		if (linkType.getTarget() != LinkTypeTarget.Lexeme) {
+			throw new RuntimeException(String.format("Link-type with ID %d is not for use with lexemes.", link.getTypeID()));
 		}
 	}
 }

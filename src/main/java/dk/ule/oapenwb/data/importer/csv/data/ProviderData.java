@@ -12,11 +12,13 @@ import java.util.Map;
 /**
  * <p>Each instance of ProviderData contains the LexemeDetailedDTOs provided by the LexemeProviders
  * and MultiLexemeProviders for each RowData instance.</p>
+ * <p>Instances of these data objects are created and filled in the second step.</p>
  */
 @Data
 @AllArgsConstructor
 public class ProviderData
 {
+	private RowData rowData;
 	private Map<String, LexemeDetailedDTO> providerResults;
 	private Map<String, List<LexemeDetailedDTO>> multiProviderResults;
 }

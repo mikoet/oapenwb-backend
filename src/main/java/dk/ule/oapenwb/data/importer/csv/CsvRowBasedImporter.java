@@ -6,6 +6,7 @@ import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
+import dk.ule.oapenwb.base.error.MultiCodeException;
 import dk.ule.oapenwb.data.importer.csv.data.ProviderData;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.data.importer.csv.dto.CrbiResult;
@@ -15,6 +16,9 @@ import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
 import dk.ule.oapenwb.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.logic.admin.common.FilterCriterion;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemeDetailedDTO;
+import dk.ule.oapenwb.logic.admin.lexeme.LexemeSlimDTO;
+import dk.ule.oapenwb.logic.context.Context;
+import dk.ule.oapenwb.logic.context.ITransaction;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
 import dk.ule.oapenwb.util.functional.TriCheckFunction;
@@ -32,6 +36,7 @@ import java.util.*;
 public class CsvRowBasedImporter
 {
 	public static final String CONTEXT_BUILD_STRUCTURES = "build structures";
+	public static final String CONTEXT_PERSIST_PROVIDER_DATA = "persist provider data";
 
 	// TypeDef for the TypeFormMap and reuse of the type.
 	public  static class TypeFormPair extends Pair<LexemeType, LinkedHashMap<String, LexemeFormType>> {
@@ -157,7 +162,7 @@ public class CsvRowBasedImporter
 		}
 		for (var provider : config.getMultiLexemeProviders().values()) {
 			context.getLanguages().put(provider.getLang(), getLanguage(provider.getLang()));
-			// TODO provider.initialise(typeFormMap);
+			provider.initialise(typeFormMap);
 		}
 	}
 
@@ -224,12 +229,17 @@ public class CsvRowBasedImporter
 		List<RowData> result = new LinkedList<>();
 		Set<Integer> skipRows = config.getSkipRows();
 		int lineNumber = 0;
+		Integer stopLineNumber = 25;
 
 		Path inputFilePath = Paths.get(appConfig.getImportConfig().getInputDir(), config.getFilename());
 
 		try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath.toFile()))) {
 			for(String line; (line = br.readLine()) != null; ) {
 				lineNumber++;
+
+				if (stopLineNumber != null && lineNumber > stopLineNumber) {
+					break;
+				}
 
 				// Skip row if configured to do so
 				if (skipRows.contains(lineNumber)) {
@@ -402,15 +412,107 @@ public class CsvRowBasedImporter
 				}
 
 				// TODO hwa
-				providerDataList.add(new ProviderData(providerResults, multiProviderResults));
+				providerDataList.add(new ProviderData(row, providerResults, multiProviderResults));
 
 				// TODO commit every XY results...or everything after import (by config)
+				persistProviderDataAndMakeMappingsAndLinks(providerDataList);
 
 				/*LOG.info(String.format("Row with index %d is there and has %d parts",
 					row.getLineNumber(), row.getParts().length));*/
 			} catch (Exception e) {
 				context.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Error, e.getMessage(), row.getLineNumber(), -1);
 			}
+
+		} // -- rowLoop
+
+		int abc = 0;
+		LOG.info(String.format("TODO sememeIDsOfLoop pröven / test %d", abc));
+	}
+
+	private void persistProviderDataAndMakeMappingsAndLinks(List<ProviderData> providerDataList)
+		throws CodeException, MultiCodeException
+	{
+		if (providerDataList == null || providerDataList.size() == 0) {
+			context.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Warning,
+				"Method persistProviderData() was called without any data to persist", -1, -1);
+			return;
 		}
+
+		// TODO dat skul wul beater jichtenswår anders dån warden, villicht an den kontekst?
+		//  A la en metood vanweagen handleTransaction() un dän maakt dee dat intern?
+		Context c = new Context(true);
+		ITransaction t = null;
+
+		// Start a new transaction
+		// TODO: t = c.beginTransaction();
+
+
+		// !! Persist all not yet persistent detailedDTOs from the LexemeProviders and MultiLexemeProviders
+		for (var data : providerDataList) {
+			// <lang code, List<sememe ID>> contains all sememeIDs of this loop grouped by their belonging locale
+			Map<String, List<Long>> sememeIDsOfLoop = new HashMap<>();
+
+			// Process the results of the LexemeProviders
+			for (String locale : data.getProviderResults().keySet()) {
+				LexemeDetailedDTO detailedDTO = data.getProviderResults().get(locale);
+				persistLexemeAndCollectSememeID(sememeIDsOfLoop, locale, detailedDTO);
+			}
+
+			// Process the results of the MultiLexemeProviders
+			for (String locale : data.getMultiProviderResults().keySet()) {
+				List<LexemeDetailedDTO> dtoList = data.getMultiProviderResults().get(locale);
+				if (dtoList != null) {
+					for (var detailedDTO : dtoList) {
+						persistLexemeAndCollectSememeID(sememeIDsOfLoop, locale, detailedDTO);
+					}
+				}
+			}
+
+			// !! hwa Create and persist the mappings and links
+			// Process the ???
+
+			int abc = 0;
+			LOG.info(String.format("TODO sememeIDsOfLoop pröven / test %d", abc));
+		}
+	}
+
+	/**
+	 * <p>Persists the given lexeme detailedDTO – if not yet peristent – and adds the ID of the first sememe
+	 * (lowest ID) into the map sememeIDsOfLoop.</p>
+	 *
+	 * @param sememeIDsOfLoop map that will contain all sememe IDs of one CSV row
+	 * @param locale the locale of the given lexeme
+	 * @param detailedDTO the lexeme that was just created or loaded from the database
+	 * @throws CodeException can be thrown when errors occur when persisting the lexeme
+	 * @throws MultiCodeException can be thrown when errors occur when persisting the lexeme
+	 */
+	private void persistLexemeAndCollectSememeID(
+		Map<String, List<Long>> sememeIDsOfLoop,
+		String locale,
+		LexemeDetailedDTO detailedDTO) throws CodeException, MultiCodeException
+	{
+		Long id = detailedDTO.getLexeme().getId();
+		Long sememeID;
+
+		if (config.isSimulate() || context.getLoadedLexemeIDs().contains(id)) {
+			// This lexeme already existed in the database and thus it already has a persistent sememeID to be used,
+			// or we are running in simulation mode and will just take the generated ID.
+			sememeID = detailedDTO.getSememes().get(0).getId();
+		} else {
+			// This lexeme was created by the import and thus will be persisted now in non-simulation mode.
+			LexemeSlimDTO slimDTO = this.adminControllers.getLexemesController().create(detailedDTO,
+				Context.USE_OUTER_TRANSACTION_CONTEXT);
+			context.getResult().incSaveCount();
+			sememeID = slimDTO.getFirstSememeID();
+		}
+
+		if (sememeID == null) {
+			throw new RuntimeException(String.format(
+				"Something went wrong. Lexeme for locale '%s' did not result in some kind of a sememe ID (%s).",
+				locale, LexemeDetailedDTO.generatedLogStr(detailedDTO)));
+		}
+
+		List<Long> sememesList = sememeIDsOfLoop.computeIfAbsent(locale, k -> new LinkedList<>());
+		sememesList.add(sememeID);
 	}
 }

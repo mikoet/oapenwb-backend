@@ -136,9 +136,22 @@ public class LexemeUpdater
 		// Persist the mappings
 		persistMappings(session, lexemeDTO, oldLexemeDTO);
 
+		// Persist the links
+		// TODO persistLinks(session, lexemeDTO);
+
+		// Some last checks
+		Optional<Variant> mainVariant = lexemeDTO.getVariants().stream().filter(Variant::isMainVariant).findFirst();
+		Optional<Sememe> firstSememe = lexemeDTO.getSememes().stream().findFirst();
+
+		if (mainVariant.isEmpty()) {
+			throw new RuntimeException("Something went wrong. Could not find the main variant after persisting.");
+		}
+		if (firstSememe.isEmpty()) {
+			throw new RuntimeException("Something went wrong. Could not find the first sememe after persisting.");
+		}
+
 		// Create the result that will be sent to the client
-		return new LexemeSlimDTO(lexeme,
-			lexemeDTO.getVariants().stream().filter(Variant::isMainVariant).findFirst().get());
+		return new LexemeSlimDTO(lexeme, mainVariant.get(), firstSememe.get());
 	}
 
 	private void handleTags(final Session session, final Set<String> tags, final Set<String> oldTags) throws CodeException {

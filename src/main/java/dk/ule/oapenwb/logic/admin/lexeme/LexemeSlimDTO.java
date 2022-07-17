@@ -3,6 +3,7 @@
 package dk.ule.oapenwb.logic.admin.lexeme;
 
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
+import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,8 +30,12 @@ public class LexemeSlimDTO
 	private boolean active;
 	private int condition;
 	private Set<String> tags;
+	private long firstSememeID; // ID of the first sememe (first means lowest ID)
 
-	public LexemeSlimDTO(@NotNull Lexeme lexeme, @NotNull Variant mainVariant)
+	public LexemeSlimDTO(
+		@NotNull Lexeme lexeme,
+		@NotNull Variant mainVariant,
+		@NotNull Sememe firstSememe)
 	{
 		this.id = lexeme.getId();
 		this.parserID = lexeme.getParserID();
@@ -42,5 +47,6 @@ public class LexemeSlimDTO
 		this.active = lexeme.isActive();
 		this.condition = 5;
 		this.tags = lexeme.getTags();
+		this.firstSememeID = firstSememe.getId();
 	}
 }

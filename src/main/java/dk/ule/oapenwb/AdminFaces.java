@@ -34,7 +34,6 @@ class AdminFaces
 	public static final String FACE_LEMMA_TEMPLATES = "Face_LemmaTemplates";
 	public static final String FACE_CATEGORIES = "Face_Categories";
 	public static final String FACE_LEVELS = "Face_Levels";
-	public static final String FACE_LINK_TYPES = "Face_LinkTypes";
 
 
 	@Getter
@@ -108,8 +107,7 @@ class AdminFaces
 
 	@Getter
 	@Inject
-	@Named(FACE_LINK_TYPES)
-	private EntityFace<LinkType, Integer> linkTypesFace;
+	private LinkTypesFace linkTypesFace;
 
 	@Getter
 	@Inject

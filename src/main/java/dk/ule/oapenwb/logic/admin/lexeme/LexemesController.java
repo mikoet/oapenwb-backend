@@ -21,6 +21,7 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Tag;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.LangPairsController;
+import dk.ule.oapenwb.logic.admin.LinkTypesController;
 import dk.ule.oapenwb.logic.admin.TagsController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
@@ -70,6 +71,7 @@ public class LexemesController
 	private final SynGroupsController synGroupsController;
 	private final LangPairsController langPairsController;
 	private final SememesController sememesController;
+	private final LinkTypesController linkTypesController;
 
 	private final Context _context;
 
@@ -78,7 +80,8 @@ public class LexemesController
 		@Named(AdminControllers.CONTROLLER_LEXEME_FORM_TYPES) CGEntityController<LexemeFormType, Integer, Integer> lftController,
 		@Named(AdminControllers.CONTROLLER_LEMMA_TEMPLATES) CGEntityController<LemmaTemplate, Integer, Integer> ltController,
 		TagsController tagsController, final SynGroupsController synGroupsController,
-		LangPairsController langPairsController, final SememesController sememesController)
+		LangPairsController langPairsController, final SememesController sememesController,
+		LinkTypesController linkTypesController)
 	{
 		this.lftController = lftController;
 		this.ltController = ltController;
@@ -86,6 +89,7 @@ public class LexemesController
 		this.synGroupsController = synGroupsController;
 		this.langPairsController = langPairsController;
 		this.sememesController = sememesController;
+		this.linkTypesController = linkTypesController;
 		this._context = new Context(true);
 	}
 
@@ -159,17 +163,25 @@ public class LexemesController
 			Session session = HibernateUtil.getSession();
 			// Fetch the lexeme
 			Lexeme lexeme = session.get(Lexeme.class, id);
+
 			// Fetch the main variant
 			String queryString = "FROM " + Variant.class.getSimpleName()
 				+ " E WHERE E.lexemeID = :lexemeID AND mainVariant = :main";
-			Query<Variant> query = session.createQuery(queryString, Variant.class);
-			query.setParameter("lexemeID", lexeme.getId());
-			query.setParameter("main", true);
-			Variant mainVariant = query.getSingleResult();
+			Query<Variant> variantQuery = session.createQuery(queryString, Variant.class);
+			variantQuery.setParameter("lexemeID", lexeme.getId());
+			variantQuery.setParameter("main", true);
+			Variant mainVariant = variantQuery.getSingleResult();
+
+			// Fetch the first sememe
+			queryString = "FROM " + Sememe.class.getSimpleName()
+									 + " E WHERE E.lexemeID = :lexemeID ORDER BY id ASC";
+			Query<Sememe> sememeQuery = session.createQuery(queryString, Sememe.class);
+			sememeQuery.setParameter("lexemeID", lexeme.getId());
+			sememeQuery.setFetchSize(1);
+			Sememe firstSememe = sememeQuery.getSingleResult();
+
 			// Create the LexemeSlimDTO
-			if (lexeme != null) {
-				slimDTO = new LexemeSlimDTO(lexeme, mainVariant);
-			}
+			slimDTO = new LexemeSlimDTO(lexeme, mainVariant, firstSememe);
 		} catch (Exception e) {
 			LOG.error("Error fetching instance of type " + Lexeme.class.getSimpleName(), e);
 			throw new CodeException(ErrorCode.Admin_EntityOperation,
@@ -204,7 +216,7 @@ public class LexemesController
 		ITransaction transaction = context.beginTransaction();
 		try {
 			result = new LexemeCreator(lftController, ltController, tagsController, synGroupsController,
-				langPairsController, this, sememesController).create(session, lexemeDTO);
+				langPairsController, this, sememesController, linkTypesController).create(session, lexemeDTO);
 			// If everything went fine, commit the transaction
 			context.setRevisionComment("Created lexeme with ID " + result.getId());
 			transaction.commit();
@@ -297,7 +309,8 @@ public class LexemesController
 					(String) row[6],	// post
 					(Boolean) row[7],	// active
 					(Integer) row[8],	// condition
-					JsonUtil.convertJsonbStringToLinkedHashSet((String) row[9]) // tags
+					JsonUtil.convertJsonbStringToLinkedHashSet((String) row[9]), // tags
+					(Long) row[10]		// sememeID
 				));
 			}
 		} catch (Exception e) {
@@ -331,10 +344,12 @@ public class LexemesController
 	{
 		StringBuilder sb = new StringBuilder();
 		// Basis query
+		// TODO 696
 		sb.append("select L.id as id, L.parserID as parserID, L.typeID as typeID, L.langID as langID,\n");
 		sb.append("  V.pre as pre, V.main as main, V.post as post, L.active as active, 5 as condition,\n");
 		sb.append("  L.tags as tags\n");
 		sb.append("from Lexemes L left join Variants V on (L.id = V.lexemeID and V.mainVariant=true)\n");
+		sb.append("  left join Sememes S on (L.id = S.lexemeID AND S.id = (SELECT MIN(lexemeID) FROM Sememes WHERE lexemeID = XYZ limit 1))\n");
 		// Add the order clause and the paging data
 		sb.append("order by V.main\n");
 		sb.append("limit :limit offset :offset");
@@ -384,7 +399,8 @@ public class LexemesController
 					(String) row[6],	// post
 					(Boolean) row[7],	// active
 					(Integer) row[8],	// condition
-					JsonUtil.convertJsonbStringToLinkedHashSet((String) row[9]) // tags
+					JsonUtil.convertJsonbStringToLinkedHashSet((String) row[9]), // tags
+					(Long) row[10]		// sememeID
 				));
 			}
 		} catch (Exception e) {
@@ -472,9 +488,10 @@ public class LexemesController
 		StringBuilder sb = new StringBuilder();
 
 		// Basis query
+		// TODO 696
 		sb.append("select L.id as id, L.parserID as parserID, L.typeID as typeID, L.langID as langID,\n");
 		sb.append("  V.pre as pre, V.main as main, V.post as post, L.active as active,\n");
-		sb.append("  5 as condition, L.tags as tags\n");
+		sb.append("  5 as condition, L.tags as tags, S.id as sememeID\n");
 		sb.append("from Lexemes L left join Variants V on (L.id = V.lexemeID and V.mainVariant=true)\n");
 		sb.append("where\n");
 
@@ -524,7 +541,8 @@ public class LexemesController
 			.addScalar("post", new StringType())
 			.addScalar("active", new BooleanType())
 			.addScalar("condition", new IntegerType())
-			.addScalar("tags", new StringType());
+			.addScalar("tags", new StringType())
+			.addScalar("sememeID", new LongType());
 
 		query.setParameter("offset", request.getOffset());
 		query.setParameter("limit", request.getLimit());

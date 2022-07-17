@@ -63,6 +63,8 @@ public class VariantBuilder
 		if (variantCreator == null) {
 			throw new RuntimeException(String.format("No variant creator configured for PoS '%s'", pos));
 		}
+		if (partText == null)
+			return variantCreator.create(context, rowData);
 		return variantCreator.create(context, rowData, partText);
 	}
 

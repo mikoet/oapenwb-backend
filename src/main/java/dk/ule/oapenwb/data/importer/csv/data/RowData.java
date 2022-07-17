@@ -6,7 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Represents the data of a row that was read from the file.
+ * <p>Represents the data of a row that was read from the file.</p>
+ * <p>Instances of these data objects are created and filled in the first step.</p>
  */
 @Data
 @AllArgsConstructor

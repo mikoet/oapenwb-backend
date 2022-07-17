@@ -11,6 +11,7 @@ import dk.ule.oapenwb.entity.ui.UiLanguage;
 import dk.ule.oapenwb.entity.ui.UiResultCategory;
 import dk.ule.oapenwb.entity.ui.UiTranslationScope;
 import dk.ule.oapenwb.logic.admin.LangPairsController;
+import dk.ule.oapenwb.logic.admin.LinkTypesController;
 import dk.ule.oapenwb.logic.admin.TagsController;
 import dk.ule.oapenwb.logic.admin.UiTranslationSetsController;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
@@ -43,7 +44,6 @@ public class AdminControllers
 	public static final String CONTROLLER_LEMMA_TEMPLATES = "Controller_LemmaTemplates";
 	public static final String CONTROLLER_CATEGORIES = "Controller_Categories";
 	public static final String CONTROLLER_UNIT_LEVELS = "Controller_UnitLevels";
-	public static final String CONTROLLER_LINK_TYPES = "Controller_LinkTypes";
 
 
 	@Getter
@@ -119,8 +119,7 @@ public class AdminControllers
 
 	@Getter
 	@Inject
-	@Named(CONTROLLER_LINK_TYPES)
-	private CEntityController<LinkType, Integer> linkTypesController;
+	private LinkTypesController linkTypesController;
 
 	@Getter
 	@Inject

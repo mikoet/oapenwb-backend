@@ -18,7 +18,7 @@ import java.util.Set;
  * Vorwydert de klas LexemeSlimDTO üm en list van sememen.
  */
 @Data
-@AllArgsConstructor()
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class LexemeSlimPlus extends LexemeSlimDTO
 {

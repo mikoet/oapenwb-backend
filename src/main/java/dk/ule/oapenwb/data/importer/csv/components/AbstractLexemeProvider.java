@@ -159,7 +159,12 @@ public class AbstractLexemeProvider
 		if (allLexemeIDs.size() == 1) {
 			// Load the existing lexeme
 			try {
-				return adminControllers.getLexemesController().get(allLexemeIDs.stream().findFirst().get());
+				LexemeDetailedDTO lookedUpDTO =
+					adminControllers.getLexemesController().get(allLexemeIDs.stream().findFirst().get());
+				// This step is essential: before returning the instance the lookedUpDTO's ID must be added to the
+				// context's loadedLexemeIDs set in order to not get persisted again
+				context.getLoadedLexemeIDs().add(lookedUpDTO.getLexeme().getId());
+				return lookedUpDTO;
 			} catch (CodeException e) {
 				context.getMessages().add(messageContext, MessageType.Error,
 					String.format("Existing lexeme could not be loaded: %s", e.getMessage()), lineNumber, -1);

@@ -5,9 +5,7 @@ package dk.ule.oapenwb.data.importer.csv.setting;
 import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterConfig;
-import dk.ule.oapenwb.data.importer.csv.components.LexemeProvider;
-import dk.ule.oapenwb.data.importer.csv.components.MultiLexemeProvider;
-import dk.ule.oapenwb.data.importer.csv.components.VariantBuilder;
+import dk.ule.oapenwb.data.importer.csv.components.*;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.multi.MultiVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.multi.OperationMode;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.ImportMode;
@@ -15,10 +13,10 @@ import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.MiscVar
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.NounVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.VerbVariantCreator;
 import dk.ule.oapenwb.entity.content.basedata.LexemeType;
+import dk.ule.oapenwb.entity.content.basedata.LinkType;
 import dk.ule.oapenwb.entity.content.basedata.Orthography;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>Class to set up the CsvImporterConfig instance for the first import of the (Low) Saxon dictionary.</p>
@@ -47,6 +45,8 @@ public class SaxonFirstImportSetting
 
 	public static final int COL_MIN_COUNT = COL_FINISH;
 	public static final int COL_LAST_INDEX = COL_NDS_DBO_ORIGIN;
+
+	public static final short DEFAULT_MAPPING_WEIGHT = (short) 45;
 
 	private final AdminControllers adminControllers;
 

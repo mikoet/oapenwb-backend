@@ -13,6 +13,7 @@ import dk.ule.oapenwb.entity.ui.*;
 import dk.ule.oapenwb.faces.*;
 import dk.ule.oapenwb.faces.admin.*;
 import dk.ule.oapenwb.logic.admin.LangPairsController;
+import dk.ule.oapenwb.logic.admin.LinkTypesController;
 import dk.ule.oapenwb.logic.admin.TagsController;
 import dk.ule.oapenwb.logic.admin.UiTranslationSetsController;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
@@ -238,18 +239,6 @@ public class DictModule extends AbstractModule
 		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_UNIT_LEVELS, levelsCtrl,
 			CEntityController.class, Level.class, Integer.class);
 
-		// LinkTypes controller
-		CEntityController<LinkType, Integer> linkTypesCtrl = new CEntityController<>(
-			LinkType::new, LinkType.class,
-			ids -> Integer.parseInt(ids[0])) {
-			@Override
-			protected String getDefaultOrderClause() {
-				return " order by E.target ASC, E.description ASC";
-			}
-		};
-		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_LINK_TYPES, linkTypesCtrl,
-			CEntityController.class, LinkType.class, Integer.class);
-
 
 		/* !! Content data !! */
 
@@ -260,6 +249,7 @@ public class DictModule extends AbstractModule
 		bind(LexemesController.class);
 		bind(LockController.class);
 		bind(ControllerSet.class);
+		bind(LinkTypesController.class);
 
 		// The controllers class itself
 		bind(AdminControllers.class);
@@ -303,8 +293,6 @@ public class DictModule extends AbstractModule
 			EntityFace.class, Category.class, Integer.class);
 		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LEVELS, new EntityFace<>(levelsCtrl),
 			EntityFace.class, Level.class, Integer.class);
-		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LINK_TYPES, new EntityFace<>(linkTypesCtrl),
-			EntityFace.class, LinkType.class, Integer.class);
 
 
 		/* !! Content data !! */
@@ -313,6 +301,7 @@ public class DictModule extends AbstractModule
 		bind(SynGroupsFace.class);
 		bind(SememesFace.class);
 		bind(LexemesFace.class);
+		bind(LinkTypesFace.class);
 	}
 
 	/**
