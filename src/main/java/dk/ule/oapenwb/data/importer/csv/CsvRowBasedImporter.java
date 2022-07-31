@@ -7,6 +7,8 @@ import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.base.error.MultiCodeException;
+import dk.ule.oapenwb.data.importer.csv.components.LinkMaker;
+import dk.ule.oapenwb.data.importer.csv.components.MappingMaker;
 import dk.ule.oapenwb.data.importer.csv.data.ProviderData;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.data.importer.csv.dto.CrbiResult;
@@ -14,6 +16,8 @@ import dk.ule.oapenwb.data.importer.messages.MessageType;
 import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
 import dk.ule.oapenwb.entity.content.basedata.LexemeType;
+import dk.ule.oapenwb.entity.content.lexemes.Link;
+import dk.ule.oapenwb.entity.content.lexemes.Mapping;
 import dk.ule.oapenwb.logic.admin.common.FilterCriterion;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemeDetailedDTO;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemeSlimDTO;
@@ -22,6 +26,7 @@ import dk.ule.oapenwb.logic.context.ITransaction;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
 import dk.ule.oapenwb.util.functional.TriCheckFunction;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,8 +38,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+/**
+ * <p>The CsvRowBasedImporter was written to import the initial data for the Low Saxon dictionary that was
+ * written into a Google sheets and then exported into a tab separated file. CSV does not stand for Comma- but
+ * Character-Separated Value here, and the character that devides the single values of a row can be configured.</p>
+ */
 public class CsvRowBasedImporter
 {
+	public static final String CONTEXT_READ_DATA = "read data";
 	public static final String CONTEXT_BUILD_STRUCTURES = "build structures";
 	public static final String CONTEXT_PERSIST_PROVIDER_DATA = "persist provider data";
 
@@ -60,12 +71,7 @@ public class CsvRowBasedImporter
 	// <Lexeme Type Name, <LexemeType, TypeFormPair (LexemeType, LimkedMap<Name, FormType)>>
 	private final TypeFormMap typeFormMap = new TypeFormMap();
 
-	// TODO Keep track of those objects that were loaded and those that have to be persisted?
-	//      Maybe do so in HashMap<className, id> for the loaded ones?
-	private List<Object> objectsToPersist;
 
-
-	// TODO How to inject the config? Or what to do about it?
 	public CsvRowBasedImporter(
 		AppConfig appConfig,
 		AdminControllers adminControllers,
@@ -121,15 +127,6 @@ public class CsvRowBasedImporter
 	 */
 	private void initialise() throws CodeException
 	{
-		// Find the binominal nomenc. LinkType
-		/* TODO This is something the LinkMaker should handle
-		for (LinkType linkType : adminControllers.getLinkTypesController().list()) {
-			if (LinkType.DESC_BINOMIAL_NOMEN.equals(linkType.getDescription())) {
-				this.ltBino = linkType;
-				break;
-			}
-		}*/
-
 		// Fill the typeBaseFormMap
 		for (LexemeType type : this.adminControllers.getLexemeTypesController().list()) {
 			List<LexemeFormType> formTypes = this.adminControllers.getLexemeFormTypesController()
@@ -182,19 +179,8 @@ public class CsvRowBasedImporter
 			HibernateUtil.setDisableJsonIdChecks(true);
 
 			// Inleasen un echte strukturen upbouwen
-			buildStructures(readData());
+			buildAndPersistStructures(readData());
 
-			// Seakern
-			if (!config.isSimulate()) {
-				// TODO saveData(result, directives);
-				/*
-				c.setRevisionComment(String.format(
-					"Import via FileImporter (locale='%s', filename='%s', totalFrequency=%d, "
-						+ "minFrequencyPercentage=%f, transaction#=%d)",
-					config.getLocale(), config.getFilename(), result.getTotalFrequency(),
-					config.getMinFrequencyPercentage(), transactionNumber));
-				 */
-			}
 			context.getResult().setSuccessful(true);
 		} catch (IOException /*| CodeException */ e) {
 			LOG.error("Import was aborted");
@@ -229,7 +215,6 @@ public class CsvRowBasedImporter
 		List<RowData> result = new LinkedList<>();
 		Set<Integer> skipRows = config.getSkipRows();
 		int lineNumber = 0;
-		Integer stopLineNumber = 25;
 
 		Path inputFilePath = Paths.get(appConfig.getImportConfig().getInputDir(), config.getFilename());
 
@@ -237,13 +222,10 @@ public class CsvRowBasedImporter
 			for(String line; (line = br.readLine()) != null; ) {
 				lineNumber++;
 
-				if (stopLineNumber != null && lineNumber > stopLineNumber) {
-					break;
-				}
-
 				// Skip row if configured to do so
 				if (skipRows.contains(lineNumber)) {
-					// TODO Add INFO message
+					context.getMessages().add(CONTEXT_READ_DATA, MessageType.Info, "Skipped row as configured",
+						lineNumber, -1);
 					context.getResult().incSkipCount();
 					continue;
 				}
@@ -279,21 +261,17 @@ public class CsvRowBasedImporter
 						result.add(row);
 						context.getResult().incReadCount();
 					} else {
-						// TODO Add INFO message
+						context.getMessages().add(CONTEXT_READ_DATA, MessageType.Info, "Skipped row by import condition",
+							lineNumber, -1);
 						context.getResult().incSkipCount();
 					}
-				/*
-				} catch (CodeException e) {
-					// TODO replace the parameters
-					messages.add("read data", MessageType.Error, e.getMessage(), lineNumber, -1);
-				 */
 				} catch (Exception e) {
-					context.getMessages().add("read data", MessageType.Error, e.getMessage(), lineNumber, -1);
+					context.getMessages().add(CONTEXT_READ_DATA, MessageType.Error, e.getMessage(), lineNumber, -1);
 				}
 			}
 		} catch (Exception e) {
 			LOG.error(String.format("Some mysterious error in line# %d stopped the import", lineNumber), e);
-			context.getMessages().add("read data", MessageType.Error,
+			context.getMessages().add(CONTEXT_READ_DATA, MessageType.Error,
 				String.format("Some mysterious error in line# %d stopped the import", lineNumber),
 				lineNumber, -1);
 			throw e;
@@ -323,13 +301,32 @@ public class CsvRowBasedImporter
 		return parts;
 	}
 
-	private void buildStructures(List<RowData> rowDataList)
+	private void buildAndPersistStructures(List<RowData> rowDataList)
 	{
-		LOG.info("Building structures");
+		LOG.info("Building and persisting structures");
 
 		List<ProviderData> providerDataList = new LinkedList<>();
 
+		// Variables for transaction management
+		Context c = new Context(true);
+		ITransaction t = null;
+		int transactionNumber = 0;
+		int counter = 0;
+
 		rowLoop: for (RowData row : rowDataList) {
+			// Transaction handling: Do a commit every N handled rows
+			if (!config.isSimulate() && counter % config.getTransactionSize() == 0) {
+				// Commit and start a new transaction
+				commitTransaction(t, transactionNumber, row.getLineNumber(), providerDataList);
+				t = c.beginTransaction();
+				LOG.info("Starting transaction# {}", transactionNumber);
+				c.setRevisionComment(String.format("Import via %s (filename='%s', transaction#=%d)",
+					getClass().getSimpleName(), config.getFilename(), transactionNumber));
+				transactionNumber++;
+				// …as well as a new run on filling the list.
+				providerDataList = new LinkedList<>();
+			}
+
 			try {
 				// Get the LexemeType
 				String PoS = row.getParts()[config.getPosColIndex() - 1];
@@ -342,28 +339,6 @@ public class CsvRowBasedImporter
 						row.getLineNumber(), PoS);
 					throw new RuntimeException(message);
 				}
-
-				/*
-				 * hwa
-				 * Wat bruke ik allens? Wat wil ik hyr nauw doon?
-				 * Ik wil doon:
-				 * - dat formaat van de reyge pröven
-				 *     - dat heyt do müs ik wul eyns öäver alle linker, mapper, creators usw. itereren
-				 *       un dee dat formaat pröven laten
-				 *     - het en reyge dår al feylers dän kan ik düsse feylers sammelen un den import van düsse reyge afbreaken
-				 * - gung de pröven döär dän bruke ik den mechanismus as uutdacht (med de mappers, creators, usw.)
-				 *   un bouwe de datastruktuur up.
-				 *     - (!!) wåneyr kyke ik dårby of dat dee al gaev in de databank? (!!)
-				 *     - by dat persisteren wardet de lemmata bilded, un dår skal ik my achteran vöär jead variante van
-				 *       en lekseem dat lemma ruutgrypen un in en hashmap invögen (<lemma, variante or lekseem>).
-				 *         - dat lemma to string a la -> pre + | main + | + post + | + also
-				 *     - med düsse hashmap kan ik later al kyken of en variante dår al binnen is un as dat sou is
-				 *       en feyler geaven vanweagen "dat woord hadst du doch al angeaven, du döösbaddel!"
-				 *         - man wo makede ik dat eygens nauw?
-				 *         - to noud kun ik dat lemma vöär de hashmap ouk man blout med de grundform bilden
-				 * -
-				 * -
-				 */
 
 				// Structure for all results of the LexemeProvider instances
 				Map<String, LexemeDetailedDTO> providerResults = new HashMap<>();
@@ -384,6 +359,7 @@ public class CsvRowBasedImporter
 					} catch (Exception e) {
 						String message = String.format("Row was skipped since %s reported a problem: %s",
 							provider.getMessageContext(), e.getMessage());
+						LOG.warn(message, e);
 						throw new RuntimeException(message);
 					}
 				}
@@ -407,26 +383,27 @@ public class CsvRowBasedImporter
 					} catch (Exception e) {
 						String message = String.format("Row was skipped since %s reported a problem: %s",
 							provider.getMessageContext(), e.getMessage());
+						LOG.warn(message, e);
 						throw new RuntimeException(message);
 					}
 				}
 
-				// TODO hwa
+				// Another row was successfully handled
 				providerDataList.add(new ProviderData(row, providerResults, multiProviderResults));
+				counter++;
 
-				// TODO commit every XY results...or everything after import (by config)
-				persistProviderDataAndMakeMappingsAndLinks(providerDataList);
-
-				/*LOG.info(String.format("Row with index %d is there and has %d parts",
-					row.getLineNumber(), row.getParts().length));*/
+				// Before committing the transaction in the next loop… do this:
+				if (counter % config.getTransactionSize() == 0) {
+					persistProviderDataAndMakeMappingsAndLinks(providerDataList);
+				}
 			} catch (Exception e) {
 				context.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Error, e.getMessage(), row.getLineNumber(), -1);
 			}
-
 		} // -- rowLoop
 
-		int abc = 0;
-		LOG.info(String.format("TODO sememeIDsOfLoop pröven / test %d", abc));
+		if (!config.isSimulate() && providerDataList.size() > 0) {
+			commitTransaction(t, transactionNumber, -1, providerDataList);
+		}
 	}
 
 	private void persistProviderDataAndMakeMappingsAndLinks(List<ProviderData> providerDataList)
@@ -438,14 +415,7 @@ public class CsvRowBasedImporter
 			return;
 		}
 
-		// TODO dat skul wul beater jichtenswår anders dån warden, villicht an den kontekst?
-		//  A la en metood vanweagen handleTransaction() un dän maakt dee dat intern?
-		Context c = new Context(true);
-		ITransaction t = null;
-
-		// Start a new transaction
-		// TODO: t = c.beginTransaction();
-
+		Session session = HibernateUtil.getSession();
 
 		// !! Persist all not yet persistent detailedDTOs from the LexemeProviders and MultiLexemeProviders
 		for (var data : providerDataList) {
@@ -468,11 +438,31 @@ public class CsvRowBasedImporter
 				}
 			}
 
-			// !! hwa Create and persist the mappings and links
-			// Process the ???
+			// Create the mappings
+			if (config.getMappingMakers() != null && config.getMappingMakers().size() > 0) {
+				for (MappingMaker maker : config.getMappingMakers()) {
+					List<Mapping> mappings = maker.build(config, context, sememeIDsOfLoop);
+					if (mappings != null && mappings.size() > 0) {
+						for (Mapping mapping : mappings) {
+							// TODO Check if such mapping already exists
+							session.persist(mapping);
+						}
+					}
+				}
+			}
 
-			int abc = 0;
-			LOG.info(String.format("TODO sememeIDsOfLoop pröven / test %d", abc));
+			// Create the links
+			if (config.getLinkMakers() != null && config.getLinkMakers().size() > 0) {
+				for (LinkMaker maker : config.getLinkMakers()) {
+					List<Link> links = maker.build(config, context, sememeIDsOfLoop);
+					if (links != null && links.size() > 0) {
+						for (Link link : links) {
+							// TODO Check if such link already exists
+							session.persist(link);
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -514,5 +504,38 @@ public class CsvRowBasedImporter
 
 		List<Long> sememesList = sememeIDsOfLoop.computeIfAbsent(locale, k -> new LinkedList<>());
 		sememesList.add(sememeID);
+	}
+
+	private void commitTransaction(ITransaction t, int transactionNumber, int lineNumber,
+		final List<ProviderData> providerDataList)
+	{
+		if (t != null) {
+			try {
+				// Commit the active transaction
+				t.commit();
+			} catch (Exception e) {
+				String failureMessage = String.format("Transaction handling failed in transaction# %d",
+					transactionNumber);
+				LOG.error(failureMessage);
+				LOG.error("Error is", e);
+
+				context.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Error, failureMessage, lineNumber, -1);
+				context.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Error,
+					String.format("Error: %s", e.getMessage()), lineNumber, -1);
+
+				if (providerDataList.size() > 0) {
+					int first = providerDataList.get(0).getRowData().getLineNumber();
+					int last = providerDataList.get(providerDataList.size() - 1).getRowData().getLineNumber();
+					String warnMessage = String.format("Rows %d to %d have probably not been committed.",
+						first, last);
+					LOG.warn(warnMessage);
+					context.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Error, warnMessage, lineNumber, -1);
+				}
+
+				if (!config.isSimulate()) {
+					t.rollback();
+				}
+			}
+		}
 	}
 }

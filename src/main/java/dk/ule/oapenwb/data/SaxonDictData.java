@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class SaxonDictData implements DataStrategy
 {
-	private Map<String, Language> langMap = new HashMap<>();
+	private final Map<String, Language> langMap = new HashMap<>();
 
 	@Override
 	public void createData(Session session) {

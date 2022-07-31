@@ -73,6 +73,7 @@ public class SaxonFirstImportSetting
 		cfg.setColumnCount(COL_LAST_INDEX);
 		cfg.setMinColumnCount(COL_MIN_COUNT);
 		cfg.setTagNames(Set.of("imported", "loup1"));
+		cfg.setTransactionSize(10);
 		cfg.setSkipRows(Set.of(1));
 		cfg.setPosColIndex(COL_PART_OF_SPEECH);
 		cfg.getAllowedPos().addAll(Set.of(LexemeType.TYPE_ADJ, LexemeType.TYPE_ADP, LexemeType.TYPE_ADV,
@@ -102,6 +103,8 @@ public class SaxonFirstImportSetting
 			OperationMode.English, "en", Orthography.ABBR_ENGLISH_BRITISH, COL_ENGLISH, false));
 		multiLexemeProviders.put("nl", buildMultiLexemeProvider(
 			OperationMode.English, "nl", Orthography.ABBR_DUTCH, COL_DUTCH, false));
+		multiLexemeProviders.put("bino", buildMultiLexemeProvider(
+			OperationMode.Default, "bino", Orthography.ABBR_BINOMIAL_NOMENCLATURE, COL_SCIENTIFIC_NAME, false));
 
 		// !! Set up the MappingMakers
 		List<MappingMaker> mappingMakers = cfg.getMappingMakers();

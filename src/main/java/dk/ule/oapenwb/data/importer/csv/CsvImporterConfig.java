@@ -58,6 +58,11 @@ public class CsvImporterConfig
 	private String logFilename;
 
 	/**
+	 * Number of rows to be read, handled and persisted before committing a transaction.
+	 */
+	private int transactionSize = 50;
+
+	/**
 	 * List of tag names that all created lexemes will be tagged with.
 	 */
 	private Set<String> tagNames;

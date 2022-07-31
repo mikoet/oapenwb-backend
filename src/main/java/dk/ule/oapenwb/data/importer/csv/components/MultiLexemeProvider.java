@@ -32,11 +32,12 @@ public class MultiLexemeProvider extends AbstractLexemeProvider
 		CsvRowBasedImporter.TypeFormPair typeFormPair,
 		RowData rowData)
 	{
-		String columnContent = rowData.getParts()[columnIndex - 1].trim();
-		if (columnContent.isEmpty()) {
+		String columnContent = rowData.getParts()[columnIndex - 1];
+		if (columnContent == null || columnContent.isEmpty()) {
 			return null;
 		}
 
+		columnContent = columnContent.trim();
 		// Split the column content into parts each representing a possible lexeme
 		String[] textParts;
 		if (columnContent.contains(",") || columnContent.contains(";")) {

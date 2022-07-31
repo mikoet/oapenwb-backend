@@ -472,9 +472,10 @@ public class Dict
 						SaxonFirstImportSetting setting = new SaxonFirstImportSetting(adminControllers);
 						CsvImporterConfig cfg = setting.getConfig();
 
-						cfg.setFilename("220619_1245_importliste_test.tsv");
+						//cfg.setFilename("220619_1245_importliste_test.tsv");
+						cfg.setFilename("220716_2215_importliste_test.tsv");
 						cfg.setCheckType(CheckType.EverythingBeforeImport);
-						cfg.setSimulate(true);
+						//cfg.setSimulate(true);
 
 						CsvRowBasedImporter importer = new CsvRowBasedImporter(appConfig, adminControllers, cfg);
 						importer.run();
