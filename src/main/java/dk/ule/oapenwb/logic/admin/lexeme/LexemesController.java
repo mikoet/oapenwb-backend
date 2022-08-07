@@ -344,12 +344,11 @@ public class LexemesController
 	{
 		StringBuilder sb = new StringBuilder();
 		// Basis query
-		// TODO 696
 		sb.append("select L.id as id, L.parserID as parserID, L.typeID as typeID, L.langID as langID,\n");
 		sb.append("  V.pre as pre, V.main as main, V.post as post, L.active as active, 5 as condition,\n");
-		sb.append("  L.tags as tags\n");
+		sb.append("  L.tags as tags, S.id as sememeID\n");
 		sb.append("from Lexemes L left join Variants V on (L.id = V.lexemeID and V.mainVariant=true)\n");
-		sb.append("  left join Sememes S on (L.id = S.lexemeID AND S.id = (SELECT MIN(lexemeID) FROM Sememes WHERE lexemeID = XYZ limit 1))\n");
+		sb.append("  left join Sememes S on (L.id = S.lexemeID AND S.id = (SELECT MIN(lexemeID) FROM Sememes WHERE lexemeID = L.id))\n");
 		// Add the order clause and the paging data
 		sb.append("order by V.main\n");
 		sb.append("limit :limit offset :offset");
@@ -366,7 +365,8 @@ public class LexemesController
 			.addScalar("post", new StringType())
 			.addScalar("active", new BooleanType())
 			.addScalar("condition", new IntegerType())
-			.addScalar("tags", new StringType());
+			.addScalar("tags", new StringType())
+			.addScalar("sememeID", new LongType());
 
 		query.setParameter("offset", pagination.getOffset());
 		query.setParameter("limit", pagination.getLimit());
@@ -488,11 +488,11 @@ public class LexemesController
 		StringBuilder sb = new StringBuilder();
 
 		// Basis query
-		// TODO 696
 		sb.append("select L.id as id, L.parserID as parserID, L.typeID as typeID, L.langID as langID,\n");
 		sb.append("  V.pre as pre, V.main as main, V.post as post, L.active as active,\n");
 		sb.append("  5 as condition, L.tags as tags, S.id as sememeID\n");
 		sb.append("from Lexemes L left join Variants V on (L.id = V.lexemeID and V.mainVariant=true)\n");
+		sb.append("  left join Sememes S on (L.id = S.lexemeID AND S.id = (SELECT MIN(lexemeID) FROM Sememes WHERE lexemeID = L.id))\n");
 		sb.append("where\n");
 
 		String filterText = request.getFilter();
@@ -660,8 +660,7 @@ public class LexemesController
 
 	private void fillDetailedDto(final LexemeDetailedDTO lexemeDTO) throws CodeException {
 		if (lexemeDTO == null || lexemeDTO.getLexeme() == null) {
-			// TODO throw exception
-			throw new RuntimeException();
+			throw new RuntimeException("This should not have happened. No lexeme was supplied.");
 		}
 		Session session = HibernateUtil.getSession();
 
