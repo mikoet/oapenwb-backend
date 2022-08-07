@@ -116,10 +116,10 @@ public class NounVariantCreator extends AbstractVariantCreator
 		boolean mpHasGeneraDef = false;
 		int mpNumberOfParts = 0;
 		if (text.contains(",")) {
-			if (text.contains("(")) {
+			if (text.endsWith(")")) {
 				// If the text contains genera definition only split at the commas left of the first open bracket
 				mpHasGeneraDef = true;
-				int mpOpenBracket = text.indexOf("(");
+				int mpOpenBracket = text.lastIndexOf(" (");
 				mpNumberOfParts = StringUtils.countMatches(text.substring(0, mpOpenBracket), ',') + 1;
 				isMultiPart = mpNumberOfParts > 1;
 			} else {
@@ -382,10 +382,10 @@ public class NounVariantCreator extends AbstractVariantCreator
 		return result;
 	}
 
+	// String partTwo should already be trimmed for this function to work propperly.
 	private Pair<String, Set<String>> extractGeneraNSS(String partTwo)
 	{
 		Set<String> genera = new HashSet<>();
-		partTwo = partTwo.trim();
 
 		if (partTwo.endsWith(" f")) {
 			partTwo = partTwo.substring(0, partTwo.length() - 2);
@@ -396,21 +396,17 @@ public class NounVariantCreator extends AbstractVariantCreator
 		} else if (partTwo.endsWith(" n")) {
 			partTwo = partTwo.substring(0, partTwo.length() - 2);
 			genera.add("n");
-		} else if (partTwo.contains("(")) {
-			int openBracket = partTwo.indexOf("(");
-			int closeBracket = partTwo.indexOf(")");
+		} else if (partTwo.endsWith(")") && partTwo.contains(" (")) {
+			int openBracket = partTwo.lastIndexOf(" (");
+			int closeBracket = partTwo.length() - 1;
 
-			if (openBracket == -1 || closeBracket == -1) {
-				throw new RuntimeException("Wrong specification of genera: brackets don't match.");
-			}
-
-			String generaStr = partTwo.substring(openBracket + 1, closeBracket).replace(" ", "");
+			String generaStr = partTwo.substring(openBracket + 2, closeBracket).replace(" ", "");
 			String[] generaArr = generaStr.contains(",") ? generaStr.split(",")
 										 : new String[] { generaStr };
 			Collections.addAll(genera, generaArr);
 
 			// Remove the genera definition from partTwo
-			partTwo = partTwo.substring(0, openBracket - 1).trim();
+			partTwo = partTwo.substring(0, openBracket).trim();
 		}
 
 		for (var genus : genera) {

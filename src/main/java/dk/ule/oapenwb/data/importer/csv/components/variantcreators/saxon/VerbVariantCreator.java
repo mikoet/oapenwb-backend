@@ -115,10 +115,10 @@ public class VerbVariantCreator extends AbstractVariantCreator
 		boolean mpHasAuxilaryDef = false;
 		int mpNumberOfParts = 0;
 		if (text.contains(",")) {
-			if (text.contains("(")) {
+			if (text.endsWith(")")) {
 				// If the text contains auxilary verb definition only split at the commas left of the first open bracket
 				mpHasAuxilaryDef = true;
-				int mpOpenBracket = text.indexOf("(");
+				int mpOpenBracket = text.lastIndexOf(" (");
 				mpNumberOfParts = StringUtils.countMatches(text.substring(0, mpOpenBracket), ',') + 1;
 				isMultiPart = mpNumberOfParts > 1;
 			} else {
@@ -276,21 +276,17 @@ public class VerbVariantCreator extends AbstractVariantCreator
 		} else if (partFour.startsWith("is ")) {
 			partFour = partFour.substring(4);
 			auxilaries.add("weasen");
-		} else if (partFour.contains("(")) {
-			int openBracket = partFour.indexOf("(");
-			int closeBracket = partFour.indexOf(")");
+		} else if (partFour.endsWith(")") && partFour.contains(" (")) {
+			int openBracket = partFour.lastIndexOf(" (");
+			int closeBracket = partFour.length() - 1;
 
-			if (openBracket == -1 || closeBracket == -1) {
-				throw new RuntimeException("Wrong specification of auxilary verbs: brackets don't match.");
-			}
-
-			String auxilaryStr = partFour.substring(openBracket + 1, closeBracket).replace(" ", "");
+			String auxilaryStr = partFour.substring(openBracket + 2, closeBracket).replace(" ", "");
 			String[] auxilariesArr = auxilaryStr.contains(",") ? auxilaryStr.split(",")
 										 : new String[] { auxilaryStr };
 			Collections.addAll(auxilaries, auxilariesArr);
 
 			// Remove the auxilary verb definition from partFour
-			partFour = partFour.substring(0, openBracket - 1).trim();
+			partFour = partFour.substring(0, openBracket).trim();
 		}
 
 		Set<String> parserIDs = new HashSet<>();
