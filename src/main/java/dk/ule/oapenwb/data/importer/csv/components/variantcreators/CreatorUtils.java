@@ -13,6 +13,10 @@ public class CreatorUtils
 	public static String getVariantForm(String part, int index)
 	{
 		if (part.contains("~")) {
+			String[] parts = part.split("~");
+			if (index >= parts.length) {
+				throw new RuntimeException(String.format("Part '%s' has no variant# %d", part, index + 1));
+			}
 			return part.split("~")[index].trim();
 		}
 		return part.trim();
