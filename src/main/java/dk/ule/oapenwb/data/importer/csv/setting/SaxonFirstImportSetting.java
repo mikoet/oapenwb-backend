@@ -73,7 +73,7 @@ public class SaxonFirstImportSetting
 		cfg.setColumnCount(COL_LAST_INDEX);
 		cfg.setMinColumnCount(COL_MIN_COUNT);
 		cfg.setTagNames(Set.of("imported", "loup1"));
-		cfg.setTransactionSize(10);
+		cfg.setTransactionSize(50);
 		cfg.setSkipRows(Set.of(1));
 		cfg.setPosColIndex(COL_PART_OF_SPEECH);
 		cfg.getAllowedPos().addAll(Set.of(LexemeType.TYPE_ADJ, LexemeType.TYPE_ADP, LexemeType.TYPE_ADV,
@@ -83,7 +83,7 @@ public class SaxonFirstImportSetting
 			LexemeType.TYPE_X*/, LexemeType.TYPE_C_UTDR));
 		cfg.setImportCondition(row -> {
 			String firstPart = row.getParts()[COL_NICH_IMPORTEREN - 1];
-			return firstPart == null || firstPart.isEmpty();
+			return firstPart.isEmpty();
 		});
 
 		// !! Set up LexemeProviders

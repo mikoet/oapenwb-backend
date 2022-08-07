@@ -212,7 +212,7 @@ public class NounVariantCreatorNssTest
 		}
 
 		{
-			// Check 3: multi form definition with multiple variants and w/o genera
+			// Check 3: multi form definition with multiple variants and with two genera
 			List<Variant> checkResult = List.of(
 				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
 					List.of(
@@ -232,6 +232,31 @@ public class NounVariantCreatorNssTest
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
 				new RowData(1, new String[] {"minsk ~ minske, minsken (m, n)", "" /* TODO dialect */}));
 			VariantUtil.compareVariantLists(checkResult, result, "testMultiFormDefinitions-3");
+		}
+
+		{
+			// Check 4: temporary multi form definition test with multiple variants and w/o genera and parenthesisses
+			List<Variant> checkResult = List.of(
+				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
+					List.of(
+						createLexemeForm(lftSinNom.getId(), LexemeForm.STATE_TYPED, "(ge)bakkene tüffel"),
+						createLexemeForm(lftPluNom.getId(), LexemeForm.STATE_TYPED, "(ge)bakkene tüffelen")
+					),
+					Map.of("genera", Set.of()),
+					ApiAction.Insert),
+				VariantUtil.createVariant(oNSS_ID, false, true, Set.of(/* TODO dialect */),
+					List.of(
+						createLexemeForm(lftSinNom.getId(), LexemeForm.STATE_TYPED, "(ge)bakkenen aerdappel"),
+						createLexemeForm(lftPluNom.getId(), LexemeForm.STATE_TYPED, "(ge)bakkene aerdappelen")
+					),
+					Map.of("genera", Set.of()),
+					ApiAction.Insert)
+			);
+			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
+				new RowData(1, new String[] {
+					"(ge)bakkene tüffel ~ (ge)bakkenen aerdappel, (ge)bakkene tüffelen ~ (ge)bakkene aerdappelen",
+					"" /* TODO dialect */}));
+			VariantUtil.compareVariantLists(checkResult, result, "testMultiFormDefinitions-4");
 		}
 	}
 

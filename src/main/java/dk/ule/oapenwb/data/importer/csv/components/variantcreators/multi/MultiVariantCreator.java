@@ -101,7 +101,7 @@ public class MultiVariantCreator extends AbstractVariantCreator
 		}
 
 		// Create the variant with the partText
-		Variant variant = createVariant(context, partText.trim());
+		Variant variant = createVariant(context, partText);
 		variant.setMainVariant(true);
 		result.add(variant);
 

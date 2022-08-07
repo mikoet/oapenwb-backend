@@ -93,7 +93,7 @@ public class LexemeCreator
 		}
 		lexeme.setCreatorID(CurrentUser.INSTANCE.get());
 		lexeme.setChanged(false);
-		if (lexeme.getParserID() != null && lexeme.getParserID().isEmpty()) {
+		if (lexeme.getParserID() != null && lexeme.getParserID().isBlank()) {
 			lexeme.setParserID(null);
 		}
 		session.save(lexeme);

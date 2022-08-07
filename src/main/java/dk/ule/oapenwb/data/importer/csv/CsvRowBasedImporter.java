@@ -243,7 +243,7 @@ public class CsvRowBasedImporter
 					// Get the LexemeType only for checking its existance.
 					// We'll not save it here to save a little memory.
 					String PoS = parts[config.getPosColIndex() - 1];
-					if (PoS == null || PoS.isBlank()) {
+					if (PoS.isBlank()) {
 						throw new RuntimeException("PoS is empty. Skipping row.");
 					}
 					if (!config.getAllowedPos().contains(PoS)) {
@@ -290,12 +290,21 @@ public class CsvRowBasedImporter
 				lineNumber, config.getMinColumnCount()));
 		}
 
+		// If the parts array has less elements than columnCount then create a new array of size columnCount
 		if (parts.length < config.getColumnCount()) {
-			// If the parts array has less elements than columnCount then create a new array of size columnCount
 			String[] oldParts = parts;
 			parts = new String[config.getColumnCount()];
 			// This is better than an own for-loop to transfer from oldParts to parts
 			System.arraycopy(oldParts, 0, parts, 0, oldParts.length);
+		}
+
+		// Set an empty string for those that are null and trim all other non-null parts
+		for (int i = 0; i < parts.length; i++) {
+			if (parts[i] == null) {
+				parts[i] = "";
+			} else {
+				parts[i] = parts[i].trim();
+			}
 		}
 
 		return parts;
@@ -319,10 +328,10 @@ public class CsvRowBasedImporter
 				// Commit and start a new transaction
 				commitTransaction(t, transactionNumber, row.getLineNumber(), providerDataList);
 				t = c.beginTransaction();
+				transactionNumber++;
 				LOG.info("Starting transaction# {}", transactionNumber);
 				c.setRevisionComment(String.format("Import via %s (filename='%s', transaction#=%d)",
 					getClass().getSimpleName(), config.getFilename(), transactionNumber));
-				transactionNumber++;
 				// …as well as a new run on filling the list.
 				providerDataList = new LinkedList<>();
 			}

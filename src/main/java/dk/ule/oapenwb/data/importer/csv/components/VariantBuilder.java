@@ -49,7 +49,7 @@ public class VariantBuilder
 	 *   Part of Speech
 	 * @param rowData data of the current row
 	 * @param partText string supplied only by the MultiLexemeProvider for those columns that
-	 *   contain multiple lexemes in one column
+	 *   contain multiple lexemes in one column, and null is supllied in context of LexemeProvider
 	 * @return a list containing 0..n variants
 	 */
 	public List<Variant> build(
@@ -63,8 +63,9 @@ public class VariantBuilder
 		if (variantCreator == null) {
 			throw new RuntimeException(String.format("No variant creator configured for PoS '%s'", pos));
 		}
-		if (partText == null)
+		if (partText == null) {
 			return variantCreator.create(context, rowData);
+		}
 		return variantCreator.create(context, rowData, partText);
 	}
 
