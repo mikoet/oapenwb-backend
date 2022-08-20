@@ -165,7 +165,7 @@ public class DictModule extends AbstractModule
 		bind(LangPairsController.class);
 
 		// LexemeTypes controller
-		EntityController<LexemeType, Integer> lexemeTypesCtrl = new EntityController<>(
+		CEntityController<LexemeType, Integer> lexemeTypesCtrl = new CEntityController<>(
 			LexemeType::new, LexemeType.class,
 			ids -> Integer.parseInt(ids[0])) {
 			@Override

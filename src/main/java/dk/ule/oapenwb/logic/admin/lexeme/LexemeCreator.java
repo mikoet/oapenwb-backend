@@ -19,6 +19,7 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.LangPairsController;
 import dk.ule.oapenwb.logic.admin.LinkTypesController;
 import dk.ule.oapenwb.logic.admin.TagsController;
+import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
 import dk.ule.oapenwb.logic.admin.syngroup.SynGroupsController;
@@ -39,8 +40,9 @@ import java.util.stream.Collectors;
  */
 public class LexemeCreator
 {
-	private final CGEntityController<LexemeFormType, Integer, Integer> lftController;
-	private final CGEntityController<LemmaTemplate, Integer, Integer> ltController;
+	private final CGEntityController<LexemeFormType, Integer, Integer> lexemeFormTypesController;
+	private final CEntityController<LexemeType, Integer> lexemeTypesController;
+	private final CGEntityController<LemmaTemplate, Integer, Integer> lemmaTemplatesController;
 	private final TagsController tagsController;
 	private final SynGroupsController synGroupsController;
 	private final LangPairsController langPairsController;
@@ -55,14 +57,16 @@ public class LexemeCreator
 	private final Map<Integer, Integer> linkIdLink = new HashMap<>();
 
 	public LexemeCreator(
-		final CGEntityController<LexemeFormType, Integer, Integer> lftController,
-		final CGEntityController<LemmaTemplate, Integer, Integer> ltController,
+		final CGEntityController<LexemeFormType, Integer, Integer> lexemeFormTypesController,
+		final CEntityController<LexemeType, Integer> lexemeTypesController,
+		final CGEntityController<LemmaTemplate, Integer, Integer> lemmaTemplatesController,
 		final TagsController tagsController, final SynGroupsController synGroupsController,
 		final LangPairsController langPairsController, final LexemesController lexemesController,
 		final SememesController sememesController, LinkTypesController linkTypesController)
 	{
-		this.lftController = lftController;
-		this.ltController = ltController;
+		this.lexemeFormTypesController = lexemeFormTypesController;
+		this.lexemeTypesController = lexemeTypesController;
+		this.lemmaTemplatesController = lemmaTemplatesController;
 		this.tagsController = tagsController;
 		this.synGroupsController = synGroupsController;
 		this.langPairsController = langPairsController;
@@ -83,7 +87,7 @@ public class LexemeCreator
 		}
 
 		// Check the lexeme's content, substructures (and do some auto-correction)
-		new LexemeDetailDTOChecker(lftController, lexemeDTO, LexemeDetailDTOChecker.Operation.Create).check();
+		new LexemeDetailDTOChecker(lexemeFormTypesController, lexemeDTO, LexemeDetailDTOChecker.Operation.Create).check();
 
 		// Persist the lexeme and retrieve the ID of it
 		Lexeme lexeme = lexemeDTO.getLexeme();
@@ -105,7 +109,9 @@ public class LexemeCreator
 		persistVariants(session, lexemeDTO);
 
 		// The LemmaTemplateProcessor will build the lemmas for all variants and also save the variants again
-		LemmaTemplateProcessor lemmaTemplateProcessor = new LemmaTemplateProcessor(session, lexemeDTO, ltController, lftController);
+		LemmaTemplateProcessor lemmaTemplateProcessor = new LemmaTemplateProcessor(session, lexemeDTO,
+			lemmaTemplatesController,
+			lexemeTypesController, lexemeFormTypesController);
 		lemmaTemplateProcessor.buildLemmata();
 
 		// Persist the sememes
@@ -143,8 +149,8 @@ public class LexemeCreator
 	/**
 	 * <p>Will persist the LexemeForms and also set the variantID when needed.</p>
 	 *
-	 * @param session
-	 * @param variant
+	 * @param session the Hibernate session instance
+	 * @param variant the variant with its lexemeForms
 	 */
 	private void persistLexemeForms(final Session session, final Variant variant)
 	{

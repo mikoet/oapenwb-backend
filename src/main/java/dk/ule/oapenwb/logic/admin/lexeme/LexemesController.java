@@ -12,6 +12,7 @@ import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.base.error.MultiCodeException;
 import dk.ule.oapenwb.entity.content.basedata.LemmaTemplate;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
+import dk.ule.oapenwb.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.Link;
 import dk.ule.oapenwb.entity.content.lexemes.Mapping;
@@ -23,6 +24,7 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.LangPairsController;
 import dk.ule.oapenwb.logic.admin.LinkTypesController;
 import dk.ule.oapenwb.logic.admin.TagsController;
+import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
 import dk.ule.oapenwb.logic.admin.syngroup.SynGroupsController;
@@ -65,8 +67,9 @@ public class LexemesController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(LexemesController.class);
 
-	private final CGEntityController<LexemeFormType, Integer, Integer> lftController;
-	private final CGEntityController<LemmaTemplate, Integer, Integer> ltController;
+	private final CGEntityController<LexemeFormType, Integer, Integer> lexemeFormTypesController;
+	private final CEntityController<LexemeType, Integer> lexemeTypesController;
+	private final CGEntityController<LemmaTemplate, Integer, Integer> lemmaTemplatesController;
 	private final TagsController tagsController;
 	private final SynGroupsController synGroupsController;
 	private final LangPairsController langPairsController;
@@ -77,14 +80,21 @@ public class LexemesController
 
 	@Inject
 	public LexemesController(
-		@Named(AdminControllers.CONTROLLER_LEXEME_FORM_TYPES) CGEntityController<LexemeFormType, Integer, Integer> lftController,
-		@Named(AdminControllers.CONTROLLER_LEMMA_TEMPLATES) CGEntityController<LemmaTemplate, Integer, Integer> ltController,
-		TagsController tagsController, final SynGroupsController synGroupsController,
-		LangPairsController langPairsController, final SememesController sememesController,
+		@Named(AdminControllers.CONTROLLER_LEXEME_FORM_TYPES)
+			final CGEntityController<LexemeFormType, Integer, Integer> lexemeFormTypesController,
+		@Named(AdminControllers.CONTROLLER_LEXEME_TYPES)
+			final CEntityController<LexemeType, Integer> lexemeTypesController,
+		@Named(AdminControllers.CONTROLLER_LEMMA_TEMPLATES)
+			final CGEntityController<LemmaTemplate, Integer, Integer> lemmaTemplatesController,
+		TagsController tagsController,
+		final SynGroupsController synGroupsController,
+		LangPairsController langPairsController,
+		final SememesController sememesController,
 		LinkTypesController linkTypesController)
 	{
-		this.lftController = lftController;
-		this.ltController = ltController;
+		this.lexemeFormTypesController = lexemeFormTypesController;
+		this.lexemeTypesController = lexemeTypesController;
+		this.lemmaTemplatesController = lemmaTemplatesController;
 		this.tagsController = tagsController;
 		this.synGroupsController = synGroupsController;
 		this.langPairsController = langPairsController;
@@ -185,7 +195,8 @@ public class LexemesController
 		} catch (Exception e) {
 			LOG.error("Error fetching instance of type " + Lexeme.class.getSimpleName(), e);
 			throw new CodeException(ErrorCode.Admin_EntityOperation,
-				Arrays.asList(new Pair<>("operation", "GET-ONE-SLIM"), new Pair<>("entity", Lexeme.class.getSimpleName())));
+				Arrays.asList(new Pair<>("operation", "GET-ONE-SLIM"),
+					new Pair<>("entity", Lexeme.class.getSimpleName())));
 		}
 
 		return slimDTO;
@@ -215,8 +226,9 @@ public class LexemesController
 		// The whole storing of the detailed lexeme including its variations etc. shall be done within one transaction
 		ITransaction transaction = context.beginTransaction();
 		try {
-			result = new LexemeCreator(lftController, ltController, tagsController, synGroupsController,
-				langPairsController, this, sememesController, linkTypesController).create(session, lexemeDTO);
+			result = new LexemeCreator(lexemeFormTypesController, lexemeTypesController, lemmaTemplatesController,
+				tagsController, synGroupsController, langPairsController, this, sememesController,
+				linkTypesController).create(session, lexemeDTO);
 			// If everything went fine, commit the transaction
 			context.setRevisionComment("Created lexeme with ID " + result.getId());
 			transaction.commit();
@@ -247,8 +259,8 @@ public class LexemesController
 			// Associations with the old lexemes must be removed from the sessions in order
 			// to store the updated lexeme objects
 			session.clear();
-			result = new LexemeUpdater(lftController, ltController, tagsController, synGroupsController,
-				langPairsController, this, sememesController).update(
+			result = new LexemeUpdater(lexemeFormTypesController, lexemeTypesController, lemmaTemplatesController,
+				tagsController, synGroupsController, langPairsController, this, sememesController).update(
 					session, id, lexemeDTO, oldLexemeDTO);
 			// If everything went fine, commit the transaction
 			context.setRevisionComment("Updated lexeme with ID " + id);
@@ -433,7 +445,8 @@ public class LexemesController
 			filterText = filterResult.getRight();
 			// Add the text filtering part if it's set
 			sb.append("  id in (select lexemeID from Variants\n");
-			sb.append("    where id in (select variantID from LexemeForms where " + filterStatement + "))\n");
+			sb.append("    where id in (select variantID from LexemeForms where ")
+				.append(filterStatement).append("))\n");
 		} else {
 			sb.append("  1=1\n");
 		}
@@ -574,7 +587,9 @@ public class LexemesController
 	 * @param textSearchType the optional type of search
 	 * @return the pair will contain the FilterStatement in the first and the FilterText in the second attribute
 	 */
-	public static Pair<String, String> buildFilterStatementAndText(String filterText, Optional<TextSearchType> textSearchType)
+	public static Pair<String, String> buildFilterStatementAndText(
+		String filterText,
+		Optional<TextSearchType> textSearchType)
 	{
 		if (filterText == null || filterText.isEmpty()) {
 			throw new RuntimeException("Function has been called with an empty filter in the request");

@@ -67,7 +67,7 @@ public enum ErrorCode implements IMessage {
 
 	//Admin_Lexeme_(12001, ""),
 
-	Admin_Lexeme_LB_NoTemplatesForLexemeType(12101, "There are no lemma templates defined for the type of the lexeme."),
+	Admin_Lexeme_LB_NoTemplatesForLexemeType(12101, "There are no lemma templates defined for lexeme of type '{{lexemeType}}'."),
 	Admin_Lexeme_LB_NoAutoTemplate(12102, "No lemma template was found for variant {{variantNo}}."),
 	Admin_Lexeme_LB_TemplateNotFound(12103, "Lemma template with ID {{templateID}} was not found for variant {{variantNo}}."),
 	Admin_Lexeme_LB_MatchNotFound(12104, "Lemma of variant {{variantNo}} could not be filled via template (ID {{templateID}}). No matching word form was found for variable '{{variable}}'."),

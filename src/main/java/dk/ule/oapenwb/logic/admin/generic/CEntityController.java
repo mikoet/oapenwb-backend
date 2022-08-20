@@ -35,8 +35,9 @@ public class CEntityController<T extends IEntity<S>, S extends Serializable> ext
 	private static final Logger LOG = LoggerFactory.getLogger(CEntityController.class);
 
 	// Caches that may only be accessed if readLock or writeLock are getting locked for read/write access
-	private Map<S, T> directCache = new LinkedHashMap<>();
+	private final Map<S, T> directCache = new LinkedHashMap<>();
 	private boolean initialized = false;
+
 	// The locks
 	private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 	private final Lock readLock = readWriteLock.readLock();

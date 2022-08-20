@@ -88,7 +88,7 @@ public class AdminControllers
 	@Getter
 	@Inject
 	@Named(CONTROLLER_LEXEME_TYPES)
-	private EntityController<LexemeType, Integer> lexemeTypesController;
+	private CEntityController<LexemeType, Integer> lexemeTypesController;
 
 	@Getter
 	@Inject

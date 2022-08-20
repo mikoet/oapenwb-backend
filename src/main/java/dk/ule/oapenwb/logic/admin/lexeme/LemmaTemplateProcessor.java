@@ -10,10 +10,12 @@ import dk.ule.oapenwb.base.error.MultiCodeException;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.LemmaTemplate;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
+import dk.ule.oapenwb.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
 import dk.ule.oapenwb.util.Pair;
 import org.hibernate.Session;
@@ -43,25 +45,28 @@ public class LemmaTemplateProcessor
 
 	private final Session session;
 	private final LexemeDetailedDTO lexemeDTO;
-	private final CGEntityController<LemmaTemplate, Integer, Integer> ltController;
-	private final CGEntityController<LexemeFormType, Integer, Integer> lftController;
+	private final CGEntityController<LemmaTemplate, Integer, Integer> lemmaTemplateController;
+	private final CEntityController<LexemeType, Integer> lexemeTypesController;
 
 	private final Map<String, LexemeFormType> formTypesMap;
 
-	private int compositesCount = 0;
-	private List<IMessage> errors = new LinkedList<>();
+	//private int compositesCount = 0;
+	private final List<IMessage> errors = new LinkedList<>();
 
 	// this variable is setto the variant that is currently processed, or else it's null
 	private Integer variantNo = null;
 	private Integer templateID = null;
 
-	public LemmaTemplateProcessor(final Session session, final LexemeDetailedDTO lexemeDTO,
-			final CGEntityController<LemmaTemplate, Integer, Integer> ltController,
-			final CGEntityController<LexemeFormType, Integer, Integer> lftController) throws CodeException {
+	public LemmaTemplateProcessor(
+		final Session session, final LexemeDetailedDTO lexemeDTO,
+		final CGEntityController<LemmaTemplate, Integer, Integer> lemmaTemplateController,
+		final CEntityController<LexemeType, Integer> lexemeTypesController,
+		final CGEntityController<LexemeFormType, Integer, Integer> lftController) throws CodeException
+	{
 		this.session = session;
 		this.lexemeDTO = lexemeDTO;
-		this.ltController = ltController;
-		this.lftController = lftController;
+		this.lemmaTemplateController = lemmaTemplateController;
+		this.lexemeTypesController = lexemeTypesController;
 		// Also create the formTypesMap and fill it for later use
 		this.formTypesMap = new HashMap<>();
 		List<LexemeFormType> formTypes = lftController.getEntitiesByGroupKey(lexemeDTO.getLexeme().getTypeID());
@@ -123,9 +128,8 @@ public class LemmaTemplateProcessor
 			return;
 		} else {
 			try {
-				template = this.ltController.get(lemma.getFillLemma());
+				template = this.lemmaTemplateController.get(lemma.getFillLemma());
 			} catch (CodeException e) {
-				// TODO write a static method that will replace the variables with the arguments
 				LOG.error("Error when trying to get lemma template: {}", e.getMessage());
 				LOG.error("Template ID: {}", lemma.getFillLemma());
 				LOG.error("Lexical unit ID: {}", unit.getId());
@@ -202,15 +206,17 @@ public class LemmaTemplateProcessor
 
 	private LemmaTemplate findLemmaTemplateAutomatically(final Lexeme lexeme, final Variant variant) throws CodeException {
 		LemmaTemplate template = null;
-		List<LemmaTemplate> templates = this.ltController.getEntitiesByGroupKey(this.lexemeDTO.getLexeme().getTypeID());
+		List<LemmaTemplate> templates = this.lemmaTemplateController.getEntitiesByGroupKey(this.lexemeDTO.getLexeme().getTypeID());
 		if (templates == null || templates.size() == 0) {
-			this.errors.add(new Message(ErrorCode.Admin_Lexeme_LB_NoTemplatesForLexemeType));
+			LexemeType type = lexemeTypesController.get(lexeme.getTypeID());
+			this.errors.add(new Message(ErrorCode.Admin_Lexeme_LB_NoTemplatesForLexemeType, List.of(
+				new Pair<>("lexemeType", type == null ? "(NULL)" : type.getName()))));
 			return null;
 		}
 		// Filter out those that got a name – they are meant to be specific and to be manually selected
 		templates = templates.stream().filter(theTemplate -> theTemplate.getName() == null || theTemplate.getName()
 									  .isEmpty()).collect(Collectors.toList());
-		if (templates == null || templates.size() == 0) {
+		if (templates.size() == 0) {
 			this.errors.add(new Message(ErrorCode.Admin_Lexeme_LB_NoAutoTemplate,
 				Collections.singletonList(new Pair<>("variantNo", variantNo))));
 			return null;
