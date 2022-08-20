@@ -8,11 +8,22 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * Concrete implementation of the interface {@link IMessage} as a non-exception class.
+ * <p>Concrete implementation of the interface {@link IMessage} as a non-exception class.</p>
  */
 @Data
 public class Message implements IMessage
 {
+	public static String toString(final IMessage message) {
+		String str = message.getMessage();
+		for (var argument : message.getArguments()) {
+			str = str.replace(
+				String.format("{{%s}}", argument.getLeft()),
+				argument.getRight() == null ? "null" : argument.getRight().toString()
+			);
+		}
+		return str;
+	}
+
 	private final int code;
 	private final String message;
 	private final List<Pair<String, Object>> arguments;
@@ -33,5 +44,10 @@ public class Message implements IMessage
 		this.code = code;
 		this.message = message;
 		this.arguments = arguments;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Message {code=%d, message='%s'}", this.code, Message.toString(this));
 	}
 }

@@ -35,10 +35,6 @@ public class CodeException extends Exception implements IMessage {
 
 	@Override
 	public String toString() {
-		return "CodeException{" +
-			"code=" + code +
-			", message='" + message + '\'' +
-			", arguments=" + arguments +
-			'}';
+		return String.format("CodeException {code=%d, message='%s'}", this.code, Message.toString(this));
 	}
 }
