@@ -17,15 +17,16 @@ public class MessageContainer
 {
 	private LinkedHashMap<String, List<Message>> messages = new LinkedHashMap<>();
 
-	public void add(String context, MessageType type, String text, int lineNumber, int colNumber)
+	public Message add(String context, MessageType type, String text, int lineNumber, int colNumber)
 	{
-		messages.computeIfAbsent(context, k -> new LinkedList<>())
-			.add(new Message(type, text, lineNumber, colNumber));
+		Message message = new Message(type, text, lineNumber, colNumber);
+		messages.computeIfAbsent(context, k -> new LinkedList<>()).add(message);
+		return message;
 	}
 
-	public void add(String context, MessageType type, String text, int lineNumber)
+	public Message add(String context, MessageType type, String text, int lineNumber)
 	{
-		add(context, type, text, lineNumber, -1);
+		return add(context, type, text, lineNumber, -1);
 	}
 
 	public void printToLogger(Logger logger)

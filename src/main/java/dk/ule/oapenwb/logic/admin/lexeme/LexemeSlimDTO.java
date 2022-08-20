@@ -30,7 +30,8 @@ public class LexemeSlimDTO
 	private boolean active;
 	private int condition;
 	private Set<String> tags;
-	private long firstSememeID; // ID of the first sememe (first means lowest ID)
+	// TODO actually a first sememe should always exist and thus this should be non-nullable 'long' instead of 'Long'
+	private Long firstSememeID; // ID of the first sememe (first means lowest ID)
 
 	public LexemeSlimDTO(
 		@NotNull Lexeme lexeme,

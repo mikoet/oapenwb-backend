@@ -6,12 +6,14 @@ import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
+import dk.ule.oapenwb.base.error.IMessage;
 import dk.ule.oapenwb.base.error.MultiCodeException;
 import dk.ule.oapenwb.data.importer.csv.components.LinkMaker;
 import dk.ule.oapenwb.data.importer.csv.components.MappingMaker;
 import dk.ule.oapenwb.data.importer.csv.data.ProviderData;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.data.importer.csv.dto.CrbiResult;
+import dk.ule.oapenwb.data.importer.messages.Message;
 import dk.ule.oapenwb.data.importer.messages.MessageType;
 import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
@@ -368,7 +370,6 @@ public class CsvRowBasedImporter
 					} catch (Exception e) {
 						String message = String.format("Row was skipped since %s reported a problem: %s",
 							provider.getMessageContext(), e.getMessage());
-						LOG.warn(message, e);
 						throw new RuntimeException(message);
 					}
 				}
@@ -392,7 +393,6 @@ public class CsvRowBasedImporter
 					} catch (Exception e) {
 						String message = String.format("Row was skipped since %s reported a problem: %s",
 							provider.getMessageContext(), e.getMessage());
-						LOG.warn(message, e);
 						throw new RuntimeException(message);
 					}
 				}
@@ -406,12 +406,28 @@ public class CsvRowBasedImporter
 					persistProviderDataAndMakeMappingsAndLinks(providerDataList);
 				}
 			} catch (Exception e) {
-				context.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Error, e.getMessage(), row.getLineNumber(), -1);
+				Message message = context.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Error, e.getMessage(),
+					row.getLineNumber(), -1);
+				LOG.warn(message.toString(), e);
 			}
 		} // -- rowLoop
 
 		if (!config.isSimulate() && providerDataList.size() > 0) {
-			commitTransaction(t, transactionNumber, -1, providerDataList);
+			try {
+				persistProviderDataAndMakeMappingsAndLinks(providerDataList);
+				commitTransaction(t, transactionNumber, -1, providerDataList);
+			} catch (CodeException e) {
+				// TODO MessageUtil.printFormatted(IMessage)
+				Message message = context.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Error, e.getMessage(),
+					rowDataList.size() + 1, -1);
+				LOG.error(message.toString(), e);
+			} catch (MultiCodeException e) {
+				for (IMessage message : e.getErrors()) {
+					// TODO MessageUtil.printFormatted(IMessage)
+				}
+				int z = 0;
+				// TODO hwa maybe rethrow these two expeptions (böäverne catch-blok ouk)
+			}
 		}
 	}
 
@@ -428,50 +444,69 @@ public class CsvRowBasedImporter
 
 		// !! Persist all not yet persistent detailedDTOs from the LexemeProviders and MultiLexemeProviders
 		for (var data : providerDataList) {
-			// <lang code, List<sememe ID>> contains all sememeIDs of this loop grouped by their belonging locale
-			Map<String, List<Long>> sememeIDsOfLoop = new HashMap<>();
+			try {
+				// <lang code, List<sememe ID>> contains all sememeIDs of this loop grouped by their belonging locale
+				Map<String, List<Long>> sememeIDsOfLoop = new HashMap<>();
 
-			// Process the results of the LexemeProviders
-			for (String locale : data.getProviderResults().keySet()) {
-				LexemeDetailedDTO detailedDTO = data.getProviderResults().get(locale);
-				persistLexemeAndCollectSememeID(sememeIDsOfLoop, locale, detailedDTO);
-			}
-
-			// Process the results of the MultiLexemeProviders
-			for (String locale : data.getMultiProviderResults().keySet()) {
-				List<LexemeDetailedDTO> dtoList = data.getMultiProviderResults().get(locale);
-				if (dtoList != null) {
-					for (var detailedDTO : dtoList) {
-						persistLexemeAndCollectSememeID(sememeIDsOfLoop, locale, detailedDTO);
-					}
+				// Process the results of the LexemeProviders
+				for (String locale : data.getProviderResults().keySet()) {
+					LexemeDetailedDTO detailedDTO = data.getProviderResults().get(locale);
+					persistLexemeAndCollectSememeID(sememeIDsOfLoop, locale, detailedDTO);
 				}
-			}
 
-			// Create the mappings
-			if (config.getMappingMakers() != null && config.getMappingMakers().size() > 0) {
-				for (MappingMaker maker : config.getMappingMakers()) {
-					List<Mapping> mappings = maker.build(config, context, sememeIDsOfLoop);
-					if (mappings != null && mappings.size() > 0) {
-						for (Mapping mapping : mappings) {
-							// TODO Check if such mapping already exists
-							session.persist(mapping);
+				// Process the results of the MultiLexemeProviders
+				for (String locale : data.getMultiProviderResults().keySet()) {
+					List<LexemeDetailedDTO> dtoList = data.getMultiProviderResults().get(locale);
+					if (dtoList != null) {
+						for (var detailedDTO : dtoList) {
+							persistLexemeAndCollectSememeID(sememeIDsOfLoop, locale, detailedDTO);
 						}
 					}
 				}
-			}
 
-			// Create the links
-			if (config.getLinkMakers() != null && config.getLinkMakers().size() > 0) {
-				for (LinkMaker maker : config.getLinkMakers()) {
-					List<Link> links = maker.build(config, context, sememeIDsOfLoop);
-					if (links != null && links.size() > 0) {
-						for (Link link : links) {
-							// TODO Check if such link already exists
-							session.persist(link);
+				// Create the mappings
+				if (config.getMappingMakers() != null && config.getMappingMakers().size() > 0) {
+					for (MappingMaker maker : config.getMappingMakers()) {
+						List<Mapping> mappings = maker.build(config, context, sememeIDsOfLoop);
+						if (mappings != null && mappings.size() > 0) {
+							for (Mapping mapping : mappings) {
+								// TODO Check if such mapping already exists
+								session.persist(mapping);
+							}
 						}
 					}
 				}
+
+				// Create the links
+				if (config.getLinkMakers() != null && config.getLinkMakers().size() > 0) {
+					for (LinkMaker maker : config.getLinkMakers()) {
+						List<Link> links = maker.build(config, context, sememeIDsOfLoop);
+						if (links != null && links.size() > 0) {
+							for (Link link : links) {
+								// TODO Check if such link already exists
+								session.persist(link);
+							}
+						}
+					}
+				}
+			} catch (Exception e) {
+				int lineNumber = data.getRowData().getLineNumber();
+				int batchFirstLine = -1;
+				int batchLastLine = -1;
+
+				if (providerDataList.size() > 0) {
+					batchFirstLine = providerDataList.get(0).getRowData().getLineNumber();
+					batchLastLine = providerDataList.get(providerDataList.size() - 1).getRowData().getLineNumber();
+				}
+
+				String message = String.format(
+					"A critical error occured in method 'persistProviderDataAndMakeMappingsAndLinks': " +
+						"processed line = %d, batch first line = %d, batch last line = %d - error: %s",
+					lineNumber, batchFirstLine, batchLastLine, e.getMessage());
+				LOG.warn(message, e);
+				throw new RuntimeException(message);
 			}
+
 		}
 	}
 

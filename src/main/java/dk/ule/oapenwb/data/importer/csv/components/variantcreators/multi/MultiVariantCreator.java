@@ -108,9 +108,11 @@ public class MultiVariantCreator extends AbstractVariantCreator
 		// Do some checks and create warning messages if necessary
 		if (StringUtils.containsAny(partText, '(', ')')) {
 			// Parts with parantheses are not optimal
+			/* TODO
 			context.getMessages().add(CsvRowBasedImporter.CONTEXT_BUILD_STRUCTURES, MessageType.Warning,
 				"Content contains parantheses which should ideally be avoided",
 				rowData.getLineNumber(), columnIndex);
+			 */
 
 			@SuppressWarnings("unchecked cast")
 			Set<String> warnings = (Set<String>) variant.getProperties().computeIfAbsent(
@@ -119,9 +121,11 @@ public class MultiVariantCreator extends AbstractVariantCreator
 		}
 		if (!multiWord && partText.contains(" ")) {
 			// Looks like an UTDR
+			/* TODO
 			context.getMessages().add(CsvRowBasedImporter.CONTEXT_BUILD_STRUCTURES, MessageType.Warning,
 				"Content contains spaces which suggests it is an UTDR",
 				rowData.getLineNumber(), columnIndex);
+			 */
 
 			@SuppressWarnings("unchecked cast")
 			Set<String> warnings = (Set<String>) variant.getProperties().computeIfAbsent(
