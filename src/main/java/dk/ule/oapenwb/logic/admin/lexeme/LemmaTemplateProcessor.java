@@ -111,9 +111,8 @@ public class LemmaTemplateProcessor
 			try {
 				template = findLemmaTemplateAutomatically(this.lexemeDTO.getLexeme(), unit);
 			} catch (CodeException e) {
-				// TODO write a static method that will replace the variables with the arguments
-				LOG.error("Error when trying to get lemma template automatically: ", e.getMessage());
-				LOG.error("Lexical unit ID: ", unit.getId());
+				LOG.error("Error when trying to get lemma template automatically: {}", e.getMessage());
+				LOG.error("Lexical unit ID: {}", unit.getId());
 			}
 			if (template == null) {
 				// Error was already added in the method #findLemmaTemplateAutomatically() itself.

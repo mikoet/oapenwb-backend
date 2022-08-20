@@ -24,7 +24,7 @@ public interface IMessage
 	/**
 	 * @return The text of the message which may contain placeholders for the arguments.
 	 */
-	String getMessage();
+	String getPlaceholderMessage();
 
 	/**
 	 * @return A list of pairs each to consist of an identifier (to be used in the message text) and the actuall

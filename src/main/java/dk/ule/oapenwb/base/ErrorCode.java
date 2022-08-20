@@ -81,17 +81,17 @@ public enum ErrorCode implements IMessage {
 	@Getter
 	final int code;
 	@Getter
-	final String message;
+	final String placeholderMessage;
 	@Getter
 	final List<Pair<String, Object>> arguments;
 
-	ErrorCode(int code, String message, List<Pair<String, Object>> arguments) {
+	ErrorCode(int code, String placeholderMessage, List<Pair<String, Object>> arguments) {
 		this.code = code;
-		this.message = message;
+		this.placeholderMessage = placeholderMessage;
 		this.arguments = arguments;
 	}
 
-	ErrorCode(int code, String message) {
-		this(code, message, null);
+	ErrorCode(int code, String placeholderMessage) {
+		this(code, placeholderMessage, null);
 	}
 }

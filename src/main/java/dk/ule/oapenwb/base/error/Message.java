@@ -14,35 +14,37 @@ import java.util.List;
 public class Message implements IMessage
 {
 	public static String toString(final IMessage message) {
-		String str = message.getMessage();
-		for (var argument : message.getArguments()) {
-			str = str.replace(
-				String.format("{{%s}}", argument.getLeft()),
-				argument.getRight() == null ? "null" : argument.getRight().toString()
-			);
+		String str = message.getPlaceholderMessage();
+		if (message.getArguments() != null) {
+			for (var argument : message.getArguments()) {
+				str = str.replace(
+					String.format("{{%s}}", argument.getLeft()),
+					argument.getRight() == null ? "null" : argument.getRight().toString()
+				);
+			}
 		}
 		return str;
 	}
 
 	private final int code;
-	private final String message;
+	private final String placeholderMessage;
 	private final List<Pair<String, Object>> arguments;
 
 	public Message(IMessage er) {
 		this.code = er.getCode();
-		this.message = er.getMessage();
+		this.placeholderMessage = er.getPlaceholderMessage();
 		this.arguments = er.getArguments();
 	}
 
 	public Message(IMessage er, List<Pair<String, Object>> arguments) {
 		this.code = er.getCode();
-		this.message = er.getMessage();
+		this.placeholderMessage = er.getPlaceholderMessage();
 		this.arguments = arguments;
 	}
 
-	public Message(int code, String message, List<Pair<String, Object>> arguments) {
+	public Message(int code, String placeholderMessage, List<Pair<String, Object>> arguments) {
 		this.code = code;
-		this.message = message;
+		this.placeholderMessage = placeholderMessage;
 		this.arguments = arguments;
 	}
 
