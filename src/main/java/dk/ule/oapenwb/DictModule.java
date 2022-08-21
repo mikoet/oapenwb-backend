@@ -174,7 +174,7 @@ public class DictModule extends AbstractModule
 			}
 		};
 		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_LEXEME_TYPES, lexemeTypesCtrl,
-			EntityController.class, LexemeType.class, Integer.class);
+			CEntityController.class, LexemeType.class, Integer.class);
 
 		// LexemeFormTypes controller
 		CGEntityController<LexemeFormType, Integer, Integer> lexemeFormTypesCtrl = new CGEntityController<>(

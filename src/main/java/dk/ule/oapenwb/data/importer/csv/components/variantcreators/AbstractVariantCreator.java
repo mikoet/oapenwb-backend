@@ -114,6 +114,11 @@ public abstract class AbstractVariantCreator
 
 	protected LexemeForm createLexemeForm(int formTypeID, String text)
 	{
+		if (text.length() > LexemeForm.TEXT_MAX_LENGTH) {
+			throw new RuntimeException(String.format(
+				"Lexeme form '%s' exceeds maximum length of %d chars", text, LexemeForm.TEXT_MAX_LENGTH));
+		}
+
 		LexemeForm form = new LexemeForm();
 		form.setState(LexemeForm.STATE_TYPED);
 		form.setFormTypeID(formTypeID);

@@ -29,6 +29,8 @@ import java.util.Objects;
 @NoArgsConstructor
 public class LexemeForm implements Serializable
 {
+	public static final int TEXT_MAX_LENGTH = 64;
+
 	public static final byte STATE_TYPED = 1;
 	public static final byte STATE_GENERATED = 2;
 	public static final byte STATE_GENERATED_OVERWRITTEN = 3; // was generated, but overwritten by editor
@@ -53,8 +55,8 @@ public class LexemeForm implements Serializable
 	private byte state = STATE_TYPED;
 
 	@NotNull
-	@Size(min = 1, max = 64)
-	@Column(length = 64)
+	@Size(min = 1, max = TEXT_MAX_LENGTH)
+	@Column(length = TEXT_MAX_LENGTH)
 	@JsonView(Views.REST.class)
 	private String text;
 
