@@ -17,7 +17,7 @@ public class LinksController
 	// no exception handling done within this method!
 	public static boolean linkExists(final Session session, final Link link) {
 		String queryString = String.format(
-			"SELECT COUNT(*) from %ss E where E.typeID = :typeID AND E.startSememeID = :startSememeID "
+			"SELECT COUNT(*) AS col from %ss E where E.typeID = :typeID AND E.startSememeID = :startSememeID "
 				+ "AND E.endSememeID = :endSememeID", Link.class.getSimpleName());
 		NativeQuery<?> query = session.createSQLQuery(queryString)
 			.addScalar("col", new LongType());

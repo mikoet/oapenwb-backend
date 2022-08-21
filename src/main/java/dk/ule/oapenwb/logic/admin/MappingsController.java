@@ -17,7 +17,7 @@ public class MappingsController
 	// no exception handling done within this method!
 	public static boolean mappingExists(final Session session, final Mapping mapping) {
 		String queryString = String.format(
-			"SELECT COUNT(*) from %ss E where E.langPair = :langPair AND E.sememeOneID = :sememeOneID "
+			"SELECT COUNT(*) AS col from %ss E where E.langPair = :langPair AND E.sememeOneID = :sememeOneID "
 				+ "AND E.sememeTwoID = :sememeTwoID", Mapping.class.getSimpleName());
 		NativeQuery<?> query = session.createSQLQuery(queryString)
 			.addScalar("col", new LongType());
