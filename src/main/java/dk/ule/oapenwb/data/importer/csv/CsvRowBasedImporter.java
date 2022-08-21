@@ -416,11 +416,11 @@ public class CsvRowBasedImporter
 			try {
 				persistProviderDataAndMakeMappingsAndLinks(providerDataList);
 				commitTransaction(t, transactionNumber, -1, providerDataList);
-			} catch (CodeException|MultiCodeException e) {
+			} catch (/*CodeException|MultiCodeException*/ Exception e) {
 				Message message = context.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Error, e.getMessage(),
 					rowDataList.size() + 1, -1);
 				LOG.error(message.toString(), e);
-				// TODO hwa maybe rethrow these expeptions (böäverne catch-blok ouk)
+				// TODO hwa maybe rethrow these expeptions
 			}
 		}
 	}
