@@ -17,8 +17,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
- * A Mapping maps two lexemes of different languages but with the same meaning to each other.
- * These lexemes are then translations for each other.
+ * <p>A Mapping maps two lexemes of different languages but with the same meaning to each other.
+ * These lexemes are then translations for each other.</p>
  */
 @Data
 @Entity

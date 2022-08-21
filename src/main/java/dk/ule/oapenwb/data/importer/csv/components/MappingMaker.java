@@ -79,7 +79,7 @@ public class MappingMaker
 		if (startSememeIDs == null || startSememeIDs.size() == 0) {
 			if (startProvider.isMustProvide()) {
 				throw new RuntimeException(String.format(
-					"No sememe IDs found for start language '%s' to create the desired link", startLang));
+					"No sememe IDs found for start language '%s' to create the desired mapping", startLang));
 			}
 			return null;
 		}
@@ -91,12 +91,12 @@ public class MappingMaker
 		if (endSememeIDs == null || endSememeIDs.size() == 0) {
 			if (endProvider.isMustProvide()) {
 				throw new RuntimeException(String.format(
-					"No sememe IDs found for end language '%s' to create the desired link", endLang));
+					"No sememe IDs found for end language '%s' to create the desired mapping", endLang));
 			}
 			return null;
 		}
 
-		// Build the Link instances
+		// Build the Mapping instances
 		List<Mapping> result = new LinkedList<>();
 		for (Long sememeTwoID : endSememeIDs) {
 			Mapping mapping = new Mapping();
