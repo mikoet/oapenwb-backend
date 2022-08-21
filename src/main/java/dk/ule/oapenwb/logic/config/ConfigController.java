@@ -133,7 +133,7 @@ public class ConfigController
 			writeLock.lock();
 			this.baseConfig = result;
 			this.config = config;
-			LOG.info("Loaded config in " + TimeUtil.durationInMilis() + " milis");
+			LOG.info("Loaded config in {}ms", TimeUtil.durationInMilis());
 		} catch (Exception e) {
 			LOG.error("An exception was thrown while trying to set the newly loaded config", e);
 		} finally {

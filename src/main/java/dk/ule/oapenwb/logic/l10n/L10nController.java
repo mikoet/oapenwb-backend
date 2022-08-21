@@ -138,7 +138,7 @@ public class L10nController
 		try {
 			writeLock.lock();
 			this.translations = result;
-			LOG.info("Loaded translations in " + TimeUtil.durationInMilis() + " milis");
+			LOG.info("Loaded translations in {}ms", TimeUtil.durationInMilis());
 		} catch (Exception e) {
 			LOG.error("An exception was thrown while trying to set the newly loaded translations", e);
 		} finally {
