@@ -6,7 +6,6 @@ import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
-import dk.ule.oapenwb.base.error.IMessage;
 import dk.ule.oapenwb.base.error.MultiCodeException;
 import dk.ule.oapenwb.data.importer.csv.components.LinkMaker;
 import dk.ule.oapenwb.data.importer.csv.components.MappingMaker;
@@ -20,6 +19,8 @@ import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
 import dk.ule.oapenwb.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.entity.content.lexemes.Link;
 import dk.ule.oapenwb.entity.content.lexemes.Mapping;
+import dk.ule.oapenwb.logic.admin.LinksController;
+import dk.ule.oapenwb.logic.admin.MappingsController;
 import dk.ule.oapenwb.logic.admin.common.FilterCriterion;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemeDetailedDTO;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemeSlimDTO;
@@ -62,7 +63,7 @@ public class CsvRowBasedImporter
 
 	private static final Logger LOG = LoggerFactory.getLogger(CsvRowBasedImporter.class);
 
-	private final CsvImporterContext context;
+	private final CsvImporterContext importerContext;
 
 	private final AppConfig appConfig;
 
@@ -79,7 +80,7 @@ public class CsvRowBasedImporter
 		AdminControllers adminControllers,
 		CsvImporterConfig config) throws CodeException
 	{
-		this.context = new CsvImporterContext(config);
+		this.importerContext = new CsvImporterContext(config);
 		this.appConfig = appConfig;
 		this.adminControllers = adminControllers;
 		this.config = config;
@@ -156,11 +157,11 @@ public class CsvRowBasedImporter
 		// Find the languages referenced in the LexemeProviders and MultiLexemeProviders
 		// and call initialise() on each of them
 		for (var provider : config.getLexemeProviders().values()) {
-			context.getLanguages().put(provider.getLang(), getLanguage(provider.getLang()));
+			importerContext.getLanguages().put(provider.getLang(), getLanguage(provider.getLang()));
 			provider.initialise(typeFormMap);
 		}
 		for (var provider : config.getMultiLexemeProviders().values()) {
-			context.getLanguages().put(provider.getLang(), getLanguage(provider.getLang()));
+			importerContext.getLanguages().put(provider.getLang(), getLanguage(provider.getLang()));
 			provider.initialise(typeFormMap);
 		}
 	}
@@ -175,7 +176,7 @@ public class CsvRowBasedImporter
 	}
 
 	public CrbiResult run() {
-		context.setResult(new CrbiResult());
+		importerContext.setResult(new CrbiResult());
 		try {
 			// De ID-prövings uutstellen
 			HibernateUtil.setDisableJsonIdChecks(true);
@@ -183,7 +184,7 @@ public class CsvRowBasedImporter
 			// Inleasen un echte strukturen upbouwen
 			buildAndPersistStructures(readData());
 
-			context.getResult().setSuccessful(true);
+			importerContext.getResult().setSuccessful(true);
 		} catch (IOException /*| CodeException */ e) {
 			LOG.error("Import was aborted");
 		}
@@ -194,19 +195,19 @@ public class CsvRowBasedImporter
 		try {
 			Path outputFilePath = Paths.get(appConfig.getImportConfig().getOutputDir(), config.getLogFilename());
 			dk.ule.oapenwb.util.io.Logger msgLogger = new dk.ule.oapenwb.util.io.Logger(outputFilePath.toString());
-			context.getMessages().printToLogger(msgLogger);
+			importerContext.getMessages().printToLogger(msgLogger);
 			msgLogger.close();
 		} catch (IOException e) {
 			LOG.error("Writing message log to file failed", e);
 		}
 
 		// Return the result and reset it on the context
-		CrbiResult result = context.getResult();
+		CrbiResult result = importerContext.getResult();
 		LOG.info("readCount: " + result.getReadCount());
 		LOG.info("saveCount: " + result.getSaveCount());
 		LOG.info("skipCount: " + result.getSkipCount());
 		LOG.info("successful: " + result.isSuccessful());
-		context.setResult(null);
+		importerContext.setResult(null);
 
 		return result;
 	}
@@ -226,15 +227,15 @@ public class CsvRowBasedImporter
 
 				// Skip row if configured to do so
 				if (skipRows.contains(lineNumber)) {
-					context.getMessages().add(CONTEXT_READ_DATA, MessageType.Info, "Skipped row as configured",
+					importerContext.getMessages().add(CONTEXT_READ_DATA, MessageType.Info, "Skipped row as configured",
 						lineNumber, -1);
-					context.getResult().incSkipCount();
+					importerContext.getResult().incSkipCount();
 					continue;
 				}
 
 				// Empty and blank lines will be skipped, too
 				if (line.isBlank()) {
-					context.getResult().incSkipCount();
+					importerContext.getResult().incSkipCount();
 					continue;
 				}
 
@@ -261,19 +262,19 @@ public class CsvRowBasedImporter
 
 					if (config.getImportCondition() == null || config.getImportCondition().meetsCondition(row)) {
 						result.add(row);
-						context.getResult().incReadCount();
+						importerContext.getResult().incReadCount();
 					} else {
-						context.getMessages().add(CONTEXT_READ_DATA, MessageType.Info, "Skipped row by import condition",
+						importerContext.getMessages().add(CONTEXT_READ_DATA, MessageType.Info, "Skipped row by import condition",
 							lineNumber, -1);
-						context.getResult().incSkipCount();
+						importerContext.getResult().incSkipCount();
 					}
 				} catch (Exception e) {
-					context.getMessages().add(CONTEXT_READ_DATA, MessageType.Error, e.getMessage(), lineNumber, -1);
+					importerContext.getMessages().add(CONTEXT_READ_DATA, MessageType.Error, e.getMessage(), lineNumber, -1);
 				}
 			}
 		} catch (Exception e) {
 			LOG.error(String.format("Some mysterious error in line# %d stopped the import", lineNumber), e);
-			context.getMessages().add(CONTEXT_READ_DATA, MessageType.Error,
+			importerContext.getMessages().add(CONTEXT_READ_DATA, MessageType.Error,
 				String.format("Some mysterious error in line# %d stopped the import", lineNumber),
 				lineNumber, -1);
 			throw e;
@@ -356,12 +357,12 @@ public class CsvRowBasedImporter
 
 				for (var provider : config.getLexemeProviders().values()) {
 					try {
-						LexemeDetailedDTO dto = provider.provide(context, typeFormPair, row);
+						LexemeDetailedDTO dto = provider.provide(importerContext, typeFormPair, row);
 						if (provider.isMustProvide() && dto == null) {
 							// If an empty lexeme is provided we will skip this row
 							String message = String.format("Row was skipped since %s returned no lexeme but should have",
 								provider.getMessageContext());
-							context.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Warning, message,
+							importerContext.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Warning, message,
 								row.getLineNumber(), -1);
 							continue rowLoop;
 						}
@@ -379,12 +380,12 @@ public class CsvRowBasedImporter
 
 				for (var provider : config.getMultiLexemeProviders().values()) {
 					try {
-						List<LexemeDetailedDTO> dtoList = provider.provide(context, typeFormPair, row);
+						List<LexemeDetailedDTO> dtoList = provider.provide(importerContext, typeFormPair, row);
 						if (provider.isMustProvide() && (dtoList == null || dtoList.size() == 0)) {
 							// If no or an empty list is provided we will skip this row
 							String message = String.format("Row was skipped since %s returned no lexemes but should have",
 								provider.getMessageContext());
-							context.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Warning, message,
+							importerContext.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Warning, message,
 								row.getLineNumber(), -1);
 							continue rowLoop;
 						}
@@ -406,7 +407,10 @@ public class CsvRowBasedImporter
 					persistProviderDataAndMakeMappingsAndLinks(providerDataList);
 				}
 			} catch (Exception e) {
-				Message message = context.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Error, e.getMessage(),
+				final String context = e instanceof ContextedRuntimeException
+					? ((ContextedRuntimeException) e).getContext()
+					: CONTEXT_BUILD_STRUCTURES;
+				Message message = importerContext.getMessages().add(context, MessageType.Error, e.getMessage(),
 					row.getLineNumber(), -1);
 				LOG.warn(message.toString(), e);
 			}
@@ -416,20 +420,18 @@ public class CsvRowBasedImporter
 			try {
 				persistProviderDataAndMakeMappingsAndLinks(providerDataList);
 				commitTransaction(t, transactionNumber, -1, providerDataList);
-			} catch (/*CodeException|MultiCodeException*/ Exception e) {
-				Message message = context.getMessages().add(CONTEXT_BUILD_STRUCTURES, MessageType.Error, e.getMessage(),
-					rowDataList.size() + 1, -1);
+			} catch (Exception e) {
+				Message message = importerContext.getMessages()
+					.add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Error, e.getMessage(), rowDataList.size() + 1, -1);
 				LOG.error(message.toString(), e);
-				// TODO hwa maybe rethrow these expeptions
 			}
 		}
 	}
 
 	private void persistProviderDataAndMakeMappingsAndLinks(List<ProviderData> providerDataList)
-		throws CodeException, MultiCodeException
 	{
 		if (providerDataList == null || providerDataList.size() == 0) {
-			context.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Warning,
+			importerContext.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Warning,
 				"Method persistProviderData() was called without any data to persist", -1, -1);
 			return;
 		}
@@ -461,11 +463,20 @@ public class CsvRowBasedImporter
 				// Create the mappings
 				if (config.getMappingMakers() != null && config.getMappingMakers().size() > 0) {
 					for (MappingMaker maker : config.getMappingMakers()) {
-						List<Mapping> mappings = maker.build(config, context, sememeIDsOfLoop);
+						List<Mapping> mappings = maker.build(config, importerContext, sememeIDsOfLoop);
 						if (mappings != null && mappings.size() > 0) {
 							for (Mapping mapping : mappings) {
-								// TODO Check if such mapping already exists
-								session.persist(mapping);
+								if (!MappingsController.mappingExists(session, mapping)) {
+									session.persist(mapping);
+								} else {
+									importerContext.getMessages()
+										.add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Info,
+											String.format(
+												"Mapping between sememes %d and %d (lang-pair = %s) already exists and creation was skipped.",
+												mapping.getSememeOneID(), mapping.getSememeTwoID(),
+												mapping.getLangPair()),
+											data.getRowData().getLineNumber(), -1);
+								}
 							}
 						}
 					}
@@ -474,15 +485,26 @@ public class CsvRowBasedImporter
 				// Create the links
 				if (config.getLinkMakers() != null && config.getLinkMakers().size() > 0) {
 					for (LinkMaker maker : config.getLinkMakers()) {
-						List<Link> links = maker.build(config, context, sememeIDsOfLoop);
+						List<Link> links = maker.build(config, importerContext, sememeIDsOfLoop);
 						if (links != null && links.size() > 0) {
 							for (Link link : links) {
-								// TODO Check if such link already exists
-								session.persist(link);
+								if (!LinksController.linkExists(session, link)) {
+									session.persist(link);
+								} else {
+									importerContext.getMessages()
+										.add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Info,
+											String.format(
+												"Link between sememes %d and %d (link type = %d) already exists and creation was skipped.",
+												link.getStartSememeID(), link.getEndSememeID(), link.getTypeID()),
+											data.getRowData().getLineNumber(), -1);
+								}
 							}
 						}
 					}
 				}
+
+				// Flush data of each row into database
+				session.flush();
 			} catch (Exception e) {
 				int lineNumber = data.getRowData().getLineNumber();
 				int batchFirstLine = -1;
@@ -498,10 +520,10 @@ public class CsvRowBasedImporter
 						"processed line = %d, batch first line = %d, batch last line = %d - error: %s",
 					lineNumber, batchFirstLine, batchLastLine, e.getMessage());
 				LOG.warn(message, e);
-				throw new RuntimeException(message);
-			}
 
-		}
+				throw new ContextedRuntimeException(CONTEXT_PERSIST_PROVIDER_DATA, message);
+			} // -- catch
+		} // -- for loop
 	}
 
 	/**
@@ -522,7 +544,7 @@ public class CsvRowBasedImporter
 		Long id = detailedDTO.getLexeme().getId();
 		Long sememeID;
 
-		if (config.isSimulate() || context.getLoadedLexemeIDs().contains(id)) {
+		if (config.isSimulate() || importerContext.getLoadedLexemeIDs().contains(id)) {
 			// This lexeme already existed in the database and thus it already has a persistent sememeID to be used,
 			// or we are running in simulation mode and will just take the generated ID.
 			sememeID = detailedDTO.getSememes().get(0).getId();
@@ -530,7 +552,7 @@ public class CsvRowBasedImporter
 			// This lexeme was created by the import and thus will be persisted now in non-simulation mode.
 			LexemeSlimDTO slimDTO = this.adminControllers.getLexemesController().create(detailedDTO,
 				Context.USE_OUTER_TRANSACTION_CONTEXT);
-			context.getResult().incSaveCount();
+			importerContext.getResult().incSaveCount();
 			sememeID = slimDTO.getFirstSememeID();
 		}
 
@@ -544,7 +566,10 @@ public class CsvRowBasedImporter
 		sememesList.add(sememeID);
 	}
 
-	private void commitTransaction(ITransaction t, int transactionNumber, int lineNumber,
+	private void commitTransaction(
+		final ITransaction t,
+		final int transactionNumber,
+		final int lineNumber,
 		final List<ProviderData> providerDataList)
 	{
 		if (t != null) {
@@ -557,8 +582,8 @@ public class CsvRowBasedImporter
 				LOG.error(failureMessage);
 				LOG.error("Error is", e);
 
-				context.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Error, failureMessage, lineNumber, -1);
-				context.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Error,
+				importerContext.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Error, failureMessage, lineNumber, -1);
+				importerContext.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Error,
 					String.format("Error: %s", e.getMessage()), lineNumber, -1);
 
 				if (providerDataList.size() > 0) {
@@ -567,7 +592,7 @@ public class CsvRowBasedImporter
 					String warnMessage = String.format("Rows %d to %d have probably not been committed.",
 						first, last);
 					LOG.warn(warnMessage);
-					context.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Error, warnMessage, lineNumber, -1);
+					importerContext.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Error, warnMessage, lineNumber, -1);
 				}
 
 				if (!config.isSimulate()) {
