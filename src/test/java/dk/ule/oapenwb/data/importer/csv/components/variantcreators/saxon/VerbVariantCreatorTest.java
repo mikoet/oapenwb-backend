@@ -237,6 +237,26 @@ public class VerbVariantCreatorTest
 				new RowData(1, new String[] {"winnen, wint, wun, wunnen", "" /* TODO dialect */}));
 			VariantUtil.compareVariantLists(checkResult, result, "testMultiFormDefinitions-3");
 		}
+
+		{
+			// Check 4: one multi form definition with divider, w/o multiple variants and with auxilary verb
+			// !! Case that made a problem in import
+			List<Variant> checkResult = List.of(
+				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
+					List.of(
+						createLexemeForm(lftVerbInf.getId(), LexemeForm.STATE_TYPED, "lousgån"),
+						createLexemeForm(lftVerbInfDiv.getId(), LexemeForm.STATE_TYPED, "lous|gån"),
+						createLexemeForm(lftVerbS3ps.getId(), LexemeForm.STATE_TYPED, "geit lous"),
+						createLexemeForm(lftVerbS3pt.getId(), LexemeForm.STATE_TYPED, "gung lous"),
+						createLexemeForm(lftVerbPtc2.getId(), LexemeForm.STATE_TYPED, "lousgån")
+					),
+					Map.of("auxilaries", Set.of("weasen_v")),
+					ApiAction.Insert)
+			);
+			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
+				new RowData(1, new String[] {"lous|gån, geit lous, gung lous, is lousgån", "" /* TODO dialect */}));
+			VariantUtil.compareVariantLists(checkResult, result, "testMultiFormDefinitions-4");
+		}
 	}
 
 	private LexemeForm createLexemeForm(int formTypeID, byte state, String text)

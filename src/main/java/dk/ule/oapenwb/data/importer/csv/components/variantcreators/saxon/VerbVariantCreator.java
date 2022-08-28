@@ -274,7 +274,7 @@ public class VerbVariantCreator extends AbstractVariantCreator
 			partFour = partFour.substring(4);
 			auxilaries.add("hevven");
 		} else if (partFour.startsWith("is ")) {
-			partFour = partFour.substring(4);
+			partFour = partFour.substring(3);
 			auxilaries.add("weasen");
 		} else if (partFour.endsWith(")") && partFour.contains(" (")) {
 			int openBracket = partFour.lastIndexOf(" (");
