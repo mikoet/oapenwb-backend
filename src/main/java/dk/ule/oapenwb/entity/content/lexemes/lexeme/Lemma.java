@@ -27,8 +27,9 @@ public class Lemma
 	@Column(length = 32)
 	private String pre; // pretext
 
+	// FIXME Actually the content shouldn't be longer than 64 character. See LexemeForm.text for more info.
 	@JsonView(Views.REST.class)
-	@Column(length = 64, nullable = false)
+	@Column(length = 256, nullable = false)
 	@NotNull
 	private String main = ""; // maintext
 

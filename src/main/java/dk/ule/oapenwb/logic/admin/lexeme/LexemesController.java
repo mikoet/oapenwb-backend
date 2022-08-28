@@ -260,8 +260,8 @@ public class LexemesController
 			// to store the updated lexeme objects
 			session.clear();
 			result = new LexemeUpdater(lexemeFormTypesController, lexemeTypesController, lemmaTemplatesController,
-				tagsController, synGroupsController, langPairsController, this, sememesController).update(
-					session, id, lexemeDTO, oldLexemeDTO);
+				tagsController, synGroupsController, langPairsController, this, sememesController)
+				.update(session, id, lexemeDTO, oldLexemeDTO);
 			// If everything went fine, commit the transaction
 			context.setRevisionComment("Updated lexeme with ID " + id);
 			transaction.commit();

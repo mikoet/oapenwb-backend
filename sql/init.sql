@@ -394,7 +394,7 @@ create table Variants (
 	dialectIDs jsonb,
 	also varchar(64),
 	fillLemma int4 not null,
-	main varchar(64) not null,
+	main varchar(256) not null,
 	post varchar(32),
 	pre varchar(32),
 	lexemeID int8 not null,
@@ -436,7 +436,7 @@ create table Variants_AUD (
 	dialectIDs jsonb,
 	also varchar(64),
 	fillLemma int4,
-	main varchar(64),
+	main varchar(256),
 	post varchar(32),
 	pre varchar(32),
 	lexemeID int8,
@@ -546,7 +546,7 @@ create table LexemeForms_AUD (
 	REV int8 not null,
 	REVTYPE int2,
 	state int2,
-	text varchar(64),
+	text varchar(256),
 	primary key (variantID, formTypeID, REV)
 );
 
