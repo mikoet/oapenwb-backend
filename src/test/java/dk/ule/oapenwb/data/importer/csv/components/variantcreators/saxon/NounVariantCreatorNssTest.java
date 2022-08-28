@@ -109,13 +109,13 @@ public class NounVariantCreatorNssTest
 					List.of(
 						createLexemeForm(lftSinNom.getId(), LexemeForm.STATE_TYPED, "geagendeyl")
 					),
-					Map.of("genera", Set.of() /* Empty set since no auxilary verb was defined */),
+					Map.of("genera", Set.of() /* Empty set since no auxiliary verb was defined */),
 					ApiAction.Insert),
 				VariantUtil.createVariant(oNSS_ID, false, true, Set.of(/* TODO dialect */),
 					List.of(
 						createLexemeForm(lftSinNom.getId(), LexemeForm.STATE_TYPED, "teagendeyl")
 					),
-					Map.of("genera", Set.of() /* Empty set since no auxilary verb was defined */),
+					Map.of("genera", Set.of() /* Empty set since no auxiliary verb was defined */),
 					ApiAction.Insert)
 			);
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,

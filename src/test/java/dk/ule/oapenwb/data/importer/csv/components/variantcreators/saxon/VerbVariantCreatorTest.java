@@ -67,13 +67,13 @@ public class VerbVariantCreatorTest
 			DIALECT_COLUMN_INDEX).initialise(typeFormsPair);
 
 		{
-			// Check 1: one single form definition w/o divider, w/o multiple variants and w/o auxilary verbs
+			// Check 1: one single form definition w/o divider, w/o multiple variants and w/o auxiliary verbs
 			List<Variant> checkResult = List.of(
 				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
 					List.of(
 						createLexemeForm(lftVerbInf.getId(), LexemeForm.STATE_TYPED, "nikkoppen")
 					),
-					Map.of("auxilaries", Set.of() /* Empty set since no auxilary verb was defined */),
+					Map.of("auxiliaries", Set.of() /* Empty set since no auxiliary verb was defined */),
 					ApiAction.Insert)
 			);
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
@@ -82,14 +82,14 @@ public class VerbVariantCreatorTest
 		}
 
 		{
-			// Check 2: one single form definition with divider, w/o multiple variants and w/o auxilary verbs
+			// Check 2: one single form definition with divider, w/o multiple variants and w/o auxiliary verbs
 			List<Variant> checkResult = List.of(
 				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
 					List.of(
 						createLexemeForm(lftVerbInf.getId(), LexemeForm.STATE_TYPED, "nikkoppen")
 						,createLexemeForm(lftVerbInfDiv.getId(), LexemeForm.STATE_TYPED, "nik|koppen")
 					),
-					Map.of("auxilaries", Set.of() /* Empty set since no auxilary verb was defined */),
+					Map.of("auxiliaries", Set.of() /* Empty set since no auxiliary verb was defined */),
 					ApiAction.Insert)
 			);
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
@@ -98,21 +98,21 @@ public class VerbVariantCreatorTest
 		}
 
 		{
-			// Check 3: one single form definition with divider, with multiple variants and w/o auxilary verbs
+			// Check 3: one single form definition with divider, with multiple variants and w/o auxiliary verbs
 			List<Variant> checkResult = List.of(
 				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
 					List.of(
 						createLexemeForm(lftVerbInf.getId(), LexemeForm.STATE_TYPED, "nikkoppen")
 						,createLexemeForm(lftVerbInfDiv.getId(), LexemeForm.STATE_TYPED, "nik|koppen")
 					),
-					Map.of("auxilaries", Set.of() /* Empty set since no auxilary verb was defined */),
+					Map.of("auxiliaries", Set.of() /* Empty set since no auxiliary verb was defined */),
 					ApiAction.Insert),
 				VariantUtil.createVariant(oNSS_ID, false, true, Set.of(/* TODO dialect */),
 					List.of(
 						createLexemeForm(lftVerbInf.getId(), LexemeForm.STATE_TYPED, "nikköppen")
 						,createLexemeForm(lftVerbInfDiv.getId(), LexemeForm.STATE_TYPED, "nik|köppen")
 					),
-					Map.of("auxilaries", Set.of() /* Empty set since no auxilary verb was defined */),
+					Map.of("auxiliaries", Set.of() /* Empty set since no auxiliary verb was defined */),
 					ApiAction.Insert)
 			);
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
@@ -121,21 +121,21 @@ public class VerbVariantCreatorTest
 		}
 
 		{
-			// Check 4: one single form definition with divider, with multiple variants and with one auxilary verb
+			// Check 4: one single form definition with divider, with multiple variants and with one auxiliary verb
 			List<Variant> checkResult = List.of(
 				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
 					List.of(
 						createLexemeForm(lftVerbInf.getId(), LexemeForm.STATE_TYPED, "nikkoppen")
 						,createLexemeForm(lftVerbInfDiv.getId(), LexemeForm.STATE_TYPED, "nik|koppen")
 					),
-					Map.of("auxilaries", Set.of("hevven_v")),
+					Map.of("auxiliaries", Set.of("hevven_v")),
 					ApiAction.Insert),
 				VariantUtil.createVariant(oNSS_ID, false, true, Set.of(/* TODO dialect */),
 					List.of(
 						createLexemeForm(lftVerbInf.getId(), LexemeForm.STATE_TYPED, "nikköppen")
 						,createLexemeForm(lftVerbInfDiv.getId(), LexemeForm.STATE_TYPED, "nik|köppen")
 					),
-					Map.of("auxilaries", Set.of("hevven_v")),
+					Map.of("auxiliaries", Set.of("hevven_v")),
 					ApiAction.Insert)
 			);
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
@@ -144,21 +144,21 @@ public class VerbVariantCreatorTest
 		}
 
 		{
-			// Check 5: one single form definition with divider, with multiple variants and with two auxilary verbs
+			// Check 5: one single form definition with divider, with multiple variants and with two auxiliary verbs
 			List<Variant> checkResult = List.of(
 				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
 					List.of(
 						createLexemeForm(lftVerbInf.getId(), LexemeForm.STATE_TYPED, "nikkoppen")
 						,createLexemeForm(lftVerbInfDiv.getId(), LexemeForm.STATE_TYPED, "nik|koppen")
 					),
-					Map.of("auxilaries", Set.of("hevven_v", "weasen_v")),
+					Map.of("auxiliaries", Set.of("hevven_v", "weasen_v")),
 					ApiAction.Insert),
 				VariantUtil.createVariant(oNSS_ID, false, true, Set.of(/* TODO dialect */),
 					List.of(
 						createLexemeForm(lftVerbInf.getId(), LexemeForm.STATE_TYPED, "nikköppen")
 						,createLexemeForm(lftVerbInfDiv.getId(), LexemeForm.STATE_TYPED, "nik|köppen")
 					),
-					Map.of("auxilaries", Set.of("hevven_v", "weasen_v")),
+					Map.of("auxiliaries", Set.of("hevven_v", "weasen_v")),
 					ApiAction.Insert)
 			);
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
@@ -174,7 +174,7 @@ public class VerbVariantCreatorTest
 			DIALECT_COLUMN_INDEX).initialise(typeFormsPair);
 
 		{
-			// Check 1: one multi form definition w/o divider, w/o multiple variants and with auxilary verb
+			// Check 1: one multi form definition w/o divider, w/o multiple variants and with auxiliary verb
 			List<Variant> checkResult = List.of(
 				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
 					List.of(
@@ -184,7 +184,7 @@ public class VerbVariantCreatorTest
 						createLexemeForm(lftVerbS3pt.getId(), LexemeForm.STATE_TYPED, "holp af"),
 						createLexemeForm(lftVerbPtc2.getId(), LexemeForm.STATE_TYPED, "afholpen")
 					),
-					Map.of("auxilaries", Set.of("hevven_v")),
+					Map.of("auxiliaries", Set.of("hevven_v")),
 					ApiAction.Insert),
 				VariantUtil.createVariant(oNSS_ID, false, true, Set.of(/* TODO dialect */),
 					List.of(
@@ -194,7 +194,7 @@ public class VerbVariantCreatorTest
 						createLexemeForm(lftVerbS3pt.getId(), LexemeForm.STATE_TYPED, "holp af"),
 						createLexemeForm(lftVerbPtc2.getId(), LexemeForm.STATE_TYPED, "afholpen")
 					),
-					Map.of("auxilaries", Set.of("hevven_v")),
+					Map.of("auxiliaries", Set.of("hevven_v")),
 					ApiAction.Insert)
 			);
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
@@ -203,7 +203,7 @@ public class VerbVariantCreatorTest
 		}
 
 		{
-			// Check 2: one multi form definition w/o divider, w/o multiple variants and with auxilary verbs
+			// Check 2: one multi form definition w/o divider, w/o multiple variants and with auxiliary verbs
 			List<Variant> checkResult = List.of(
 				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
 					List.of(
@@ -212,7 +212,7 @@ public class VerbVariantCreatorTest
 						createLexemeForm(lftVerbS3pt.getId(), LexemeForm.STATE_TYPED, "leyp"),
 						createLexemeForm(lftVerbPtc2.getId(), LexemeForm.STATE_TYPED, "loupen")
 					),
-					Map.of("auxilaries", Set.of("hevven_v", "weasen_v")),
+					Map.of("auxiliaries", Set.of("hevven_v", "weasen_v")),
 					ApiAction.Insert)
 			);
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
@@ -221,7 +221,7 @@ public class VerbVariantCreatorTest
 		}
 
 		{
-			// Check 3: one multi form definition w/o divider, w/o multiple variants and w/o auxilary verbs
+			// Check 3: one multi form definition w/o divider, w/o multiple variants and w/o auxiliary verbs
 			List<Variant> checkResult = List.of(
 				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
 					List.of(
@@ -230,7 +230,7 @@ public class VerbVariantCreatorTest
 						createLexemeForm(lftVerbS3pt.getId(), LexemeForm.STATE_TYPED, "wun"),
 						createLexemeForm(lftVerbPtc2.getId(), LexemeForm.STATE_TYPED, "wunnen")
 					),
-					Map.of("auxilaries", Set.of()),
+					Map.of("auxiliaries", Set.of()),
 					ApiAction.Insert)
 			);
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
@@ -239,7 +239,7 @@ public class VerbVariantCreatorTest
 		}
 
 		{
-			// Check 4: one multi form definition with divider, w/o multiple variants and with auxilary verb
+			// Check 4: one multi form definition with divider, w/o multiple variants and with auxiliary verb
 			// !! Case that made a problem in import
 			List<Variant> checkResult = List.of(
 				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
@@ -250,7 +250,7 @@ public class VerbVariantCreatorTest
 						createLexemeForm(lftVerbS3pt.getId(), LexemeForm.STATE_TYPED, "gung lous"),
 						createLexemeForm(lftVerbPtc2.getId(), LexemeForm.STATE_TYPED, "lousgån")
 					),
-					Map.of("auxilaries", Set.of("weasen_v")),
+					Map.of("auxiliaries", Set.of("weasen_v")),
 					ApiAction.Insert)
 			);
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,

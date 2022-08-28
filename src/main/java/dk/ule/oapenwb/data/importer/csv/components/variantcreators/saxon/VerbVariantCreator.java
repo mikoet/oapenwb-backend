@@ -48,8 +48,8 @@ public class VerbVariantCreator extends AbstractVariantCreator
 
 	private final int dialectsColumnIndex;
 
-	// Maps each auxilary verb to a parserID
-	private final Map<String, String> allowedAuxilaries = new HashMap<>();
+	// Maps each auxiliary verb to a parserID
+	private final Map<String, String> allowedAuxiliaries = new HashMap<>();
 
 	public VerbVariantCreator(
 		AdminControllers adminControllers,
@@ -64,9 +64,9 @@ public class VerbVariantCreator extends AbstractVariantCreator
 
 		this.dialectsColumnIndex = dialectsColumnIndex;
 
-		allowedAuxilaries.put("hevven", "hevven_v");
-		allowedAuxilaries.put("hebben", "hevven_v");
-		allowedAuxilaries.put("weasen", "weasen_v");
+		allowedAuxiliaries.put("hevven", "hevven_v");
+		allowedAuxiliaries.put("hebben", "hevven_v");
+		allowedAuxiliaries.put("weasen", "weasen_v");
 	}
 
 	@Override
@@ -109,15 +109,15 @@ public class VerbVariantCreator extends AbstractVariantCreator
 			return result;
 		}
 
-		// !! To see if a text is multi-part a possible auxilary verb definition has to be excluded because both
+		// !! To see if a text is multi-part a possible auxiliary verb definition has to be excluded because both
 		// !! can contain commas (`,`)
 		boolean isMultiPart = false;
-		boolean mpHasAuxilaryDef = false;
+		boolean mpHasAuxiliaryDef = false;
 		int mpNumberOfParts = 0;
 		if (text.contains(",")) {
 			if (text.endsWith(")")) {
-				// If the text contains auxilary verb definition only split at the commas left of the first open bracket
-				mpHasAuxilaryDef = true;
+				// If the text contains auxiliary verb definition only split at the commas left of the first open bracket
+				mpHasAuxiliaryDef = true;
 				int mpOpenBracket = text.lastIndexOf(" (");
 				mpNumberOfParts = StringUtils.countMatches(text.substring(0, mpOpenBracket), ',') + 1;
 				isMultiPart = mpNumberOfParts > 1;
@@ -132,8 +132,8 @@ public class VerbVariantCreator extends AbstractVariantCreator
 
 			// 1) Check for the 4 parts
 			String[] parts;
-			if (mpHasAuxilaryDef) {
-				// If the text contains auxilary verb definition only split at the commas left of the first open bracket
+			if (mpHasAuxiliaryDef) {
+				// If the text contains auxiliary verb definition only split at the commas left of the first open bracket
 				parts = text.split(",", mpNumberOfParts);
 			} else {
 				parts = text.split(",");
@@ -165,21 +165,21 @@ public class VerbVariantCreator extends AbstractVariantCreator
 					String form1 = CreatorUtils.getVariantForm(parts[1], i);
 					String form2 = CreatorUtils.getVariantForm(parts[2], i);
 
-					// TODO 101 Sint de auxilaries nu eygens deyl van'e variante oder van't semeem?
+					// TODO 101 Sint de auxiliaries nu eygens deyl van'e variante oder van't semeem?
 					//  Anders kun eyn de evtl. öäver den kontekst torüg geaven.
-					// the participle II is special in that it might contain one or more auxilary verbs
+					// the participle II is special in that it might contain one or more auxiliary verbs
 					String partFour = parts[3].trim();
-					Pair<String, Set<String>> auxilaryPair = extractAuxilaries(partFour);
+					Pair<String, Set<String>> auxiliaryPair = extractAuxiliaries(partFour);
 
-					String form3 = CreatorUtils.getVariantForm(auxilaryPair.getLeft(), i);
+					String form3 = CreatorUtils.getVariantForm(auxiliaryPair.getLeft(), i);
 
 					Variant variant = createVariant(context, infinitiveDiv, form1, form2, form3);
 					if (first) {
 						variant.setMainVariant(true);
 						first = false;
 					}
-					// TODO 101 Sint de auxilaries nu eygens deyl van'e variante oder van't semeem?
-					variant.getProperties().put("auxilaries", auxilaryPair.getRight());
+					// TODO 101 Sint de auxiliaries nu eygens deyl van'e variante oder van't semeem?
+					variant.getProperties().put("auxiliaries", auxiliaryPair.getRight());
 					result.add(variant);
 				}
 			} else {
@@ -189,19 +189,19 @@ public class VerbVariantCreator extends AbstractVariantCreator
 				String form1 = CreatorUtils.getVariantForm(parts[1], 0);
 				String form2 = CreatorUtils.getVariantForm(parts[2], 0);
 
-				// TODO 101 Sint de auxilaries nu eygens deyl van'e variante oder van't semeem?
+				// TODO 101 Sint de auxiliaries nu eygens deyl van'e variante oder van't semeem?
 				//  Anders kun eyn de evtl. öäver den kontekst torüg geaven.
-				// the participle II is special in that it might contain one or more auxilary verbs
+				// the participle II is special in that it might contain one or more auxiliary verbs
 				String partFour = parts[3].trim();
-				Pair<String, Set<String>> auxilaryPair = extractAuxilaries(partFour);
-				partFour = auxilaryPair.getLeft();
+				Pair<String, Set<String>> auxiliaryPair = extractAuxiliaries(partFour);
+				partFour = auxiliaryPair.getLeft();
 
 				String form3 = CreatorUtils.getVariantForm(partFour, 0);
 
 				Variant variant = createVariant(context, infinitiveDiv, form1, form2, form3);
 				variant.setMainVariant(true);
-				// TODO 101 Sint de auxilaries nu eygens deyl van'e variante oder van't semeem?
-				variant.getProperties().put("auxilaries", auxilaryPair.getRight());
+				// TODO 101 Sint de auxiliaries nu eygens deyl van'e variante oder van't semeem?
+				variant.getProperties().put("auxiliaries", auxiliaryPair.getRight());
 				result.add(variant);
 			}
 		} else {
@@ -218,34 +218,34 @@ public class VerbVariantCreator extends AbstractVariantCreator
 				// 2.b) Create the variants
 				boolean first = true;
 				for (int i = 0; i < numberOfVariants; i++) {
-					// TODO 101 Sint de auxilaries nu eygens deyl van'e variante oder van't semeem?
+					// TODO 101 Sint de auxiliaries nu eygens deyl van'e variante oder van't semeem?
 					//  Anders kun eyn de evtl. öäver den kontekst torüg geaven.
-					// the participle II is special in that it might contain one or more auxilary verbs
-					Pair<String, Set<String>> auxilaryPair = extractAuxilaries(text);
+					// the participle II is special in that it might contain one or more auxiliary verbs
+					Pair<String, Set<String>> auxiliaryPair = extractAuxiliaries(text);
 
-					String infinitiveDiv = CreatorUtils.getVariantForm(auxilaryPair.getLeft(), i);
+					String infinitiveDiv = CreatorUtils.getVariantForm(auxiliaryPair.getLeft(), i);
 					Variant variant = createVariant(context, infinitiveDiv);
 					if (first) {
 						variant.setMainVariant(true);
 						first = false;
 					}
-					// TODO 101 Sint de auxilaries nu eygens deyl van'e variante oder van't semeem?
-					variant.getProperties().put("auxilaries", auxilaryPair.getRight());
+					// TODO 101 Sint de auxiliaries nu eygens deyl van'e variante oder van't semeem?
+					variant.getProperties().put("auxiliaries", auxiliaryPair.getRight());
 					result.add(variant);
 				}
 			} else {
 				// 3.a) It only contains one variant
-				// TODO 101 Sint de auxilaries nu eygens deyl van'e variante oder van't semeem?
+				// TODO 101 Sint de auxiliaries nu eygens deyl van'e variante oder van't semeem?
 				//  Anders kun eyn de evtl. öäver den kontekst torüg geaven.
-				// The participle II is special in that it might contain one or more auxilary verbs
-				Pair<String, Set<String>> auxilaryPair = extractAuxilaries(text);
+				// The participle II is special in that it might contain one or more auxiliary verbs
+				Pair<String, Set<String>> auxiliaryPair = extractAuxiliaries(text);
 
 				// Create the variant
-				String infinitiveDiv = CreatorUtils.getVariantForm(auxilaryPair.getLeft(), 0);
+				String infinitiveDiv = CreatorUtils.getVariantForm(auxiliaryPair.getLeft(), 0);
 				Variant variant = createVariant(context, infinitiveDiv);
 				variant.setMainVariant(true);
-				// TODO 101 Sint de auxilaries nu eygens deyl van'e variante oder van't semeem?
-				variant.getProperties().put("auxilaries", auxilaryPair.getRight());
+				// TODO 101 Sint de auxiliaries nu eygens deyl van'e variante oder van't semeem?
+				variant.getProperties().put("auxiliaries", auxiliaryPair.getRight());
 				result.add(variant);
 			}
 		}
@@ -262,39 +262,39 @@ public class VerbVariantCreator extends AbstractVariantCreator
 
 	/**
 	 * @param partFour string containing the lexeme form with optionally multiple variants and optional specification
-	 *   of auxilary verbs
-	 * @return a pair containg the partFour string reduced by the auxilary specification in the left and a set of
-	 *   auxilary verbs in the right
+	 *   of auxiliary verbs
+	 * @return a pair containg the partFour string reduced by the auxiliary specification in the left and a set of
+	 *   auxiliary verbs in the right
 	 */
-	private Pair<String, Set<String>> extractAuxilaries(String partFour)
+	private Pair<String, Set<String>> extractAuxiliaries(String partFour)
 	{
-		Set<String> auxilaries = new HashSet<>();
+		Set<String> auxiliaries = new HashSet<>();
 
 		if (partFour.startsWith("het ")) {
 			partFour = partFour.substring(4);
-			auxilaries.add("hevven");
+			auxiliaries.add("hevven");
 		} else if (partFour.startsWith("is ")) {
 			partFour = partFour.substring(3);
-			auxilaries.add("weasen");
+			auxiliaries.add("weasen");
 		} else if (partFour.endsWith(")") && partFour.contains(" (")) {
 			int openBracket = partFour.lastIndexOf(" (");
 			int closeBracket = partFour.length() - 1;
 
-			String auxilaryStr = partFour.substring(openBracket + 2, closeBracket).replace(" ", "");
-			String[] auxilariesArr = auxilaryStr.contains(",") ? auxilaryStr.split(",")
-										 : new String[] { auxilaryStr };
-			Collections.addAll(auxilaries, auxilariesArr);
+			String auxiliaryStr = partFour.substring(openBracket + 2, closeBracket).replace(" ", "");
+			String[] auxiliariesArr = auxiliaryStr.contains(",") ? auxiliaryStr.split(",")
+										 : new String[] { auxiliaryStr };
+			Collections.addAll(auxiliaries, auxiliariesArr);
 
-			// Remove the auxilary verb definition from partFour
+			// Remove the auxiliary verb definition from partFour
 			partFour = partFour.substring(0, openBracket).trim();
 		}
 
 		Set<String> parserIDs = new HashSet<>();
-		for (var auxilary : auxilaries) {
-			if (!allowedAuxilaries.containsKey(auxilary)) {
-				throw new RuntimeException(String.format("Specified auxilary verb '%s' is unknown.", auxilary));
+		for (var auxiliary : auxiliaries) {
+			if (!allowedAuxiliaries.containsKey(auxiliary)) {
+				throw new RuntimeException(String.format("Specified auxiliary verb '%s' is unknown.", auxiliary));
 			}
-			parserIDs.add(allowedAuxilaries.get(auxilary));
+			parserIDs.add(allowedAuxiliaries.get(auxiliary));
 		}
 
 		return new Pair<>(partFour, parserIDs);
