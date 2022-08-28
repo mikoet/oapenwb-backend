@@ -20,11 +20,13 @@ limit :limit offset :offset
 -- Q011
 -- Find all Lexemes that are connected to at least one LexemeForm that contains the searched text
 -- (via the variants, lexemes and sememes).
+
 select L.id as id, L.parserID as parserID, L.typeID as typeID, L.langID as langID,
-  V.pre as pre, V.main as main, V.post as post, L.active as active,
-  5 as condition, L.tags as tags
+  V.pre as pre, V.main as main, V.post as post, L.active as active, 5 as condition,
+  L.tags as tags, S.id as sememeID
 from Lexemes L left join Variants V on (L.id = V.lexemeID and V.mainVariant=true)
-where
+  left join Sememes S on (L.id = S.lexemeID AND S.id = (SELECT MIN(lexemeID) FROM Sememes WHERE lexemeID = L.id))
+where 1 = 1
   L.id in (select lexemeID from Variants Vi
     where Vi.id in (select variantID from LexemeForms where @@@filterStatement@@@)) -- searchableText @@ websearch_to_tsquery('simple', :filter)
                                                                                     -- searchableText @@ to_tsquery('simple', :filter)

@@ -26,7 +26,7 @@ public class LexemeSlimPlus extends LexemeSlimDTO
 	private List<@Valid Sememe> sememes;
 
 	public LexemeSlimPlus(long id, String parserID, long typeID, int langID, String pre, String main, String post,
-		boolean active, int condition, Set<String> tags)
+		boolean active, int condition, Set<String> tags, Long firstSememeID)
 	{
 		setId(id);
 		setParserID(parserID);
@@ -38,5 +38,6 @@ public class LexemeSlimPlus extends LexemeSlimDTO
 		setActive(active);
 		setCondition(condition);
 		setTags(tags);
+		setFirstSememeID(firstSememeID);
 	}
 }

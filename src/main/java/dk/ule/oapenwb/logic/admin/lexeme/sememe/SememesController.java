@@ -83,7 +83,8 @@ public class SememesController extends EntityController<Sememe, Long>
 					(String) row[6],	// post
 					(Boolean) row[7],	// active
 					(Integer) row[8],	// condition
-					JsonUtil.convertJsonbStringToLinkedHashSet((String) row[9]) // tags
+					JsonUtil.convertJsonbStringToLinkedHashSet((String) row[9]), // tags
+					(Long) row[10]		// sememeID
 				);
 				lexemesList.add(lexemeSlimPlus);
 
@@ -109,10 +110,11 @@ public class SememesController extends EntityController<Sememe, Long>
 
 		// Basis query (Q011)
 		sb.append("select L.id as id, L.parserID as parserID, L.typeID as typeID, L.langID as langID,\n");
-		sb.append("  V.pre as pre, V.main as main, V.post as post, L.active as active,\n");
-		sb.append("  5 as condition, L.tags as tags\n");
+		sb.append("  V.pre as pre, V.main as main, V.post as post, L.active as active, 5 as condition,\n");
+		sb.append("  L.tags as tags, S.id as sememeID\n");
 		sb.append("from Lexemes L left join Variants V on (L.id = V.lexemeID and V.mainVariant=true)\n");
-		sb.append("where\n");
+		sb.append("  left join Sememes S on (L.id = S.lexemeID AND S.id = (SELECT MIN(lexemeID) FROM Sememes WHERE lexemeID = L.id))\n");
+		sb.append("where 1 = 1\n");
 
 		String filterText = request.getFilter();
 		if (filterText != null && !filterText.isEmpty()) {
@@ -121,7 +123,7 @@ public class SememesController extends EntityController<Sememe, Long>
 			final String filterStatement = filterResult.getLeft();
 			filterText = filterResult.getRight();
 			// Add the text filtering part if it's set
-			sb.append("  L.id in (select lexemeID from Variants Vi\n");
+			sb.append("  and L.id in (select lexemeID from Variants Vi\n");
 			sb.append("    where Vi.id in (select variantID from LexemeForms where ")
 			  .append(filterStatement)
 			  .append("))\n");
@@ -137,16 +139,17 @@ public class SememesController extends EntityController<Sememe, Long>
 		// Create the query
 		Session session = HibernateUtil.getSession();
 		NativeQuery<?> query = session.createSQLQuery(sb.toString())
-		  .addScalar("id", new LongType())
-		  .addScalar("parserID", new StringType())
-		  .addScalar("typeID", new IntegerType())
-		  .addScalar("langID", new IntegerType())
-		  .addScalar("pre", new StringType())
-		  .addScalar("main", new StringType())
-		  .addScalar("post", new StringType())
-		  .addScalar("active", new BooleanType())
-		  .addScalar("condition", new IntegerType())
-		  .addScalar("tags", new StringType());
+			.addScalar("id", new LongType())
+			.addScalar("parserID", new StringType())
+			.addScalar("typeID", new IntegerType())
+			.addScalar("langID", new IntegerType())
+			.addScalar("pre", new StringType())
+			.addScalar("main", new StringType())
+			.addScalar("post", new StringType())
+			.addScalar("active", new BooleanType())
+			.addScalar("condition", new IntegerType())
+			.addScalar("tags", new StringType())
+			.addScalar("sememeID", new LongType());
 
 		query.setParameter("offset", 0);
 		query.setParameter("limit", MAX_LEXEMES);
@@ -168,9 +171,9 @@ public class SememesController extends EntityController<Sememe, Long>
 	 * 2. fetch the lexeme for the sememe
 	 * 3. fetch the main variant for the lexeme
 	 *
-	 * @param id
-	 * @return
-	 * @throws CodeException
+	 * @param id the sememe's id
+	 * @return SememesSlim instance
+	 * @throws CodeException in case fetching gets an error
 	 */
 	public SememeSlim getOneSlim(Long id) throws CodeException
 	{

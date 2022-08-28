@@ -355,7 +355,7 @@ public class LexemesController
 	private NativeQuery<?> createQuery(final Pagination pagination)
 	{
 		StringBuilder sb = new StringBuilder();
-		// Basis query
+		// Basis query (related to Q011)
 		sb.append("select L.id as id, L.parserID as parserID, L.typeID as typeID, L.langID as langID,\n");
 		sb.append("  V.pre as pre, V.main as main, V.post as post, L.active as active, 5 as condition,\n");
 		sb.append("  L.tags as tags, S.id as sememeID\n");
@@ -500,13 +500,13 @@ public class LexemesController
 	{
 		StringBuilder sb = new StringBuilder();
 
-		// Basis query
+		// Basis query (related to Q011)
 		sb.append("select L.id as id, L.parserID as parserID, L.typeID as typeID, L.langID as langID,\n");
 		sb.append("  V.pre as pre, V.main as main, V.post as post, L.active as active,\n");
 		sb.append("  5 as condition, L.tags as tags, S.id as sememeID\n");
 		sb.append("from Lexemes L left join Variants V on (L.id = V.lexemeID and V.mainVariant=true)\n");
 		sb.append("  left join Sememes S on (L.id = S.lexemeID AND S.id = (SELECT MIN(lexemeID) FROM Sememes WHERE lexemeID = L.id))\n");
-		sb.append("where\n");
+		sb.append("where 1 = 1\n");
 
 		String filterText = request.getFilter();
 		if (filterText != null && !filterText.isEmpty()) {
@@ -515,7 +515,7 @@ public class LexemesController
 			final String filterStatement = filterResult.getLeft();
 			filterText = filterResult.getRight();
 			// Add the text filtering part if it's set
-			sb.append("  L.id in (select lexemeID from Variants Vi\n");
+			sb.append("  and L.id in (select lexemeID from Variants Vi\n");
 			sb.append("    where Vi.id in (select variantID from LexemeForms where " + filterStatement + "))\n");
 		} else {
 			sb.append("  1=1\n");
