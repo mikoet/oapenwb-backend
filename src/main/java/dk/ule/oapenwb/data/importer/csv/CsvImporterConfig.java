@@ -3,6 +3,7 @@
 package dk.ule.oapenwb.data.importer.csv;
 
 import dk.ule.oapenwb.data.importer.csv.components.*;
+import dk.ule.oapenwb.data.importer.messages.MessageType;
 import dk.ule.oapenwb.util.SecurityUtil;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -56,6 +57,11 @@ public class CsvImporterConfig
 	 */
 	@Setter(AccessLevel.NONE)
 	private String logFilename;
+
+	/**
+	 * Only messages having this type or higher will be printed into output log.
+	 */
+	private MessageType outputMinimumType = MessageType.Info;
 
 	/**
 	 * Number of rows to be read, handled and persisted before committing a transaction.

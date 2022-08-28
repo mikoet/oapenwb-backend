@@ -150,7 +150,7 @@ public class AbstractLexemeProvider
 			if (rows.size() > 0) {
 				Set<Long> lexemeIDs = new HashSet<>(rows);
 				allLexemeIDs.addAll(lexemeIDs);
-				context.getMessages().add(this.messageContext, MessageType.Warning,
+				context.getMessages().add(this.messageContext, MessageType.Debug,
 					String.format("Specified variant '%s' already exists in database", variant.getLexemeForms().get(0)),
 					lineNumber, -1);
 			}

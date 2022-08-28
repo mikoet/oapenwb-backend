@@ -12,6 +12,7 @@ import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.ImportM
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.MiscVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.NounVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.VerbVariantCreator;
+import dk.ule.oapenwb.data.importer.messages.MessageType;
 import dk.ule.oapenwb.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.entity.content.basedata.LinkType;
 import dk.ule.oapenwb.entity.content.basedata.Orthography;
@@ -72,6 +73,7 @@ public class SaxonFirstImportSetting
 
 		cfg.setColumnCount(COL_LAST_INDEX);
 		cfg.setMinColumnCount(COL_MIN_COUNT);
+		cfg.setOutputMinimumType(MessageType.Info);
 		cfg.setTagNames(Set.of("imported", "loup1"));
 		cfg.setTransactionSize(50);
 		cfg.setSkipRows(Set.of(1));

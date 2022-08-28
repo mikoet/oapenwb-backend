@@ -195,7 +195,7 @@ public class CsvRowBasedImporter
 		try {
 			Path outputFilePath = Paths.get(appConfig.getImportConfig().getOutputDir(), config.getLogFilename());
 			dk.ule.oapenwb.util.io.Logger msgLogger = new dk.ule.oapenwb.util.io.Logger(outputFilePath.toString());
-			importerContext.getMessages().printToLogger(msgLogger);
+			importerContext.getMessages().printToLogger(msgLogger, config.getOutputMinimumType());
 			msgLogger.close();
 		} catch (IOException e) {
 			LOG.error("Writing message log to file failed", e);

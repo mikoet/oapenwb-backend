@@ -29,7 +29,7 @@ public class MessageContainer
 		return add(context, type, text, lineNumber, -1);
 	}
 
-	public void printToLogger(Logger logger)
+	public void printToLogger(Logger logger, MessageType minType)
 	{
 		for (Map.Entry<String, List<Message>> entry : messages.entrySet()) {
 			String context = entry.getKey();
@@ -38,6 +38,7 @@ public class MessageContainer
 			// Log messages of current contextual section
 			logger.log("Context '%s':", context);
 			for (Message msg : messageList) {
+				if (msg.getType().getWeight() >= minType.getWeight())
 				logger.log(msg.toString());
 			}
 			// Add an empty line after each section

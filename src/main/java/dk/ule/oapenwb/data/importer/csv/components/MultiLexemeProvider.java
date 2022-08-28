@@ -88,7 +88,7 @@ public class MultiLexemeProvider extends AbstractLexemeProvider
 			LexemeDetailedDTO otherDetailedDTO;
 			if ((otherDetailedDTO = lookup(context, rowData.getLineNumber(), detailedDTO)) != null) {
 				// At least one variant already exists
-				context.getMessages().add(messageContext, MessageType.Info,
+				context.getMessages().add(messageContext, MessageType.Debug,
 					"Lexeme from database is being used", rowData.getLineNumber(), -1);
 				detailedDTO = otherDetailedDTO;
 			}
