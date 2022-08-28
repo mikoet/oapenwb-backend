@@ -101,7 +101,7 @@ public class MultiVariantCreator extends AbstractVariantCreator
 		}
 
 		// Create the variant with the partText
-		Variant variant = createVariant(context, partText);
+		Variant variant = createVariant(context, rowData.getLineNumber(), partText);
 		variant.setMainVariant(true);
 		result.add(variant);
 
@@ -137,10 +137,10 @@ public class MultiVariantCreator extends AbstractVariantCreator
 		return result;
 	}
 
-	private Variant createVariant(CsvImporterContext context, String sinNom)
+	private Variant createVariant(CsvImporterContext context, int lineNumber, String sinNom)
 	{
 		// Create the LexemeForm
-		LexemeForm lfSinNom = createLexemeForm(ftFirst.getId(), sinNom);
+		LexemeForm lfSinNom = createLexemeForm(context, lineNumber, ftFirst.getId(), sinNom);
 
 		List<LexemeForm> lexemeForms = List.of(lfSinNom);
 

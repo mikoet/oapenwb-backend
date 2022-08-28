@@ -173,7 +173,7 @@ public class VerbVariantCreator extends AbstractVariantCreator
 
 					String form3 = CreatorUtils.getVariantForm(auxiliaryPair.getLeft(), i);
 
-					Variant variant = createVariant(context, infinitiveDiv, form1, form2, form3);
+					Variant variant = createVariant(context, rowData.getLineNumber(), infinitiveDiv, form1, form2, form3);
 					if (first) {
 						variant.setMainVariant(true);
 						first = false;
@@ -198,7 +198,7 @@ public class VerbVariantCreator extends AbstractVariantCreator
 
 				String form3 = CreatorUtils.getVariantForm(partFour, 0);
 
-				Variant variant = createVariant(context, infinitiveDiv, form1, form2, form3);
+				Variant variant = createVariant(context, rowData.getLineNumber(), infinitiveDiv, form1, form2, form3);
 				variant.setMainVariant(true);
 				// TODO 101 Sint de auxiliaries nu eygens deyl van'e variante oder van't semeem?
 				variant.getProperties().put("auxiliaries", auxiliaryPair.getRight());
@@ -224,7 +224,7 @@ public class VerbVariantCreator extends AbstractVariantCreator
 					Pair<String, Set<String>> auxiliaryPair = extractAuxiliaries(text);
 
 					String infinitiveDiv = CreatorUtils.getVariantForm(auxiliaryPair.getLeft(), i);
-					Variant variant = createVariant(context, infinitiveDiv);
+					Variant variant = createVariant(context, rowData.getLineNumber(), infinitiveDiv);
 					if (first) {
 						variant.setMainVariant(true);
 						first = false;
@@ -242,7 +242,7 @@ public class VerbVariantCreator extends AbstractVariantCreator
 
 				// Create the variant
 				String infinitiveDiv = CreatorUtils.getVariantForm(auxiliaryPair.getLeft(), 0);
-				Variant variant = createVariant(context, infinitiveDiv);
+				Variant variant = createVariant(context, rowData.getLineNumber(), infinitiveDiv);
 				variant.setMainVariant(true);
 				// TODO 101 Sint de auxiliaries nu eygens deyl van'e variante oder van't semeem?
 				variant.getProperties().put("auxiliaries", auxiliaryPair.getRight());
@@ -300,31 +300,34 @@ public class VerbVariantCreator extends AbstractVariantCreator
 		return new Pair<>(partFour, parserIDs);
 	}
 
-	private Variant createVariant(CsvImporterContext context, String infinitiveDivText, String form1Text,
-		String form2Text,  String form3Text)
+	private Variant createVariant(CsvImporterContext context, int lineNumber, String infinitiveDivText, String form1Text,
+		String form2Text, String form3Text)
 	{
 		// Create the LexemeForms
-		LexemeForm infinitive = createLexemeForm(ftInf.getId(), infinitiveDivText.replace("|", ""));
-		LexemeForm infinitiveDiv = infinitiveDivText.contains("|") ? createLexemeForm(ftInfDiv.getId(),
+		LexemeForm infinitive = createLexemeForm(context, lineNumber, ftInf.getId(),
+			infinitiveDivText.replace("|", ""));
+		LexemeForm infinitiveDiv = infinitiveDivText.contains("|") ? createLexemeForm(context, lineNumber,
+			ftInfDiv.getId(),
 			infinitiveDivText) : null;
-		LexemeForm form1 = createLexemeForm(ftForm1.getId(), form1Text);
-		LexemeForm form2 = createLexemeForm(ftForm2.getId(), form2Text);
-		LexemeForm form3 = createLexemeForm(ftForm3.getId(), form3Text);
+		LexemeForm form1 = createLexemeForm(context, lineNumber, ftForm1.getId(), form1Text);
+		LexemeForm form2 = createLexemeForm(context, lineNumber, ftForm2.getId(), form2Text);
+		LexemeForm form3 = createLexemeForm(context, lineNumber, ftForm3.getId(), form3Text);
 
 		List<LexemeForm> lexemeForms = infinitiveDiv == null ? List.of(infinitive, form1, form2, form3)
-										   : List.of(infinitive, infinitiveDiv, form1, form2, form3);
+			: List.of(infinitive, infinitiveDiv, form1, form2, form3);
 
 		// Create the variant
 		return createVariant(context, lexemeForms, this.orthographyID);
 	}
 
-	private Variant createVariant(CsvImporterContext context, String infinitiveDivText)
+	private Variant createVariant(CsvImporterContext context, int lineNumber, String infinitiveDivText)
 	{
 		// Create the LexemeForm
-		LexemeForm infinitive = createLexemeForm(ftInf.getId(), infinitiveDivText.replace("|", ""));
+		LexemeForm infinitive = createLexemeForm(context, lineNumber, ftInf.getId(),
+			infinitiveDivText.replace("|", ""));
 		LexemeForm infinitiveDiv = infinitiveDivText.contains("|")
-									   ? createLexemeForm(ftInfDiv.getId(), infinitiveDivText)
-									   : null;
+			? createLexemeForm(context, lineNumber, ftInfDiv.getId(), infinitiveDivText)
+			: null;
 
 		List<LexemeForm> lexemeForms = infinitiveDiv == null ? List.of(infinitive)
 										   : List.of(infinitive, infinitiveDiv);

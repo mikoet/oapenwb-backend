@@ -94,7 +94,7 @@ public class MiscVariantCreator extends AbstractVariantCreator
 			for (int i = 0; i < numberOfVariants; i++) {
 				String content = CreatorUtils.getVariantForm(text, i);
 
-				Variant variant = createVariant(context, content);
+				Variant variant = createVariant(context, rowData.getLineNumber(), content);
 				if (first) {
 					variant.setMainVariant(true);
 					first = false;
@@ -105,7 +105,7 @@ public class MiscVariantCreator extends AbstractVariantCreator
 			// 3.a) It only contains one variant
 			String content = CreatorUtils.getVariantForm(text, 0);
 
-			Variant variant = createVariant(context, content);
+			Variant variant = createVariant(context, rowData.getLineNumber(), content);
 			variant.setMainVariant(true);
 			result.add(variant);
 		}
@@ -120,10 +120,10 @@ public class MiscVariantCreator extends AbstractVariantCreator
 		throw new RuntimeException("Not implemented!");
 	}
 
-	private Variant createVariant(CsvImporterContext context, String sinNom)
+	private Variant createVariant(CsvImporterContext context, int lineNumber, String sinNom)
 	{
 		// Create the LexemeForm
-		LexemeForm lfSinNom = createLexemeForm(ftFirst.getId(), sinNom);
+		LexemeForm lfSinNom = createLexemeForm(context, lineNumber, ftFirst.getId(), sinNom);
 
 		List<LexemeForm> lexemeForms = List.of(lfSinNom);
 

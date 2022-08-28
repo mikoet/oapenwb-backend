@@ -531,7 +531,7 @@ create table LexemeForms (
 	variantID int8 not null,
 	formTypeID int4 not null,
 	state int2 not null,
-	text varchar(64),
+	text varchar(256),
 	searchableText tsvector generated always as (to_tsvector('simple', text)) stored,
 	primary key (variantID, formTypeID),
 	constraint check_state check (state in (0, 1, 2, 3, 4))

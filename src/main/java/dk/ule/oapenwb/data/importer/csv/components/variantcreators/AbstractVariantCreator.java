@@ -6,6 +6,7 @@ import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterContext;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
+import dk.ule.oapenwb.data.importer.messages.MessageType;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
@@ -112,11 +113,17 @@ public abstract class AbstractVariantCreator
 		return variant;
 	}
 
-	protected LexemeForm createLexemeForm(int formTypeID, String text)
+	protected LexemeForm createLexemeForm(CsvImporterContext context, int lineNumber, int formTypeID, String text)
 	{
+		// TEXT_WARN_LENGTH
 		if (text.length() > LexemeForm.TEXT_MAX_LENGTH) {
 			throw new RuntimeException(String.format(
 				"Lexeme form '%s' exceeds maximum length of %d chars", text, LexemeForm.TEXT_MAX_LENGTH));
+		}
+		if (text.length() > LexemeForm.TEXT_WARN_LENGTH) {
+			context.getMessages().add(String.format("Variant creator '%s'", this.partOfSpeech), MessageType.Warning,
+				String.format("Lexeme form '%s' contains more than %d characters", text, LexemeForm.TEXT_WARN_LENGTH),
+				lineNumber, this.columnIndex);
 		}
 
 		LexemeForm form = new LexemeForm();

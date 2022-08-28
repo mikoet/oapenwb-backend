@@ -29,7 +29,11 @@ import java.util.Objects;
 @NoArgsConstructor
 public class LexemeForm implements Serializable
 {
-	public static final int TEXT_MAX_LENGTH = 64;
+	// FIXME Actually the content of a LexemeForm shouldn't be longer than 64 character.
+	//   In the first run, though, we'll have descriptions in the text attribute being longer and
+	//   only give a warning on import (and creation?) when a text is longer than 64 characters.
+	public static final int TEXT_WARN_LENGTH = 64;
+	public static final int TEXT_MAX_LENGTH = 256;
 
 	public static final byte STATE_TYPED = 1;
 	public static final byte STATE_GENERATED = 2;

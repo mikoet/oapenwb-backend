@@ -170,7 +170,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 
 					String pluNom = CreatorUtils.getVariantForm(generaPair.getLeft(), i);
 
-					Variant variant = createVariant(context, sinNom, pluNom);
+					Variant variant = createVariant(context, rowData.getLineNumber(), sinNom, pluNom);
 					if (first) {
 						variant.setMainVariant(true);
 						first = false;
@@ -189,7 +189,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 
 				String pluNom = CreatorUtils.getVariantForm(generaPair.getLeft(), 0);
 
-				Variant variant = createVariant(context, sinNom, pluNom);
+				Variant variant = createVariant(context, rowData.getLineNumber(), sinNom, pluNom);
 				variant.setMainVariant(true);
 				variant.getProperties().put("genera", generaPair.getRight());
 				result.add(variant);
@@ -212,7 +212,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 					Pair<String, Set<String>> generaPair = extractGeneraNSS(text);
 					String sinNom = CreatorUtils.getVariantForm(generaPair.getLeft(), i);
 
-					Variant variant = createVariant(context, sinNom);
+					Variant variant = createVariant(context, rowData.getLineNumber(), sinNom);
 					if (first) {
 						variant.setMainVariant(true);
 						first = false;
@@ -226,7 +226,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 				Pair<String, Set<String>> generaPair = extractGeneraNSS(text);
 				String sinNom = CreatorUtils.getVariantForm(generaPair.getLeft(), 0);
 
-				Variant variant = createVariant(context, sinNom);
+				Variant variant = createVariant(context, rowData.getLineNumber(), sinNom);
 				variant.setMainVariant(true);
 				variant.getProperties().put("genera", generaPair.getRight());
 				result.add(variant);
@@ -310,7 +310,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 						throw new RuntimeException(String.format("Plural definition not understandable: '%s'", pluNom));
 					}
 
-					Variant variant = createVariant(context, sinNom, pluNom);
+					Variant variant = createVariant(context, rowData.getLineNumber(), sinNom, pluNom);
 					if (first) {
 						variant.setMainVariant(true);
 						first = false;
@@ -333,7 +333,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 					throw new RuntimeException(String.format("Plural definition not understandable: '%s'", pluNom));
 				}
 
-				Variant variant = createVariant(context, sinNom, pluNom);
+				Variant variant = createVariant(context, rowData.getLineNumber(), sinNom, pluNom);
 				variant.setMainVariant(true);
 				variant.getProperties().put("genera", generaPair.getRight());
 				result.add(variant);
@@ -356,7 +356,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 					Pair<String, Set<String>> generaPair = extractGeneraDBO(text);
 					String sinNom = CreatorUtils.getVariantForm(generaPair.getLeft(), i);
 
-					Variant variant = createVariant(context, sinNom);
+					Variant variant = createVariant(context, rowData.getLineNumber(), sinNom);
 					if (first) {
 						variant.setMainVariant(true);
 						first = false;
@@ -370,7 +370,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 				Pair<String, Set<String>> generaPair = extractGeneraDBO(text);
 				String sinNom = CreatorUtils.getVariantForm(generaPair.getLeft(), 0);
 
-				Variant variant = createVariant(context, sinNom);
+				Variant variant = createVariant(context, rowData.getLineNumber(), sinNom);
 				variant.setMainVariant(true);
 				variant.getProperties().put("genera", generaPair.getRight());
 				result.add(variant);
@@ -443,23 +443,23 @@ public class NounVariantCreator extends AbstractVariantCreator
 		return new Pair<>(partOne, genera);
 	}
 
-	private Variant createVariant(CsvImporterContext context, String sinNom, String pluNom)
+	private Variant createVariant(CsvImporterContext context, int lineNumber, String sinNom, String pluNom)
 	{
 		// Create the LexemeForms
-		LexemeForm lfSinNom = createLexemeForm(ftSn.getId(), sinNom);
-		LexemeForm lfPluNom = createLexemeForm(ftPn.getId(), pluNom);
+		LexemeForm lfSinNom = createLexemeForm(context, lineNumber, ftSn.getId(), sinNom);
+		LexemeForm lfPluNom = createLexemeForm(context, lineNumber, ftPn.getId(), pluNom);
 
 		List<LexemeForm> lexemeForms = lfPluNom == null ? List.of(lfSinNom)
-										   : List.of(lfSinNom, lfPluNom);
+			: List.of(lfSinNom, lfPluNom);
 
 		// Create the variant
 		return createVariant(context, lexemeForms, this.orthographyID);
 	}
 
-	private Variant createVariant(CsvImporterContext context, String sinNom)
+	private Variant createVariant(CsvImporterContext context, int lineNumber, String sinNom)
 	{
 		// Create the LexemeForm
-		LexemeForm lfSinNom = createLexemeForm(ftSn.getId(), sinNom);
+		LexemeForm lfSinNom = createLexemeForm(context, lineNumber, ftSn.getId(), sinNom);
 
 		List<LexemeForm> lexemeForms = List.of(lfSinNom);
 
