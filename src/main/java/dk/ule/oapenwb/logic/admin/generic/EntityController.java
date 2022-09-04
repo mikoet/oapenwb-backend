@@ -41,7 +41,7 @@ public class EntityController<T extends IEntity<S>, S extends Serializable> impl
 	private static final Logger LOG = LoggerFactory.getLogger(EntityController.class);
 
 	// supplies (creates) a new instance of the entity
-	private Supplier<T> supplier;
+	private final Supplier<T> supplier;
 
 	// the class of the entity
 	@Getter
@@ -49,9 +49,9 @@ public class EntityController<T extends IEntity<S>, S extends Serializable> impl
 
 	// Function that converts an ID in string array form (from REST requests) into a real typed ID instance
 	// For that the function takes an array of strings as arguments and returns an ID instance.
-	private Function<String[], S> convertFn;
+	private final Function<String[], S> convertFn;
 
-	private boolean resetIdOnCreate;
+	private final boolean resetIdOnCreate;
 
 	private final Context _context;
 
