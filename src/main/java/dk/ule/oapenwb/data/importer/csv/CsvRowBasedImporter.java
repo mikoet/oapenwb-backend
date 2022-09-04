@@ -393,15 +393,18 @@ public class CsvRowBasedImporter
 											dcEntry = entryMap.get(dcKey);
 										} else {
 											// We got two DC entries for the same word (as it looks) and will merge
-											// them now and remove the old instance. A duplicate was found.
+											// them now and remove the old instance.
 											dcEntry.getRows().addAll(entryMap.get(dcKey).getRows());
 											entryMap.remove(dcKey);
-											isDuplicate = true;
 										}
+										// A duplicate was found
+										isDuplicate = true;
 									}
 								}
 								// If no DCEntry was found previously then create one now
-								dcEntry = dcEntry == null ? new DCEntry(provider.getLang(), Set.of(row)) : dcEntry;
+								dcEntry = dcEntry == null
+									? new DCEntry(provider.getLang(), row)
+									: dcEntry.addRow(row);
 								// Second loop: for each key now insert the same DCEntry instance into the entryMap
 								for (String dcKey : dcKeys) {
 									entryMap.put(dcKey, dcEntry);
@@ -649,10 +652,24 @@ public class CsvRowBasedImporter
 	}
 
 	@Data
-	@AllArgsConstructor
 	private static class DCEntry {
 		private String locale;
-		private Set<RowData> rows;
+		private Set<RowData> rows = new LinkedHashSet<>();
+
+		public DCEntry(String locale, Set<RowData> rows) {
+			this.locale = locale;
+			this.rows.addAll(rows);
+		}
+
+		public DCEntry(String locale, RowData row) {
+			this.locale = locale;
+			this.rows.add(row);
+		}
+
+		public DCEntry addRow(RowData row) {
+			rows.add(row);
+			return this;
+		}
 
 		@Override
 		public String toString() {
