@@ -107,14 +107,24 @@ public class CsvImporterConfig
 	private Map<String, MultiLexemeProvider> multiLexemeProviders = new HashMap<>();
 
 	/**
-	 *
+	 * List of MappingMakers instances used to create mappings between sememes.
 	 */
 	private List<MappingMaker> mappingMakers = new LinkedList<>();
 
 	/**
-	 *
+	 * List of LinkMaker instances used to create links between sememes.
 	 */
 	private List<LinkMaker> linkMakers = new LinkedList<>();
+
+	/**
+	 * Set to put languages into a duplicate check shall be performed on.
+	 */
+	private Set<String> langsForDuplicateCheck = new HashSet<>();
+
+	/**
+	 * Instance to build the keys for the duplicate checking. Can be null.
+	 */
+	private DuplicateCheckKeyBuilder duplicateCheckKeyBuilder = null;
 
 	/**
 	 * Default constructor

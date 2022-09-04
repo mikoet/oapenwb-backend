@@ -180,19 +180,21 @@ public class EntityController<T extends IEntity<S>, S extends Serializable> impl
 		List<T> entities;
 		try {
 			// Build the query string, 1st iteration
-			String queryString = "FROM " + clazz.getSimpleName() + " E WHERE";
+			StringBuilder queryString = new StringBuilder("FROM " + clazz.getSimpleName() + " E WHERE");
 			int count = 0;
 			for (FilterCriterion criterion : criteria) {
 				if (count == 0) {
-					queryString += " E." + criterion.getAttribute() + " " + criterion.getOperator() + " :value" + count;
+					queryString.append(" E.").append(criterion.getAttribute()).append(" ").append(
+						criterion.getOperator()).append(" :value").append(count);
 				} else {
-					queryString += " AND E." + criterion.getAttribute() + " " + criterion.getOperator() +  " :value" + count;
+					queryString.append(" AND E.").append(criterion.getAttribute()).append(" ").append(
+						criterion.getOperator()).append(" :value").append(count);
 				}
 				count++;
 			}
 
 			// Create the query
-			Query<T> query = session.createQuery(queryString, clazz);
+			Query<T> query = session.createQuery(queryString.toString(), clazz);
 
 			// Set the parameters, 2nd iteration
 			count = 0;

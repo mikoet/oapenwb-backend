@@ -29,6 +29,8 @@ import dk.ule.oapenwb.logic.context.ITransaction;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
 import dk.ule.oapenwb.util.functional.TriCheckFunction;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -325,6 +327,12 @@ public class CsvRowBasedImporter
 		int transactionNumber = 0;
 		int counter = 0;
 
+		// Duplicate checking
+		var dcKeyBuilder = config.getDuplicateCheckKeyBuilder();
+		var dcLangs = config.getLangsForDuplicateCheck();
+		// <language, <part of speech, <DC key, DC entry>>>
+		Map<String, Map<String, Map<String, DCEntry>>> dcKeyMap = new HashMap<>();
+
 		rowLoop: for (RowData row : rowDataList) {
 			// Transaction handling: Do a commit every N handled rows
 			if (!config.isSimulate() && counter % config.getTransactionSize() == 0) {
@@ -366,6 +374,44 @@ public class CsvRowBasedImporter
 								row.getLineNumber(), -1);
 							continue rowLoop;
 						}
+
+						// Perform duplicate checking in the import list
+						if (dcKeyBuilder != null && dto != null && dcLangs.contains(provider.getLang())) {
+							DCEntry dcEntry = null;
+							boolean isDuplicate = false;
+							// Build the keys
+							Set<String> dcKeys = config.getDuplicateCheckKeyBuilder().buildKeys(dto);
+							if (dcKeys != null && dcKeys.size() > 0) {
+								// <part of speech, <DC key, DC entry>>
+								Map<String, Map<String, DCEntry>> posMap = dcKeyMap.computeIfAbsent(provider.getLang(), k -> new HashMap<>());
+								// <DC key, DC entry>
+								Map<String, DCEntry> entryMap = posMap.computeIfAbsent(PoS, k -> new HashMap<>());
+								// First loop: for each key check if it already exists
+								for (String dcKey : dcKeys) {
+									if (entryMap.containsKey(dcKey)) {
+										if (dcEntry == null) {
+											dcEntry = entryMap.get(dcKey);
+										} else {
+											// We got two DC entries for the same word (as it looks) and will merge
+											// them now and remove the old instance. A duplicate was found.
+											dcEntry.getRows().addAll(entryMap.get(dcKey).getRows());
+											entryMap.remove(dcKey);
+											isDuplicate = true;
+										}
+									}
+								}
+								// If no DCEntry was found previously then create one now
+								dcEntry = dcEntry == null ? new DCEntry(provider.getLang(), Set.of(row)) : dcEntry;
+								// Second loop: for each key now insert the same DCEntry instance into the entryMap
+								for (String dcKey : dcKeys) {
+									entryMap.put(dcKey, dcEntry);
+								}
+							}
+							if (isDuplicate) {
+								throw new RuntimeException(String.format("duplicates - %s", dcEntry));
+							}
+						} // -- end of duplicate checking
+
 						// Add the DTO to the providerResults
 						providerResults.put(provider.getLang(), dto);
 					} catch (Exception e) {
@@ -599,6 +645,31 @@ public class CsvRowBasedImporter
 					t.rollback();
 				}
 			}
+		}
+	}
+
+	@Data
+	@AllArgsConstructor
+	private static class DCEntry {
+		private String locale;
+		private Set<RowData> rows;
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Locale '")
+				.append(locale)
+				.append("' has colliding rows: ");
+			boolean first = true;
+			for (var row : rows) {
+				if (first) {
+					first = false;
+				} else {
+					sb.append(", ");
+				}
+				sb.append(row.getLineNumber());
+			}
+			return sb.toString();
 		}
 	}
 }

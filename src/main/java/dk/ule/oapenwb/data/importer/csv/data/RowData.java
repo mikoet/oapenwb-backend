@@ -15,4 +15,22 @@ public class RowData
 {
 	private int lineNumber;
 	private String[] parts;
+
+	// Since RowData instances are only compared within one import run
+	// comparison via the lineNumber is sufficient.
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+		if (other instanceof RowData) {
+			return this.lineNumber == ((RowData) other).getLineNumber();
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.lineNumber;
+	}
 }

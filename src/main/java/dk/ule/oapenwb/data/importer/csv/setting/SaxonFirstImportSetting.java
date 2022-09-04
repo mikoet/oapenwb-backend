@@ -3,6 +3,7 @@
 package dk.ule.oapenwb.data.importer.csv.setting;
 
 import dk.ule.oapenwb.AdminControllers;
+import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterConfig;
 import dk.ule.oapenwb.data.importer.csv.components.*;
@@ -13,9 +14,13 @@ import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.MiscVar
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.NounVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.VerbVariantCreator;
 import dk.ule.oapenwb.data.importer.messages.MessageType;
+import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.entity.content.basedata.LinkType;
 import dk.ule.oapenwb.entity.content.basedata.Orthography;
+import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import dk.ule.oapenwb.logic.admin.common.FilterCriterion;
+import dk.ule.oapenwb.util.Pair;
 
 import java.util.*;
 
@@ -51,9 +56,22 @@ public class SaxonFirstImportSetting
 
 	private final AdminControllers adminControllers;
 
-	public SaxonFirstImportSetting(AdminControllers adminControllers)
+	private final int langIdLowSaxon;
+
+	public SaxonFirstImportSetting(AdminControllers adminControllers) throws CodeException
 	{
 		this.adminControllers = adminControllers;
+
+		// Fetch the lang ID for Low Saxon
+		List<Language> langList = adminControllers.getLanguagesController().getBy(
+			new FilterCriterion("locale", "nds", FilterCriterion.Operator.Equals));
+		if (langList.size() == 1) {
+			this.langIdLowSaxon = langList.get(0).getId();
+		} else {
+			throw new CodeException(ErrorCode.Admin_EntitiesNotFoundViaSingleCriterion,
+				Arrays.asList(new Pair<>("type", "Language"), new Pair<>("property", "locale"),
+					new Pair<>("value", "nds")));
+		}
 	}
 
 	/**
@@ -86,6 +104,22 @@ public class SaxonFirstImportSetting
 		cfg.setImportCondition(row -> {
 			String firstPart = row.getParts()[COL_NICH_IMPORTEREN - 1];
 			return firstPart.isEmpty();
+		});
+		// Duplicate check is implemented for Low Saxon only
+		cfg.setLangsForDuplicateCheck(Set.of("nds"));
+		cfg.setDuplicateCheckKeyBuilder(dto -> {
+			// Uut de deepsten deepden weren wy koamen,
+			// koamen to blyven weren wy.
+			if (langIdLowSaxon != dto.getLexeme().getLangID()) {
+				return null;
+			}
+			Set<String> result = new HashSet<>();
+			for (Variant variant : dto.getVariants()) {
+				if (variant.getLexemeForms().size() > 0) {
+					result.add(variant.getLexemeForms().get(0).getText());
+				}
+			}
+			return result;
 		});
 
 		// !! Set up LexemeProviders

@@ -63,7 +63,8 @@ public enum ErrorCode implements IMessage {
 	Admin_EntityBrokenLexemeID(11013, "This lexeme contains a {{type}} that is assigned to another lexeme."),
 	Admin_EntityIdSetInCreate(11014, "The id of the entity of type {{type}} must not be set when it shall be created."),
 	Admin_EntityIdDiffersInUpdate(11015, "The id of the entity of type {{type}} differs from the URL parameter."),
-	Admin_EntityIdNotSet(11015, "The id of an entity of type {{type}} is not set when it shall be updated or deleted."),
+	Admin_EntityIdNotSet(11016, "The id of an entity of type {{type}} is not set when it shall be updated or deleted."),
+	Admin_EntitiesNotFoundViaSingleCriterion(11017, "A single entity of type {{type}} with property '{{property}}' = {{value}} does not exist."),
 
 	//Admin_Lexeme_(12001, ""),
 
