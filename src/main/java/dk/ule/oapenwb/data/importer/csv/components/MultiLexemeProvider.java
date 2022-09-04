@@ -3,7 +3,6 @@
 package dk.ule.oapenwb.data.importer.csv.components;
 
 import dk.ule.oapenwb.AdminControllers;
-import dk.ule.oapenwb.data.importer.FileImporter;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterContext;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
