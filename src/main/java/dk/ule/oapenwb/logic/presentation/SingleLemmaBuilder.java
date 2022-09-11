@@ -7,7 +7,7 @@ import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.basedata.Orthography;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
-import dk.ule.oapenwb.logic.admin.generic.ICEntityController;
+import dk.ule.oapenwb.logic.admin.LanguagesController;
 import dk.ule.oapenwb.logic.presentation.options.SingleLemmaOptions;
 
 import java.util.Collections;
@@ -115,7 +115,7 @@ public class SingleLemmaBuilder
 					// Now add the dialects
 					sb.append(" ((");
 					boolean first = true;
-					ICEntityController<Language, Integer> langController = controllers.getLanguagesController();
+					LanguagesController langController = controllers.getLanguagesController();
 					for (Integer id : dialectIDs)
 					{
 						// Only take those dialectIDs into account that are also set on the sememe!
