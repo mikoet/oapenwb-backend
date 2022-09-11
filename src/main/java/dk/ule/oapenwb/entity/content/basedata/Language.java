@@ -23,7 +23,8 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class Language implements IEntity<Integer>
 {
-	public Language(Integer id, Integer parentID, String locale, String localName, String uitID, String uitID_abbr, Integer mainOrthographyID)
+	public Language(Integer id, Integer parentID, String locale, String localName, String uitID, String uitID_abbr,
+		Integer mainOrthographyID, String importAbbreviation)
 	{
 		this.id = id;
 		this.parentID = parentID;
@@ -32,6 +33,13 @@ public class Language implements IEntity<Integer>
 		this.uitID = uitID;
 		this.uitID_abbr = uitID_abbr;
 		this.mainOrthographyID = mainOrthographyID;
+		this.importAbbreviation = importAbbreviation;
+	}
+
+	public Language(Integer id, Integer parentID, String locale, String localName, String uitID, String uitID_abbr,
+		Integer mainOrthographyID)
+	{
+		this(id, parentID, locale, localName, uitID, uitID_abbr, mainOrthographyID, null);
 	}
 
 	@Id
@@ -76,6 +84,10 @@ public class Language implements IEntity<Integer>
 	@Column(nullable = false)
 	@JsonView({Views.BaseConfig.class, Views.REST.class})
 	private Integer mainOrthographyID;
+
+	@Column(length = 16)
+	@JsonView({Views.BaseConfig.class, Views.REST.class})
+	private String importAbbreviation;
 
 	/*
 	 * If this Language is a dialect (Language with a parent), then orthographies for it are optionally.

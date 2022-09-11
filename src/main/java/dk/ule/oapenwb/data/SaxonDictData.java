@@ -105,19 +105,19 @@ public class SaxonDictData implements DataStrategy
 
 
 		// -- Westphalian
-		Language lWestphalian = createLsDialect(session, lDeSassisk, "nds_DE@wf", "Westföälsk", oNSS.getId(), "dwf",
+		Language lWestphalian = createLsDialect(session, lDeSassisk, "nds_DE@dwf", "Westföälsk", oNSS.getId(), "dwf",
 			"Westföälsk", "Westfälisch", "Westphalian", "", "", "");
 
-		createLsDialect(session, lWestphalian, "nds_DE@wf-mön", "Mönsterlandsk", oNSS.getId(), "mön",
+		createLsDialect(session, lWestphalian, "nds_DE@dwf-mön", "Mönsterlandsk", oNSS.getId(), "mön",
 			"Mönsterlandsk", "Münsterländisch", "Münsterlandic", "", "", "");
 
-		createLsDialect(session, lWestphalian, "nds_DE@wf-wmö", "Westmönsterlandsk", oNSS.getId(), "wmö",
+		createLsDialect(session, lWestphalian, "nds_DE@dwf-wmö", "Westmönsterlandsk", oNSS.getId(), "wmö",
 			"Westmönsterlandsk", "Westmünsterländisch", "Western Münsterlandic", "", "", "");
 
-		createLsDialect(session, lWestphalian, "nds_DE@wf-owf", "Oustwestföälsk", oNSS.getId(), "owf",
+		createLsDialect(session, lWestphalian, "nds_DE@dwf-owf", "Oustwestföälsk", oNSS.getId(), "owf",
 			"Oustwestföälsk", "Ostwestfälisch", "Eastern Westphalian", "", "", "");
 
-		createLsDialect(session, lWestphalian, "nds_DE@wf-swf", "Süüdwestföälsk", oNSS.getId(), "swf",
+		createLsDialect(session, lWestphalian, "nds_DE@dwf-swf", "Süüdwestföälsk", oNSS.getId(), "swf",
 			"Süüdwestföälsk", "Südwestfälisch", "Southern Westphalian", "", "", "");
 
 

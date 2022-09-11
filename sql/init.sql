@@ -174,12 +174,13 @@ create sequence lang_seq start 1 increment 1;
 create table Languages (
 	id int4 not null,
 	version int4 not null,
-	uitID_abbr varchar(64) not null,
+	importAbbreviation varchar(16) null,
 	locale varchar(32) not null,
 	localName varchar(32) not null,
 	mainOrthographyID int4 not null,
 	parentID int4,
 	uitID varchar(64) not null,
+	uitID_abbr varchar(64) not null,
 	primary key (id)
 );
 alter table if exists Languages add constraint UK_Languages_locale unique (locale);
@@ -190,6 +191,7 @@ create table Languages_AUD (
 	id int4 not null,
 	REV int8 not null,
 	REVTYPE int2,
+	importAbbreviation varchar(16) null,
 	localName varchar(32),
 	locale varchar(32),
 	mainOrthographyID int4,
