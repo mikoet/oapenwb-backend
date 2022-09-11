@@ -70,77 +70,159 @@ public class SaxonDictData implements DataStrategy
 		session.save(lFinnish);
 		session.save(lBino);
 
-		// Dialects of Low Saxon
-		Language lNorthernLowSaxon = new Language(null, lSaxon.getId(), "nds-nns", "Noordneddersassisk", "l:nds-nns", "l:nds-nns", oNSS.getId());
-		session.save(lNorthernLowSaxon);
 
-		Language lDitmarsk = new Language(null, lNorthernLowSaxon.getId(), "nds-nns-dm", "Ditmarsk", "l:nds-nns-dm", "l:nds-nns-dm", oNSS.getId());
-		Language lLuemborgsk = new Language(null, lNorthernLowSaxon.getId(), "nds-nns-lb", "Lümborgsk", "l:nds-nns-lb", "l:nds-nns-lb", oNSS.getId());
-		session.save(lDitmarsk);
-		session.save(lLuemborgsk);
+		// !! Dialects of Low Saxon
 
-		Language lWestphalian = new Language(null, lSaxon.getId(), "nds-wf", "Westföälsk", "l:nds-wf", "l:nds-wf", oNSS.getId());
-		session.save(lWestphalian);
+		// - DE-sassisk
+		Language lDeSassisk = createLsDialect(session, lSaxon, "nds_DE", "DE-sassisk", oNSS.getId(), "ndsde",
+			"dt. sassisk", "dt. niedersächsisch", "German Low Saxon", "", "", "");
 
-		Language lSuderlandsk = new Language(null, lWestphalian.getId(), "nds-wf-sl", "Suderlandsk", "l:nds-wf-sl", "l:nds-wf-sl", oNSS.getId());
-		Language lMoensterlaendsk = new Language(null, lWestphalian.getId(), "nds-wf-ml", "Mönsterländsk", "l:nds-wf-ml", "l:nds-wf-ml", oNSS.getId());
-		session.save(lSuderlandsk);
-		session.save(lMoensterlaendsk);
 
-		Language lEastphalian = new Language(null, lSaxon.getId(), "nds-of", "Ostfälisk", "l:nds-of", "l:nds-of", oNSS.getId());
-		session.save(lEastphalian);
+		// -- Northern Low Saxon
+		Language lNorthernLowSaxon = createLsDialect(session, lDeSassisk, "nds_DE@nnds", "Sleeswyksk", oNSS.getId(), "dns",
+			"Noordneddersassisk", "Nordniedersächsisch", "Northern Low Saxon", "", "", "");
 
-		Language lHilmsensk = new Language(null, lEastphalian.getId(), "nds-of-hi", "Hilmsensk", "l:nds-of-hi", "l:nds-of-hi", oNSS.getId());
-		Language lPapendyksk = new Language(null, lEastphalian.getId(), "nds-of-pd", "Papendyksk", "l:nds-of-pd", "l:nds-of-pd", oNSS.getId());
-		session.save(lHilmsensk);
-		session.save(lPapendyksk);
+		createLsDialect(session, lNorthernLowSaxon, "nds_DE@dns-sle", "Sleeswyksk", oNSS.getId(), "sle",
+			"Sleeswyksk", "Schleswigsch", "Sleswicksh", "", "", "");
 
-		DataInitializer.createUiTranslations(session, "full", "l:nds-nns", true, new Pair<>("nds", "Noordneddersassisk"),
-			new Pair<>("de", "Nordniedersächsisch"), new Pair<>("en", "Northern Low Saxon"));
-		DataInitializer.createUiTranslations(session, "abbr", "l:nds-nns", true, new Pair<>("nds", "Nnds."),
-			new Pair<>("de", "Nnds."), new Pair<>("en", "N.L.S."));
+		createLsDialect(session, lNorthernLowSaxon, "nds_DE@dns-hol", "Holsteynsk", oNSS.getId(), "hol",
+			"Holsteynsk", "Holsteinisch", "Holsatian", "", "", "");
 
-		DataInitializer.createUiTranslations(session, "full", "l:nds-nns-dm", true, new Pair<>("nds", "Ditmarsk"),
-			new Pair<>("de", "Dithmarsch"), new Pair<>("en", "Ditmarsh"));
-		DataInitializer.createUiTranslations(session, "abbr", "l:nds-nns-dm", true, new Pair<>("nds", "Dit."),
-			new Pair<>("de", "Dit."), new Pair<>("en", "Dit."));
+		createLsDialect(session, lNorthernLowSaxon, "nds_DE@dns-dit", "Ditmarsk", oNSS.getId(), "dit",
+			"Ditmarsk", "Dithmarsch", "Dithmarsh", "", "", "");
 
-		DataInitializer.createUiTranslations(session, "full", "l:nds-nns-lb", true, new Pair<>("nds", "Lümborgsk"),
-			new Pair<>("de", "Lüneburgisch"), new Pair<>("en", "Lunenburgish"));
-		DataInitializer.createUiTranslations(session, "abbr", "l:nds-nns-lb", true, new Pair<>("nds", "Lüm."),
-			new Pair<>("de", "Lün."), new Pair<>("en", "Lun."));
-		//
-		DataInitializer.createUiTranslations(session, "full", "l:nds-wf", true, new Pair<>("nds", "Westföälsk"),
-			new Pair<>("de", "Westfälisch"), new Pair<>("en", "Westphalian"));
-		DataInitializer.createUiTranslations(session, "abbr", "l:nds-wf", true, new Pair<>("nds", "Wf."),
-			new Pair<>("de", "Wf."), new Pair<>("en", "Wph."));
+		createLsDialect(session, lNorthernLowSaxon, "nds_DE@dns-nhn", "Noordhannoversk", oNSS.getId(), "nhn",
+			"Noordhannoversk", "Nordhannoversch", "Northern Hanoveranian", "", "", "");
 
-		DataInitializer.createUiTranslations(session, "full", "l:nds-wf-sl", true, new Pair<>("nds", "Suderlandsk"),
-			new Pair<>("de", "Sauerländisch"), new Pair<>("en", "Sauerlandic"));
-		DataInitializer.createUiTranslations(session, "abbr", "l:nds-wf-sl", true, new Pair<>("nds", "Sauerl."),
-			new Pair<>("de", "Suderl."), new Pair<>("en", "Sauerl."));
+		createLsDialect(session, lNorthernLowSaxon, "nds_DE@dns-olb", "Oldenborgsk", oNSS.getId(), "olb",
+			"Oldenborgsk", "Oldenburgisch", "Oldenburgish", "", "", "");
 
-		DataInitializer.createUiTranslations(session, "full", "l:nds-wf-ml", true, new Pair<>("nds", "Mönsterländsk"),
-			new Pair<>("de", "Münsterländisch"), new Pair<>("en", "Munsterlandic"));
-		DataInitializer.createUiTranslations(session, "abbr", "l:nds-wf-ml", true, new Pair<>("nds", "Möns."),
-			new Pair<>("de", "Müns."), new Pair<>("en", "Muns."));
-		//
-		DataInitializer.createUiTranslations(session, "full", "l:nds-of", true, new Pair<>("nds", "Oustföälsk"),
-			new Pair<>("de", "Ostfälisch"), new Pair<>("en", "Eastphalian"));
-		DataInitializer.createUiTranslations(session, "abbr", "l:nds-of", true, new Pair<>("nds", "Of."),
-			new Pair<>("de", "Of."), new Pair<>("en", "Eph."));
+		createLsDialect(session, lNorthernLowSaxon, "nds_DE@dns-ofr", "Oustfreesk", oNSS.getId(), "ofr",
+			"Oustfreesk", "Ostfriesisch", "East Frisian", "", "", "");
 
-		DataInitializer.createUiTranslations(session, "full", "l:nds-of-hi", true, new Pair<>("nds", "Hilmsensk"),
-			new Pair<>("de", "Hildesheimisch"), new Pair<>("en", "Hildesheimian"));
-		DataInitializer.createUiTranslations(session, "abbr", "l:nds-of-hi", true, new Pair<>("nds", "Hilm."),
-			new Pair<>("de", "Hild."), new Pair<>("en", "Hild."));
+		createLsDialect(session, lNorthernLowSaxon, "nds_DE@dns-ems", "Emslandsk", oNSS.getId(), "ems",
+			"Emslandsk", "Emsländisch", "Emslandic", "", "", "");
 
-		DataInitializer.createUiTranslations(session, "full", "l:nds-of-pd", true, new Pair<>("nds", "Papendyksk"),
-			new Pair<>("de", "Papenteichisch"), new Pair<>("en", "Papendician"));
-		DataInitializer.createUiTranslations(session, "abbr", "l:nds-of-pd", true, new Pair<>("nds", "Papend."),
-			new Pair<>("de", "Papent."), new Pair<>("en", "Papend."));
 
-		//
+		// -- Westphalian
+		Language lWestphalian = createLsDialect(session, lDeSassisk, "nds_DE@wf", "Westföälsk", oNSS.getId(), "dwf",
+			"Westföälsk", "Westfälisch", "Westphalian", "", "", "");
+
+		createLsDialect(session, lWestphalian, "nds_DE@wf-mön", "Mönsterlandsk", oNSS.getId(), "mön",
+			"Mönsterlandsk", "Münsterländisch", "Münsterlandic", "", "", "");
+
+		createLsDialect(session, lWestphalian, "nds_DE@wf-wmö", "Westmönsterlandsk", oNSS.getId(), "wmö",
+			"Westmönsterlandsk", "Westmünsterländisch", "Western Münsterlandic", "", "", "");
+
+		createLsDialect(session, lWestphalian, "nds_DE@wf-owf", "Oustwestföälsk", oNSS.getId(), "owf",
+			"Oustwestföälsk", "Ostwestfälisch", "Eastern Westphalian", "", "", "");
+
+		createLsDialect(session, lWestphalian, "nds_DE@wf-swf", "Süüdwestföälsk", oNSS.getId(), "swf",
+			"Süüdwestföälsk", "Südwestfälisch", "Southern Westphalian", "", "", "");
+
+
+		// -- Eastphalian
+		Language lEastphalian = createLsDialect(session, lDeSassisk, "nds_DE@of", "Oustföälsk", oNSS.getId(), "ofl",
+			"Oustföälsk", "Ostfälisch", "Eastphalian", "", "", "");
+
+		createLsDialect(session, lEastphalian, "nds_DE@of-hof", "Heideoustföälsk", oNSS.getId(), "hof",
+			"Heideoustföälsk", "Heideostfälisch", "Heathland Eastphalian", "", "", "");
+
+		createLsDialect(session, lEastphalian, "nds_DE@of-kof", "Karnoustföälsk", oNSS.getId(), "kof",
+			"Karnoustföälsk", "Kernostfälisch", "Coreland Eastphalian", "", "", "");
+
+		createLsDialect(session, lEastphalian, "nds_DE@of-gög", "Göttingsk-grubenhagensk", oNSS.getId(), "gög",
+			"Göttingsk-grubenhagensk", "Göttingisch-Grubenhagensch", "Göttingic-Grubenhagic", "", "", "");
+
+		createLsDialect(session, lEastphalian, "nds_DE@of-eof", "Elvoustföälsk", oNSS.getId(), "eof",
+			"Elvoustföälsk", "Elbeostfälisch", "Elbe Eastphalian", "", "", "");
+
+
+		// -- Mecklenburgish-Western Pomeranian
+		Language lMecklenburgishWesternPomeranian = createLsDialect(session, lDeSassisk, "nds_DE@mvp", "Meakelenborgsk-vöärpommersk",
+			oNSS.getId(), "mvp", "Meakelenborgsk-vöärpommersk", "Mecklenburgisch-Vorpommersch", "Mecklenburgish-Western Pomeranian",
+			"", "", "");
+
+		createLsDialect(session, lMecklenburgishWesternPomeranian, "nds_DE@mvp-mkb", "Meakelenborgsk", oNSS.getId(), "mkb",
+			"meakelenborgsk", "Mecklenburgisch", "Mecklenburgisch", "", "", "");
+
+		createLsDialect(session, lMecklenburgishWesternPomeranian, "nds_DE@mvp-vpo", "Vöärpommersk", oNSS.getId(), "vpo",
+			"Vöärpommersk", "Vorpommersch", "Western Pomeranian", "", "", "");
+
+		createLsDialect(session, lMecklenburgishWesternPomeranian, "nds_DE@mvp-str", "Strelitzsk", oNSS.getId(), "str",
+			"Strelitzsk", "Strelitzisch", "Strelitzish", "", "", "");
+
+
+		// -- Brandenburgish
+		Language lBrandenburgish = createLsDialect(session, lDeSassisk, "nds_DE@bra", "Brandenborgsk", oNSS.getId(), "bra",
+			"Brandenborgsk", "Brandenburgisch", "Brandenburgish", "", "", "");
+
+		createLsDialect(session, lBrandenburgish, "nds_DE@bra-nbr", "Noordbrandenborgsk", oNSS.getId(), "nbr",
+			"Noordbrandenborgsk", "Nordbrandenburgisch", "Northern Brandenburgish", "", "", "");
+
+		createLsDialect(session, lBrandenburgish, "nds_DE@bra-mpo", "Middelpommersk", oNSS.getId(), "mpo",
+			"Middelpommersk", "Mittelpommersch", "Central Pomeranian(?)", "", "", "");
+
+		createLsDialect(session, lBrandenburgish, "nds_DE@bra-mbr", "Middelbrandenborgsk", oNSS.getId(), "mbr",
+			"Middelbrandenborgsk", "Mittelbrandenburgisch", "Central Brandenburgish", "", "", "");
+
+		createLsDialect(session, lBrandenburgish, "nds_DE@bra-sbr", "Süüdbrandenborgsk", oNSS.getId(), "sbr",
+			"Süüdbrandenborgsk", "Südbrandenburgisch", "Southern Brandenburgish", "", "", "");
+
+
+		// -- Eastern Pomeranian
+		createLsDialect(session, lDeSassisk, "nds_DE@pom", "Oustpommersk", oNSS.getId(), "pom",
+			"Oustpommersk", "Ostpommersch", "Eastern Pomeranian", "", "", "");
+
+
+		// -- Low Prussian
+		createLsDialect(session, lDeSassisk, "nds_DE@npr", "Nedderprüüssisk", oNSS.getId(), "npr",
+			"Nedderprüüssisk", "Niederpreußisch", "Low Prussian", "", "", "");
+
+
+		// - NL-sassisk
+		Language lNlSassisk = createLsDialect(session, lSaxon, "nds_NL", "NL-sassisk", oNSS.getId(), "ndsnl",
+			"ndl. sassisk", "ndl. Niedersächsisch", "Dutch Low Saxon", "nds_NL", "nds_NL", "nds_NL");
+
+
+		// -- NL-sassisk noord
+		Language lNorternNlSassisk = createLsDialect(session, lNlSassisk, "nds_NL@nns", "NL-sassisk noord", oNSS.getId(), "nns",
+			"NL-sassisk noord", "ndl. Nordniedersächsisch", "Northern Dutch Low Saxon", "", "", "");
+
+		createLsDialect(session, lNorternNlSassisk, "nds_NL@nns-gro", "Grönningsk", oNSS.getId(), "gro",
+			"Grönningsk", "Gronningsch", "Gronings", "", "", "");
+
+
+		// -- NL-sassisk süüd
+		Language lSouthernNlSassisk = createLsDialect(session, lNlSassisk, "nds_NL@nwf", "NL-sassisk süüd", oNSS.getId(), "nwf",
+			"NL-sassisk süüd", "ndl. Südniedersächsisch", "Southern Dutch Low Saxon", "", "", "");
+
+		createLsDialect(session, lSouthernNlSassisk, "nds_NL@nwf-stw", "Stellingwervsk", oNSS.getId(), "stw",
+			"Stellingwervsk", "Stellingwerfs", "Stellingwarfs", "", "", "");
+
+		createLsDialect(session, lSouthernNlSassisk, "nds_NL@nwf-dre", "Drentsk", oNSS.getId(), "dre",
+			"Drentsk", "Drents", "Drents", "", "", "");
+
+		Language lOaverysselsk = createLsDialect(session, lSouthernNlSassisk, "nds_NL@nwf-ovy", "Öäverysselsk", oNSS.getId(), "ovy",
+			"Öäverysselsk", "Oberysselsch", "Overijssels", "", "", "");
+
+		createLsDialect(session, lOaverysselsk, "nds_NL@nwf-ovy-sal", "Sallandsk", oNSS.getId(), "sal",
+			"Sallandsk", "Sallandsch", "Sallaands", "", "", "");
+
+		createLsDialect(session, lOaverysselsk, "nds_NL@nwf-ovy-twe", "Twentsk", oNSS.getId(), "twe",
+			"Twentsk", "Twents", "Twents", "", "", "");
+
+		Language lGelderlandsk = createLsDialect(session, lSouthernNlSassisk, "nds_NL@nwf-gel", "Gelderlandsk", oNSS.getId(), "gel",
+			"Gelderlandsk", "Gelderlandsch", "Gelderlandic", "", "", "");
+
+		createLsDialect(session, lGelderlandsk, "nds_NL@nwf-gel-ach", "Achterhooksk", oNSS.getId(), "ach",
+			"Achterhooksk", "Achterhooksch", "Achterhooks", "", "", "");
+
+		createLsDialect(session, lGelderlandsk, "nds_NL@nwf-gel-vel", "Veluwsk", oNSS.getId(), "vel",
+			"Veluwsk", "Veluwsch", "Veluws", "", "", "");
+
+		// !! End of dialects of Low Saxon
+
 
 		langMap.put("nds", lSaxon);
 		langMap.put("de", lGerman);
@@ -283,6 +365,25 @@ public class SaxonDictData implements DataStrategy
 		session.save(lpSaxonDanish);
 		session.save(lpSaxonSwedish);
 		session.save(lpSaxonFinnish);
+	}
+
+	private Language createLsDialect(Session session, Language parent, String locale, String localName,
+		int orthographyID, String importAbbreviation, String name_nds, String name_de, String name_en,
+		String nameShort_nds, String nameShort_de, String nameShort_en)
+	{
+		String uitID = "l:" + locale;
+		String uitID_abbr = "l:" + locale;
+
+		Language language = new Language(null, parent == null ? null : parent.getId(), locale, localName, uitID,
+			uitID_abbr, orthographyID, importAbbreviation);
+		session.save(language);
+
+		DataInitializer.createUiTranslations(session, "full", uitID, true, new Pair<>("nds", name_nds),
+			new Pair<>("de", name_de), new Pair<>("en", name_en));
+		DataInitializer.createUiTranslations(session, "abbr", uitID_abbr, true, new Pair<>("nds", nameShort_nds),
+			new Pair<>("de", nameShort_de), new Pair<>("en", nameShort_en));
+
+		return language;
 	}
 
 	private void createLexemeTypes(Session session)
