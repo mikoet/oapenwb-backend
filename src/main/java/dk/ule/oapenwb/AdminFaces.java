@@ -27,7 +27,6 @@ class AdminFaces
 
 	public static final String FACE_ORTHOGRAPHIES = "Face_Orthographies";
 	public static final String FACE_LO_MAPPINGS = "Face_LoMappings";
-	public static final String FACE_LANGUAGES = "Face_Languages";
 	public static final String FACE_LEXEME_TYPES = "Face_LexemeTypes";
 	public static final String FACE_LEXEME_FORM_TYPES = "Face_LexemeFormTypes";
 	public static final String FACE_TL_CONFIGS = "Face_TlConfigs";
@@ -68,8 +67,7 @@ class AdminFaces
 
 	@Getter
 	@Inject
-	@Named(FACE_LANGUAGES)
-	private EntityFace<Language, Integer> languagesFace;
+	private LanguagesFace languagesFace;
 
 	@Getter
 	@Inject

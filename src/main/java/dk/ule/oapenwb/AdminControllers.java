@@ -10,10 +10,7 @@ import dk.ule.oapenwb.entity.content.basedata.tlConfig.TypeLanguageConfig;
 import dk.ule.oapenwb.entity.ui.UiLanguage;
 import dk.ule.oapenwb.entity.ui.UiResultCategory;
 import dk.ule.oapenwb.entity.ui.UiTranslationScope;
-import dk.ule.oapenwb.logic.admin.LangPairsController;
-import dk.ule.oapenwb.logic.admin.LinkTypesController;
-import dk.ule.oapenwb.logic.admin.TagsController;
-import dk.ule.oapenwb.logic.admin.UiTranslationSetsController;
+import dk.ule.oapenwb.logic.admin.*;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
 import dk.ule.oapenwb.logic.admin.generic.EntityController;
@@ -37,7 +34,6 @@ public class AdminControllers
 
 	public static final String CONTROLLER_ORTHOGRAPHIES = "Controller_Orthographies";
 	public static final String CONTROLLER_LO_MAPPINGS = "Controller_LoMappings";
-	public static final String CONTROLLER_LANGUAGES = "Controller_Languages";
 	public static final String CONTROLLER_LEXEME_TYPES = "Controller_LexemeTypes";
 	public static final String CONTROLLER_LEXEME_FORM_TYPES = "Controller_LexemeFormTypes";
 	public static final String CONTROLLER_TL_CONFIGS = "Controller_TlConfigs";
@@ -78,8 +74,7 @@ public class AdminControllers
 
 	@Getter
 	@Inject
-	@Named(CONTROLLER_LANGUAGES)
-	private CEntityController<Language, Integer> languagesController;
+	private LanguagesController languagesController;
 
 	@Getter
 	@Inject

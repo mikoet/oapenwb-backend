@@ -12,10 +12,7 @@ import dk.ule.oapenwb.entity.content.basedata.tlConfig.TypeLanguageConfig;
 import dk.ule.oapenwb.entity.ui.*;
 import dk.ule.oapenwb.faces.*;
 import dk.ule.oapenwb.faces.admin.*;
-import dk.ule.oapenwb.logic.admin.LangPairsController;
-import dk.ule.oapenwb.logic.admin.LinkTypesController;
-import dk.ule.oapenwb.logic.admin.TagsController;
-import dk.ule.oapenwb.logic.admin.UiTranslationSetsController;
+import dk.ule.oapenwb.logic.admin.*;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
 import dk.ule.oapenwb.logic.admin.generic.EntityController;
@@ -150,16 +147,7 @@ public class DictModule extends AbstractModule
 			EntityController.class, LangOrthoMapping.class, Integer.class);
 
 		// Languages controller
-		CEntityController<Language, Integer> languagesCtrl = new CEntityController<>(
-			Language::new, Language.class,
-			ids -> Integer.parseInt(ids[0])) {
-			@Override
-			protected String getDefaultOrderClause() {
-				return " order by E.locale ASC";
-			}
-		};
-		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_LANGUAGES, languagesCtrl,
-			CEntityController.class, Language.class, Integer.class);
+		bind(LanguagesController.class);
 
 		// LangPairs controller
 		bind(LangPairsController.class);
@@ -275,9 +263,8 @@ public class DictModule extends AbstractModule
 			EntityFace.class, Orthography.class, Integer.class);
 		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LO_MAPPINGS, new EntityFace<>(loMappingsCtrl),
 			EntityFace.class, LangOrthoMapping.class, Integer.class);
-		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LANGUAGES, new EntityFace<>(languagesCtrl),
-			EntityFace.class, Language.class, Integer.class);
 
+		bind(LanguagesFace.class);
 		bind(LangPairsFace.class);
 
 		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LEXEME_TYPES, new EntityFace<>(lexemeTypesCtrl),

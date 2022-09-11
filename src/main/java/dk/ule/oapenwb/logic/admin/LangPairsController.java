@@ -4,12 +4,9 @@ package dk.ule.oapenwb.logic.admin;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.entity.content.basedata.LangPair;
 import dk.ule.oapenwb.entity.content.basedata.Language;
-import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.generic.EntityController;
 import dk.ule.oapenwb.logic.context.Context;
 import org.slf4j.Logger;
@@ -44,12 +41,12 @@ public class LangPairsController extends EntityController<LangPair, String>
 	private final Lock writeLock = readWriteLock.writeLock();
 
 	// LanguageController
-	private final CEntityController<Language, Integer> languagesController;
+	private final LanguagesController languagesController;
 
 	@Inject
 	public LangPairsController(
-		@Named(AdminControllers.CONTROLLER_LANGUAGES) CEntityController<Language, Integer> languagesController)
-	{
+		LanguagesController languagesController
+	) {
 		super(LangPair::new, LangPair.class, ids -> ids[0], false);
 		this.languagesController = languagesController;
 	}

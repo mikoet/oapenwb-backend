@@ -7,9 +7,9 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.entity.content.basedata.Category;
-import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.basedata.Level;
 import dk.ule.oapenwb.entity.content.basedata.Orthography;
+import dk.ule.oapenwb.logic.admin.LanguagesController;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
 import lombok.Getter;
@@ -29,8 +29,7 @@ public class ControllerSet implements IControllerSet
 
 	@Getter
 	@Inject
-	@Named(AdminControllers.CONTROLLER_LANGUAGES)
-	private CEntityController<Language, Integer> languagesController;
+	private LanguagesController languagesController;
 
 	@Getter
 	@Inject
@@ -49,7 +48,7 @@ public class ControllerSet implements IControllerSet
 	// For use in testing without Guice
 	public void setControllers(
 		CEntityController<Orthography, Integer> orthographiesController,
-		CEntityController<Language, Integer> languagesController,
+		LanguagesController languagesController,
 		CEntityController<Category, Integer> categoriesController,
 		CEntityController<Level, Integer> unitLevelsController,
 		SememesController sememesController)
