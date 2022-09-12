@@ -1,8 +1,6 @@
 -- SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
 -- SPDX-License-Identifier: AGPL-3.0-only
 
--- last updated: 2022-02-27
-
 -- these are remainings of the auto-generated stuff from Hibernate
 
 create sequence audio_seq start 1 increment 1;
