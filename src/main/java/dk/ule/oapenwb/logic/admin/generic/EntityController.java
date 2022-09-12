@@ -183,13 +183,18 @@ public class EntityController<T extends IEntity<S>, S extends Serializable> impl
 			StringBuilder queryString = new StringBuilder("FROM " + clazz.getSimpleName() + " E WHERE");
 			int count = 0;
 			for (FilterCriterion criterion : criteria) {
-				if (count == 0) {
+				if (count > 0) {
+					queryString.append(" AND");
+				}
+
+				if (criterion.getOperator().isUseValue()) {
 					queryString.append(" E.").append(criterion.getAttribute()).append(" ").append(
 						criterion.getOperator()).append(" :value").append(count);
 				} else {
-					queryString.append(" AND E.").append(criterion.getAttribute()).append(" ").append(
-						criterion.getOperator()).append(" :value").append(count);
+					queryString.append(" E.").append(criterion.getAttribute()).append(" ").append(
+						criterion.getOperator());
 				}
+
 				count++;
 			}
 
@@ -199,7 +204,9 @@ public class EntityController<T extends IEntity<S>, S extends Serializable> impl
 			// Set the parameters, 2nd iteration
 			count = 0;
 			for (FilterCriterion criterion : criteria) {
-				query.setParameter("value" + count, criterion.getValue());
+				if (criterion.getOperator().isUseValue()) {
+					query.setParameter("value" + count, criterion.getValue());
+				}
 				count++;
 			}
 
