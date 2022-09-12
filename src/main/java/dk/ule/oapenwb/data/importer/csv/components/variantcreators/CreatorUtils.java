@@ -3,9 +3,13 @@
 package dk.ule.oapenwb.data.importer.csv.components.variantcreators;
 
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
+import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class CreatorUtils
@@ -22,29 +26,87 @@ public class CreatorUtils
 		return part.trim();
 	}
 
-	public static void readAndApplyDialects(List<Variant> variants, RowData rowData, int dialectsColumnIndex)
+	public static void readAndApplyDialects(List<Variant> variants, RowData rowData, int dialectsColumnIndex,
+		Map<String, Language> dialectMap, Set<Integer> defaultDialectID)
 	{
-		// TODO 100 As wy de dialekten hebbet mut dat ruut
-		if (1 == 1) {
+		if (variants == null || variants.size() == 0) {
 			return;
-		}
+		} else {
+			if (dialectsColumnIndex > rowData.getParts().length) {
+				throw new RuntimeException(
+					String.format("Dialect(s) column with index %d does not exist for this row", dialectsColumnIndex));
+			}
 
-		// TODO Read the dialects via property dialectsColumnIndex and apply them to the variants.
-		//  Throw an exception if the number of variants and dialects doesn't match.
-		String dialectsStr = rowData.getParts()[dialectsColumnIndex - 1];
-		// Remove all spaces
-		dialectsStr = dialectsStr.replace(" ", "");
-		String[] dialects = dialectsStr.split(",");
+			String dialectData = rowData.getParts()[dialectsColumnIndex - 1];
+			// Remove all spaces
+			dialectData = dialectData.replace(" ", "");
 
-		if (dialects.length != variants.size()) {
-			throw new RuntimeException("Number of variants and dialects doesn't match.");
-		}
+			// TODO 125 What to do about the sememes? How to set the dialects there?
 
-		int index = 0;
-		for (var variant : variants) {
-			String dialect = dialects[index];
-			variant.setDialectIDs(Set.of()); // TODO map from dialect to dialectID
-			index++;
+			if (dialectData.isBlank()) {
+				// Set the standard dialects for each variant
+				for (var variant : variants) {
+					variant.setDialectIDs(defaultDialectID);
+				}
+			} else {
+				// Dialects are specified and we're going to read them
+				if (variants.size() == 1) {
+					// Only one variant is there
+					if (dialectData.contains("~")) {
+						throw new RuntimeException(String.format(
+							"Dialect column %d contains variant separator characters ('~'), but should contain only one dialect",
+							dialectsColumnIndex));
+					}
+					Set<Integer> dialectIDs = defaultDialectID;
+					if (!dialectData.isBlank()) {
+						dialectIDs = parseDialects(dialectMap, dialectData, dialectsColumnIndex);
+					}
+					variants.get(0).setDialectIDs(dialectIDs);
+				} else {
+					if (StringUtils.countMatches(dialectData, '~') + 1 != variants.size()) {
+						throw new RuntimeException(String.format(
+							"Specified dialects don't match the number of specified variants (dialects column = %d)",
+							dialectsColumnIndex));
+					}
+					String[] dialectsParts = dialectData.split("~");
+					for (int i = 0; i < variants.size(); i++) {
+						String dialectsPart = dialectsParts[i];
+						Set<Integer> dialectIDs = defaultDialectID;
+						if (!dialectsPart.isBlank()) {
+							dialectIDs = parseDialects(dialectMap, dialectsPart, dialectsColumnIndex);
+						}
+						variants.get(i).setDialectIDs(dialectIDs);
+					}
+				}
+			}
 		}
+	}
+
+	// dialectData can contain a single dialect or multiple ones separated by a ','
+	private static Set<Integer> parseDialects(Map<String, Language> dialectMap, String dialectData,
+		int dialectsColumnIndex)
+	{
+		if (dialectData.contains(",")) {
+			// Several dialects are given
+			Set<Integer> dialectIDs = new HashSet<>();
+			String[] dialectParts = dialectData.split(",");
+			for (String dialectPart : dialectParts) {
+				dialectIDs.add(getDialectID(dialectMap, dialectPart, dialectsColumnIndex));
+			}
+			return dialectIDs;
+		} else {
+			// Simple case: only one dialect is specified
+			return Set.of(getDialectID(dialectMap, dialectData, dialectsColumnIndex));
+		}
+	}
+
+	private static int getDialectID(Map<String, Language> dialectMap, String dialectStr, int dialectsColumnIndex) {
+		Language dialect = dialectMap.get(dialectStr);
+		if (dialect == null) {
+			throw new RuntimeException(String.format(
+				"Specified dialect is unknown (dialects column = %d)",
+				dialectsColumnIndex));
+		}
+		return dialect.getId();
 	}
 }

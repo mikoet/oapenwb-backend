@@ -2,18 +2,22 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.data.importer.csv.components.variantcreators;
 
+import com.google.common.collect.ImmutableSet;
 import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterContext;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.data.importer.messages.MessageType;
 import dk.ule.oapenwb.entity.basis.ApiAction;
+import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>Abstract class for all concrete variant creators. Each concrete creator is then valid for at least one
@@ -31,7 +35,17 @@ public abstract class AbstractVariantCreator
 	@Getter
 	protected final int columnIndex;
 
-	protected CsvRowBasedImporter.TypeFormPair typeFormsPair;
+	@Getter
+	private final int dialectsColumnIndex;
+
+	@Getter
+	private final Map<String, Language> dialectMap;
+
+	@Getter
+	private final Set<Integer> defaultDialectID;
+
+	@Getter
+	private CsvRowBasedImporter.TypeFormPair typeFormsPair;
 
 	/**
 	 * <p>Method create for the LexemeProvider environment.</p>
@@ -56,11 +70,28 @@ public abstract class AbstractVariantCreator
 	public AbstractVariantCreator(
 		AdminControllers adminControllers,
 		String partOfSpeech,
-		int columnIndex)
+		int columnIndex,
+		int dialectsColumnIndex,
+		Map<String, Language> dialectMap,
+		Set<Integer> defaultDialectID)
 	{
 		this.adminControllers = adminControllers;
 		this.partOfSpeech = partOfSpeech;
 		this.columnIndex = columnIndex;
+		this.dialectsColumnIndex = dialectsColumnIndex;
+		this.dialectMap = dialectMap;
+		// !!
+		this.defaultDialectID = ImmutableSet.copyOf(defaultDialectID);
+	}
+
+	// only for the MultiVariantController which does not utilize the CreatorUtils
+	public AbstractVariantCreator(
+		AdminControllers adminControllers,
+		String partOfSpeech,
+		int columnIndex,
+		int dialectsColumnIndex)
+	{
+		this(adminControllers, partOfSpeech, columnIndex, dialectsColumnIndex, null, null);
 	}
 
 	/**

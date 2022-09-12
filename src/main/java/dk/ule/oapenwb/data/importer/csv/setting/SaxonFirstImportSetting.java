@@ -52,11 +52,12 @@ public class SaxonFirstImportSetting
 	public static final int COL_MIN_COUNT = COL_FINISH;
 	public static final int COL_LAST_INDEX = COL_NDS_DBO_ORIGIN;
 
-	public static final short DEFAULT_MAPPING_WEIGHT = (short) 45;
+	public static final short DEFAULT_MAPPING_WEIGHT = (short) 50;
 
 	private final AdminControllers adminControllers;
 
 	private final int langIdLowSaxon;
+	private final Map<String, Language> dialectMap;
 
 	public SaxonFirstImportSetting(AdminControllers adminControllers) throws CodeException
 	{
@@ -72,6 +73,9 @@ public class SaxonFirstImportSetting
 				Arrays.asList(new Pair<>("type", "Language"), new Pair<>("property", "locale"),
 					new Pair<>("value", "nds")));
 		}
+
+		// Fetch all dialect IDs
+		this.dialectMap = adminControllers.getLanguagesController().getImportMapForLanguage("nds");
 	}
 
 	/**
@@ -152,8 +156,9 @@ public class SaxonFirstImportSetting
 		mappingMakers.add(createMappingMaker("nds-nl"));
 
 		// !! Set up the LinkMaker
-		Optional<LinkType> ltBino = adminControllers.getLinkTypesController().list().stream().filter(lt -> lt.getDescription().equals(
-			LinkType.DESC_BINOMIAL_NOMEN)).findFirst();
+		Optional<LinkType> ltBino = adminControllers.getLinkTypesController().list().stream().filter(
+			lt -> lt.getDescription().equals(
+				LinkType.DESC_BINOMIAL_NOMEN)).findFirst();
 		if (ltBino.isEmpty()) {
 			throw new RuntimeException(String.format("LinkType '%s' not found", LinkType.DESC_BINOMIAL_NOMEN));
 		}
@@ -171,14 +176,18 @@ public class SaxonFirstImportSetting
 			ImportMode.NSS,
 			getOrthographyID(Orthography.ABBR_SAXON_NYSASSISKE_SKRYVWYSE),
 			COL_NDS_NSS,
-			COL_NDS_NSS_DIALECTS);
+			COL_NDS_NSS_DIALECTS,
+			dialectMap,
+			Set.of(dialectMap.get("dns").getId()));
 
 		// Westphalian Dutch Low Saxon in NSS
 		VariantBuilder variantBuilderNdsNlNss = setupVariantBuilder(
 			ImportMode.NSS,
 			getOrthographyID(Orthography.ABBR_SAXON_NYSASSISKE_SKRYVWYSE),
 			COL_NDS_NL_NSS,
-			COL_NDS_NL_NSS_DIALECTS);
+			COL_NDS_NL_NSS_DIALECTS,
+			dialectMap,
+			Set.of(dialectMap.get("nwf").getId()));
 
 		// Northern Low Saxon in DBO
 		// TODO The origin should be imported as well
@@ -186,7 +195,9 @@ public class SaxonFirstImportSetting
 			ImportMode.DBO,
 			getOrthographyID(Orthography.ABBR_SAXON_GERMAN_BASED),
 			COL_NDS_DBO,
-			COL_NDS_DBO_DIALECTS);
+			COL_NDS_DBO_DIALECTS,
+			dialectMap,
+			Set.of(dialectMap.get("dns").getId()));
 
 		LexemeProvider lexemeProvider = new LexemeProvider(adminControllers, "nds", true);
 		lexemeProvider.getVariantBuilders().add(variantBuilderNndsNss);
@@ -196,42 +207,59 @@ public class SaxonFirstImportSetting
 		return lexemeProvider;
 	}
 
-	private VariantBuilder setupVariantBuilder(ImportMode mode, int orthographyID, int columnIndex, int dialectColumnIndex)
+	private VariantBuilder setupVariantBuilder(ImportMode mode, int orthographyID, int columnIndex,
+		int dialectColumnIndex, Map<String, Language> dialectMap, Set<Integer> defaultDialectID)
 	{
 		VariantBuilder variantBuilderNndsNss = new VariantBuilder();
 
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_ADJ, orthographyID, columnIndex, dialectColumnIndex);
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_ADP, orthographyID, columnIndex, dialectColumnIndex);
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_ADV, orthographyID, columnIndex, dialectColumnIndex);
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_AUX, orthographyID, columnIndex, dialectColumnIndex);
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_CCONJ, orthographyID, columnIndex, dialectColumnIndex);
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_DET, orthographyID, columnIndex, dialectColumnIndex);
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_INTJ, orthographyID, columnIndex, dialectColumnIndex);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_ADJ, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_ADP, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_ADV, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_AUX, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_CCONJ, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_DET, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_INTJ, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
 
 		variantBuilderNndsNss.getPosToCreator().put(LexemeType.TYPE_NOUN, new NounVariantCreator(adminControllers,
-			LexemeType.TYPE_NOUN, mode, orthographyID, columnIndex, dialectColumnIndex));
+			LexemeType.TYPE_NOUN, mode, orthographyID, columnIndex, dialectColumnIndex, dialectMap, defaultDialectID));
 
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_NUM, orthographyID, columnIndex, dialectColumnIndex);
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_PART, orthographyID, columnIndex, dialectColumnIndex);
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_PRON, orthographyID, columnIndex, dialectColumnIndex);
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_PROPN, orthographyID, columnIndex, dialectColumnIndex);
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_PUNCT, orthographyID, columnIndex, dialectColumnIndex);
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_SCONJ, orthographyID, columnIndex, dialectColumnIndex);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_NUM, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_PART, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_PRON, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_PROPN, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_PUNCT, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_SCONJ, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
 
 		variantBuilderNndsNss.getPosToCreator().put(LexemeType.TYPE_VERB, new VerbVariantCreator(adminControllers,
-			LexemeType.TYPE_VERB, orthographyID, columnIndex, dialectColumnIndex));
+			LexemeType.TYPE_VERB, orthographyID, columnIndex, dialectColumnIndex, dialectMap, defaultDialectID));
 
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_X, orthographyID, columnIndex, dialectColumnIndex);
-		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_C_UTDR, orthographyID, columnIndex, dialectColumnIndex);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_X, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
+		addMiscVariantCreator(variantBuilderNndsNss, LexemeType.TYPE_C_UTDR, orthographyID, columnIndex,
+			dialectColumnIndex, dialectMap, defaultDialectID);
 
 		return variantBuilderNndsNss;
 	}
 
 	private void addMiscVariantCreator(VariantBuilder builder, String partOfSpeech, int orthographyID, int columnIndex,
-		int columnIndexDialects)
+		int columnIndexDialects, Map<String, Language> dialectMap, Set<Integer> defaultDialectID)
 	{
 		builder.getPosToCreator().put(partOfSpeech,
-			new MiscVariantCreator(adminControllers, partOfSpeech, orthographyID, columnIndex, columnIndexDialects));
+			new MiscVariantCreator(adminControllers, partOfSpeech, orthographyID, columnIndex, columnIndexDialects,
+				dialectMap, defaultDialectID));
 	}
 
 	private MultiLexemeProvider buildMultiLexemeProvider(OperationMode mode, String langCode, String orthography,

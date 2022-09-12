@@ -9,6 +9,7 @@ import dk.ule.oapenwb.entity.content.basedata.Level;
 import dk.ule.oapenwb.entity.content.basedata.Orthography;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import dk.ule.oapenwb.logic.admin.LanguagesController;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
 import dk.ule.oapenwb.logic.presentation.options.WholeLemmaOptions;
@@ -69,7 +70,7 @@ public class WholeLemmaBuilderTest
 	@BeforeAll
 	public void initControllers(
 		@Mock CEntityController<Orthography, Integer> orthographiesController,
-		@Mock CEntityController<Language, Integer> languagesController,
+		@Mock LanguagesController languagesController,
 		@Mock CEntityController<Category, Integer> categoriesController,
 		@Mock CEntityController<Level, Integer> levelsController,
 		@Mock SememesController sememesController

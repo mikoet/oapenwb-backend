@@ -8,6 +8,7 @@ import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.AbstractVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.CreatorUtils;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
+import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
@@ -46,8 +47,6 @@ public class VerbVariantCreator extends AbstractVariantCreator
 	private LexemeFormType ftForm2; // 1st person singular, past time
 	private LexemeFormType ftForm3; // particip perfect / II
 
-	private final int dialectsColumnIndex;
-
 	// Maps each auxiliary verb to a parserID
 	private final Map<String, String> allowedAuxiliaries = new HashMap<>();
 
@@ -56,13 +55,13 @@ public class VerbVariantCreator extends AbstractVariantCreator
 		String partOfSpeech,
 		int orthographyID,
 		int columnIndex,
-		int dialectsColumnIndex)
+		int dialectsColumnIndex,
+		Map<String, Language> dialectMap,
+		Set<Integer> defaultDialectID)
 	{
-		super(adminControllers, partOfSpeech, columnIndex);
+		super(adminControllers, partOfSpeech, columnIndex, dialectsColumnIndex, dialectMap, defaultDialectID);
 
 		this.orthographyID = orthographyID;
-
-		this.dialectsColumnIndex = dialectsColumnIndex;
 
 		allowedAuxiliaries.put("hevven", "hevven_v");
 		allowedAuxiliaries.put("hebben", "hevven_v");
@@ -250,7 +249,8 @@ public class VerbVariantCreator extends AbstractVariantCreator
 			}
 		}
 
-		CreatorUtils.readAndApplyDialects(result, rowData, this.dialectsColumnIndex);
+		CreatorUtils.readAndApplyDialects(result, rowData, getDialectsColumnIndex(), getDialectMap(),
+			getDefaultDialectID());
 
 		return result;
 	}

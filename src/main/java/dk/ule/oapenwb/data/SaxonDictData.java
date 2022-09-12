@@ -52,7 +52,7 @@ public class SaxonDictData implements DataStrategy
 		session.save(oBN);
 
 		// Setup languages
-		Language lSaxon = new Language(null, null, "nds", "Neddersassisk", "l:nds", "l:nds", oNSS.getId());
+		Language lSaxon = new Language(null, null, "nds", "Neddersassisk", "l:nds", "l:nds", oNSS.getId(), "nds");
 		Language lGerman = new Language(null, null, "de", "Deutsch", "l:de", "l:de", oBDR.getId());
 		Language lEnglish = new Language(null, null, "en", "English", "l:en", "l:en", oBE.getId());
 		Language lDutch = new Language(null, null, "nl", "Nederlands", "l:nl", "l:nl", oNL.getId());

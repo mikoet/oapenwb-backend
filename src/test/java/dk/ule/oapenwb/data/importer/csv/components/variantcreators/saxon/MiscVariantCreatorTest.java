@@ -5,8 +5,10 @@ package dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon;
 import dk.ule.oapenwb.data.importer.VariantUtil;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.AbstractVariantCreator;
+import dk.ule.oapenwb.data.importer.csv.components.variantcreators.CreatorUtils;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.entity.basis.ApiAction;
+import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
 import dk.ule.oapenwb.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
@@ -37,6 +39,26 @@ public class MiscVariantCreatorTest
 	private final LexemeFormType lftAdvBaseForm = new LexemeFormType(1, null, ltAdv.getId(), "bf", "baseForm", null,
 		true, (short) 0);
 
+	// Dialects
+	private final Language lLowSaxon = new Language(1, null, "nds", "", "", "", oNSS_ID, "nds");
+	private final Language lNorthernLowSaxon = new Language(2, lLowSaxon.getId(), "nds_DE@dns", "", "", "", oNSS_ID, "dns");
+	private final Language lDitmarsk = new Language(3, lNorthernLowSaxon.getId(), "nds_DE@dns-dit", "", "", "", oNSS_ID, "dit");
+	private final Language lNoordhannoversk = new Language(4, lNorthernLowSaxon.getId(), "nds_DE@dns-nhn", "", "", "", oNSS_ID, "nhn");
+	private final Language lWestphalian = new Language(10, lLowSaxon.getId(), "nds_DE@dwf", "", "", "", oNSS_ID, "dwf");
+	private final Language lEastphalian = new Language(20, lLowSaxon.getId(), "nds_DE@of", "", "", "", oNSS_ID, "of");
+
+	private final Map<String, Language> dialectMap = Map.of(
+		lLowSaxon.getImportAbbreviation(), lLowSaxon,
+		lNorthernLowSaxon.getImportAbbreviation(), lNorthernLowSaxon,
+		lDitmarsk.getImportAbbreviation(), lDitmarsk,
+		lNoordhannoversk.getImportAbbreviation(), lNoordhannoversk,
+		lWestphalian.getImportAbbreviation(), lWestphalian,
+		lEastphalian.getImportAbbreviation(), lEastphalian
+	);
+
+	private final Set<Integer> defaultDialectID = Set.of(lNorthernLowSaxon.getId());
+
+	//
 	private final CsvRowBasedImporter.TypeFormPair typeFormsPair = new CsvRowBasedImporter.TypeFormPair(ltAdv,
 		new LinkedHashMap<>());
 
@@ -52,12 +74,12 @@ public class MiscVariantCreatorTest
 	void testVariousAdjectives()
 	{
 		AbstractVariantCreator creator = new MiscVariantCreator(null, LexemeType.TYPE_ADJ, oNSS_ID, COLUMN_INDEX,
-			DIALECT_COLUMN_INDEX).initialise(typeFormsPair);
+			DIALECT_COLUMN_INDEX, dialectMap, defaultDialectID).initialise(typeFormsPair);
 
 		{
-			// Check 1: definition w/o multiple variants
+			// Check 1: definition w/o multiple variants and with dialect specification
 			List<Variant> checkResult = List.of(
-				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
+				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(lNorthernLowSaxon.getId(), lWestphalian.getId()),
 					List.of(
 						createLexemeForm(lftAdvBaseForm.getId(), LexemeForm.STATE_TYPED, "ysig")
 					),
@@ -65,14 +87,14 @@ public class MiscVariantCreatorTest
 					ApiAction.Insert)
 			);
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
-				new RowData(1, new String[] {"ysig", "" /* TODO dialect */}));
+				new RowData(1, new String[] {"ysig", "dns, dwf"}));
 			VariantUtil.compareVariantLists(checkResult, result, "testVariousAdjectives-1");
 		}
 
 		{
-			// Check 2: definition w/o multiple variants but an actual UTDR (several words)
+			// Check 2: definition w/o multiple variants but an actual UTDR (several words) and with default dialect
 			List<Variant> checkResult = List.of(
-				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
+				VariantUtil.createVariant(oNSS_ID, true, true, defaultDialectID,
 					List.of(
 						createLexemeForm(lftAdvBaseForm.getId(), LexemeForm.STATE_TYPED, "dat givt")
 					),
@@ -80,20 +102,20 @@ public class MiscVariantCreatorTest
 					ApiAction.Insert)
 			);
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
-				new RowData(1, new String[] {"dat givt", "" /* TODO dialect */}));
+				new RowData(1, new String[] {"dat givt", ""}));
 			VariantUtil.compareVariantLists(checkResult, result, "testVariousAdjectives-2");
 		}
 
 		{
-			// Check 3: definition with multiple variants
+			// Check 3: definition with multiple variants and dialect specification
 			List<Variant> checkResult = List.of(
-				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(/* TODO dialect */),
+				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(lNorthernLowSaxon.getId()),
 					List.of(
 						createLexemeForm(lftAdvBaseForm.getId(), LexemeForm.STATE_TYPED, "bold")
 					),
 					Map.of(),
 					ApiAction.Insert),
-				VariantUtil.createVariant(oNSS_ID, false, true, Set.of(/* TODO dialect */),
+				VariantUtil.createVariant(oNSS_ID, false, true, Set.of(lEastphalian.getId(), lWestphalian.getId()),
 					List.of(
 						createLexemeForm(lftAdvBaseForm.getId(), LexemeForm.STATE_TYPED, "bolde")
 					),
@@ -101,7 +123,7 @@ public class MiscVariantCreatorTest
 					ApiAction.Insert)
 			);
 			List<Variant> result = creator.create(null /* TODO bruket wy den kontekst går nich? */,
-				new RowData(1, new String[] {"bold ~ bolde", "" /* TODO dialect */}));
+				new RowData(1, new String[] {"bold ~ bolde", "dns ~ dwf, of"}));
 			VariantUtil.compareVariantLists(checkResult, result, "testVariousAdjectives-3");
 		}
 

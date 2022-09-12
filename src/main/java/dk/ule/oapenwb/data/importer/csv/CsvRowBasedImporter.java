@@ -29,7 +29,6 @@ import dk.ule.oapenwb.logic.context.ITransaction;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
 import dk.ule.oapenwb.util.functional.TriCheckFunction;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.Session;
 import org.slf4j.Logger;

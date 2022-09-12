@@ -8,14 +8,13 @@ import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.AbstractVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.CreatorUtils;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
+import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class MiscVariantCreator extends AbstractVariantCreator
 {
@@ -24,19 +23,17 @@ public class MiscVariantCreator extends AbstractVariantCreator
 	// FormTypes are the same for every language
 	private LexemeFormType ftFirst; // form type depending on the LexemeType
 
-	private final int dialectsColumnIndex;
-
 	public MiscVariantCreator(
 		AdminControllers adminControllers,
 		String partOfSpeech,
 		int orthographyID,
 		int columnIndex,
-		int dialectsColumnIndex)
+		int dialectsColumnIndex,
+		Map<String, Language> dialectMap,
+		Set<Integer> defaultDialectIDs)
 	{
-		super(adminControllers, partOfSpeech, columnIndex);
-
+		super(adminControllers, partOfSpeech, columnIndex, dialectsColumnIndex, dialectMap, defaultDialectIDs);
 		this.orthographyID = orthographyID;
-		this.dialectsColumnIndex = dialectsColumnIndex;
 	}
 
 	@Override
@@ -110,7 +107,8 @@ public class MiscVariantCreator extends AbstractVariantCreator
 			result.add(variant);
 		}
 
-		CreatorUtils.readAndApplyDialects(result, rowData, this.dialectsColumnIndex);
+		CreatorUtils.readAndApplyDialects(result, rowData, getDialectsColumnIndex(), getDialectMap(),
+			getDefaultDialectID());
 
 		return result;
 	}

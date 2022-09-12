@@ -35,7 +35,7 @@ public class MultiVariantCreator extends AbstractVariantCreator
 		OperationMode mode,
 		boolean multiWord)
 	{
-		super(adminControllers, partOfSpeech, columnIndex);
+		super(adminControllers, partOfSpeech, columnIndex, 0);
 
 		this.orthographyID = orthographyID;
 		this.mode = mode;

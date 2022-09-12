@@ -8,6 +8,7 @@ import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.AbstractVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.CreatorUtils;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
+import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
@@ -28,8 +29,6 @@ public class NounVariantCreator extends AbstractVariantCreator
 	private LexemeFormType ftSn; // singular nominative
 	private LexemeFormType ftPn; // plural nominative
 
-	private final int dialectsColumnIndex;
-
 	private final Set<String> allowedGenera = new HashSet<>();
 
 	public NounVariantCreator(
@@ -38,14 +37,14 @@ public class NounVariantCreator extends AbstractVariantCreator
 		ImportMode mode,
 		int orthographyID,
 		int columnIndex,
-		int dialectsColumnIndex)
+		int dialectsColumnIndex,
+		Map<String, Language> dialectMap,
+		Set<Integer> defaultDialectID)
 	{
-		super(adminControllers, partOfSpeech, columnIndex);
+		super(adminControllers, partOfSpeech, columnIndex, dialectsColumnIndex, dialectMap, defaultDialectID);
 
 		this.mode = mode;
 		this.orthographyID = orthographyID;
-
-		this.dialectsColumnIndex = dialectsColumnIndex;
 
 		allowedGenera.add("f");
 		allowedGenera.add("m");
@@ -233,7 +232,8 @@ public class NounVariantCreator extends AbstractVariantCreator
 			}
 		}
 
-		CreatorUtils.readAndApplyDialects(result, rowData, this.dialectsColumnIndex);
+		CreatorUtils.readAndApplyDialects(result, rowData, getDialectsColumnIndex(), getDialectMap(),
+			this.getDefaultDialectID());
 
 		return result;
 	}
@@ -377,7 +377,8 @@ public class NounVariantCreator extends AbstractVariantCreator
 			}
 		}
 
-		CreatorUtils.readAndApplyDialects(result, rowData, this.dialectsColumnIndex);
+		CreatorUtils.readAndApplyDialects(result, rowData, getDialectsColumnIndex(), getDialectMap(),
+			this.getDefaultDialectID());
 
 		return result;
 	}
