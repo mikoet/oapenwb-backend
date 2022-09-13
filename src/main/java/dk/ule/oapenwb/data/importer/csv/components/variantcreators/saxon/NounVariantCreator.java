@@ -233,7 +233,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 		}
 
 		CreatorUtils.readAndApplyDialects(result, rowData, getDialectsColumnIndex(), getDialectMap(),
-			this.getDefaultDialectID());
+			getDefaultDialectID());
 
 		return result;
 	}
@@ -378,7 +378,7 @@ public class NounVariantCreator extends AbstractVariantCreator
 		}
 
 		CreatorUtils.readAndApplyDialects(result, rowData, getDialectsColumnIndex(), getDialectMap(),
-			this.getDefaultDialectID());
+			getDefaultDialectID());
 
 		return result;
 	}

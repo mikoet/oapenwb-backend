@@ -72,10 +72,17 @@ public class AbstractLexemeProvider
 		LexemeDetailedDTO result = new LexemeDetailedDTO();
 
 		// # Retrieve some data that'll be needed
-		// Retrieve the language instance, the tagNames and
+		// Retrieve the language instance, the tagNames, variantIDs and all dialectIDs used in the variants
 		Language language = context.getLanguages().get(this.getLang());
 		Set<String> tagNames = context.getConfig().getTagNames();
-		Set<Long> variantIDs = variants.stream().map(Variant::getId).collect(Collectors.toSet());
+		Set<Long> variantIDs = new HashSet<>();
+		Set<Integer> dialectIDs = new HashSet<>();
+		for (Variant variant : variants) {
+			variantIDs.add(variant.getId());
+			if (variant.getDialectIDs() != null) {
+				dialectIDs.addAll(variant.getDialectIDs());
+			}
+		}
 
 		// # Build the Lexeme data
 		// Create the lexeme itself
@@ -107,8 +114,9 @@ public class AbstractLexemeProvider
 			Sememe sememe = new Sememe();
 			sememe.setId(-1L);
 			sememe.setInternalName("$default");
-			sememe.setVariantIDs(variantIDs); // TODO Past dat sou?
+			sememe.setVariantIDs(variantIDs);
 			sememe.setFillSpec(Sememe.FILL_SPEC_NONE);
+			sememe.setDialectIDs(dialectIDs);
 
 			sememe.setActive(true);
 			sememe.setApiAction(ApiAction.Insert);

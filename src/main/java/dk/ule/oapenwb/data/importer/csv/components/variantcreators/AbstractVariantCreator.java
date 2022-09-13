@@ -81,7 +81,7 @@ public abstract class AbstractVariantCreator
 		this.dialectsColumnIndex = dialectsColumnIndex;
 		this.dialectMap = dialectMap;
 		// !!
-		this.defaultDialectID = ImmutableSet.copyOf(defaultDialectID);
+		this.defaultDialectID = defaultDialectID == null ? null : ImmutableSet.copyOf(defaultDialectID);
 	}
 
 	// only for the MultiVariantController which does not utilize the CreatorUtils
