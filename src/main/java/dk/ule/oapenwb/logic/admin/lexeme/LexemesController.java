@@ -517,8 +517,6 @@ public class LexemesController
 			// Add the text filtering part if it's set
 			sb.append("  and L.id in (select lexemeID from Variants Vi\n");
 			sb.append("    where Vi.id in (select variantID from LexemeForms where " + filterStatement + "))\n");
-		} else {
-			sb.append("  1=1\n");
 		}
 		if (request.getOptions() != null) {
 			// Add the different filter options
