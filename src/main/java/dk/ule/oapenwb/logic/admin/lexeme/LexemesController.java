@@ -298,6 +298,29 @@ public class LexemesController
 		// entity wardt nich löskd.
 	}
 
+	/**
+	 * Used to load a batch of lexemes in the {@link dk.ule.oapenwb.logic.search.SearchController}.
+	 *
+	 * @param lexemeIDs
+	 * @return
+	 * @throws CodeException
+	 */
+	public List<Lexeme> loadByIDs(final Set<Long> lexemeIDs) throws CodeException {
+		List<Lexeme> entities;
+		try {
+			Session session = HibernateUtil.getSession();
+			Query<Lexeme> query = session.createQuery(
+				"FROM Lexeme E WHERE E.id IN (:lexemeIDs)", Lexeme.class);
+			query.setParameterList("lexemeIDs", lexemeIDs);
+			entities = query.list();
+		} catch (Exception e) {
+			LOG.error("Error fetching instances of type Lexeme", e);
+			throw new CodeException(ErrorCode.Admin_EntityOperation,
+				Arrays.asList(new Pair<>("operation", "GET-BY-IDS"), new Pair<>("entity", "Lexeme")));
+		}
+		return entities;
+	}
+
 	private void loadLexemesWithoutFilter(List<LexemeSlimDTO> resultList, final Pagination pagination)
 		throws JsonProcessingException
 	{

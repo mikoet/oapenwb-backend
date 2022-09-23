@@ -45,34 +45,6 @@ where Se.variantIDs @> ('[' || Va.id || ']')::jsonb -- attention: escape the col
   and Se.id = :id
 order by Va.main
 
-
--- Q500
--- Search query for both directions. Part before union is for left-to-right
--- while part after union is for right-to-left search.
-select sememeOneID, sememeTwoID, weight
-from Mappings
-where sememeOneID in (
-	select s.id from Sememes s inner join Lexemes l on s.lexemeID = l.id,
-		jsonb_array_elements(s.variantIDs) va(variantID)
-	where l.langID = :langOneID and variantID::int in ( -- escape the :: (!)
-		select variantID from LexemeForms
-			where searchableText @@ websearch_to_tsquery('simple', :term)
-	)
-)
-union
-select sememeOneID, sememeTwoID, weight
-from Mappings
-where sememeTwoID in (
-	select s.id from Sememes s inner join Lexemes l on s.lexemeID = l.id,
-		jsonb_array_elements(s.variantIDs) va(variantID)
-	where l.langID = :langTwoID and variantID::int in ( -- escape the :: (!)
-		select variantID from LexemeForms
-			where searchableText @@ websearch_to_tsquery('simple', :term)
-	)
-)
-order by weight desc
-
-
 -- Q030
 -- Get a slim sememe
 select S.id as id, S.internalName as internalName, S.active as active, S.spec as spec,
@@ -81,6 +53,34 @@ select S.id as id, S.internalName as internalName, S.active as active, S.spec as
 from Sememes S inner join Lexemes L on S.lexemeID = L.id
   inner join Variants V on (L.id = V.lexemeID and V.mainVariant)
 where S.id = :sememeID
+
+
+-- Q500
+-- Search query for both directions. Part before union is for left-to-right
+-- while part after union is for right-to-left search.
+select sememeOneID, sememeTwoID, weight
+from Mappings m
+where m.langPair in (:langPairs) and sememeOneID in (
+	select s.id from Sememes s inner join Lexemes l on s.lexemeID = l.id,
+		jsonb_array_elements(s.variantIDs) va(variantID)
+	where l.langID in (:langOneIDs) and variantID::int in ( -- escape the :: (!)
+		select variantID from LexemeForms
+			where searchableText @@ websearch_to_tsquery('simple', :term)
+	)
+)
+union
+select sememeOneID, sememeTwoID, weight
+from Mappings m
+where m.langPair in (:langPairs) and sememeTwoID in (
+	select s.id from Sememes s inner join Lexemes l on s.lexemeID = l.id,
+		jsonb_array_elements(s.variantIDs) va(variantID)
+	where l.langID in (:langTwoIDs) and variantID::int in ( -- escape the :: (!)
+		select variantID from LexemeForms
+			where searchableText @@ websearch_to_tsquery('simple', :term)
+	)
+)
+order by weight desc
+
 
 -- Q900 TODO deprecated
 -- FileImporter / Existence Checker -> lexemeExists (simple check)

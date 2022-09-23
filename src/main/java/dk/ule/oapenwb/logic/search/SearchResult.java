@@ -5,6 +5,7 @@ package dk.ule.oapenwb.logic.search;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>The SearchResult for a search request in the dictionary's frontend.</p>
@@ -18,6 +19,9 @@ public class SearchResult
 		//long id; // only needed later once details for sememes can be viewed
 		int typeID;
 		String lemma;
+
+		// optional locale of the lexeme's language
+		Optional<String> locale = Optional.empty();
 	}
 
 	@Data
