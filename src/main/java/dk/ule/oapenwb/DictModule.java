@@ -108,16 +108,7 @@ public class DictModule extends AbstractModule
 			EntityController.class, UiTranslation.class, UiTranslationKey.class);
 
 		// UiResultCategories controller
-		EntityController<UiResultCategory, Integer> uiResultCategoryCtrl = new EntityController<>(
-			UiResultCategory::new, UiResultCategory.class,
-			ids -> Integer.parseInt(ids[0])) {
-			@Override
-			protected String getDefaultOrderClause() {
-				return " order by E.position ASC";
-			}
-		};
-		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_UI_RESULT_CATEGORIES, uiResultCategoryCtrl,
-			EntityController.class, UiResultCategory.class, Integer.class);
+		bind(UiResultCategoriesController.class);
 
 
 		/* !! Dictionary data !! */
@@ -153,16 +144,7 @@ public class DictModule extends AbstractModule
 		bind(LangPairsController.class);
 
 		// LexemeTypes controller
-		CEntityController<LexemeType, Integer> lexemeTypesCtrl = new CEntityController<>(
-			LexemeType::new, LexemeType.class,
-			ids -> Integer.parseInt(ids[0])) {
-			@Override
-			protected String getDefaultOrderClause() {
-				return " order by E.name ASC";
-			}
-		};
-		bindAnnotatedTypeWithInstance(AdminControllers.CONTROLLER_LEXEME_TYPES, lexemeTypesCtrl,
-			CEntityController.class, LexemeType.class, Integer.class);
+		bind(LexemeTypesController.class);
 
 		// LexemeFormTypes controller
 		CGEntityController<LexemeFormType, Integer, Integer> lexemeFormTypesCtrl = new CGEntityController<>(
@@ -252,9 +234,7 @@ public class DictModule extends AbstractModule
 			EntityFace.class, UiTranslationScope.class, String.class);
 
 		bind(UiTranslationSetsFace.class);
-
-		bindAnnotatedTypeWithInstance(AdminFaces.FACE_UI_RESULT_CATEGORIES, new EntityFace<>(uiResultCategoryCtrl),
-			EntityFace.class, UiResultCategory.class, Integer.class);
+		bind(UiResultCategoriesFace.class);
 
 
 		/* !! Dictionary data !! */
@@ -266,9 +246,8 @@ public class DictModule extends AbstractModule
 
 		bind(LanguagesFace.class);
 		bind(LangPairsFace.class);
+		bind(LexemeTypesFace.class);
 
-		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LEXEME_TYPES, new EntityFace<>(lexemeTypesCtrl),
-			EntityFace.class, LexemeType.class, Integer.class);
 		bindAnnotatedTypeWithInstance(AdminFaces.FACE_LEXEME_FORM_TYPES, new EntityFace<>(lexemeFormTypesCtrl),
 			EntityFace.class, LexemeFormType.class, Integer.class);
 

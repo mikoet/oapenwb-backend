@@ -15,6 +15,7 @@ import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import dk.ule.oapenwb.logic.admin.LexemeTypesController;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
 import dk.ule.oapenwb.util.Pair;
@@ -46,7 +47,7 @@ public class LemmaTemplateProcessor
 	private final Session session;
 	private final LexemeDetailedDTO lexemeDTO;
 	private final CGEntityController<LemmaTemplate, Integer, Integer> lemmaTemplateController;
-	private final CEntityController<LexemeType, Integer> lexemeTypesController;
+	private final LexemeTypesController lexemeTypesController;
 
 	private final Map<String, LexemeFormType> formTypesMap;
 
@@ -60,7 +61,7 @@ public class LemmaTemplateProcessor
 	public LemmaTemplateProcessor(
 		final Session session, final LexemeDetailedDTO lexemeDTO,
 		final CGEntityController<LemmaTemplate, Integer, Integer> lemmaTemplateController,
-		final CEntityController<LexemeType, Integer> lexemeTypesController,
+		final LexemeTypesController lexemeTypesController,
 		final CGEntityController<LexemeFormType, Integer, Integer> lftController) throws CodeException
 	{
 		this.session = session;

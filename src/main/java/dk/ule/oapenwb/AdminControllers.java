@@ -28,13 +28,11 @@ public class AdminControllers
 {
 	public static final String CONTROLLER_UI_LANGUAGES = "Controller_UiLanguages";
 	public static final String CONTROLLER_UI_SCOPES = "Controller_UiScopes";
-	public static final String CONTROLLER_UI_RESULT_CATEGORIES = "Controller_UiResultCategories";
 	// Only for injection into UiTranslationSetsController
 	public static final String CONTROLLER_UI_TRANSLATIONS = "Controller_UiTranslations";
 
 	public static final String CONTROLLER_ORTHOGRAPHIES = "Controller_Orthographies";
 	public static final String CONTROLLER_LO_MAPPINGS = "Controller_LoMappings";
-	public static final String CONTROLLER_LEXEME_TYPES = "Controller_LexemeTypes";
 	public static final String CONTROLLER_LEXEME_FORM_TYPES = "Controller_LexemeFormTypes";
 	public static final String CONTROLLER_TL_CONFIGS = "Controller_TlConfigs";
 	public static final String CONTROLLER_LEMMA_TEMPLATES = "Controller_LemmaTemplates";
@@ -58,8 +56,7 @@ public class AdminControllers
 
 	@Getter
 	@Inject
-	@Named(CONTROLLER_UI_RESULT_CATEGORIES)
-	private EntityController<UiResultCategory, Integer> uiResultCategoriesController;
+	private UiResultCategoriesController uiResultCategoriesController;
 
 
 	@Getter
@@ -82,8 +79,7 @@ public class AdminControllers
 
 	@Getter
 	@Inject
-	@Named(CONTROLLER_LEXEME_TYPES)
-	private CEntityController<LexemeType, Integer> lexemeTypesController;
+	private LexemeTypesController lexemeTypesController;
 
 	@Getter
 	@Inject

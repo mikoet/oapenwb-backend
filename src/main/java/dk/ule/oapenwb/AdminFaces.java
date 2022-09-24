@@ -8,7 +8,6 @@ import com.google.inject.name.Named;
 import dk.ule.oapenwb.entity.content.basedata.*;
 import dk.ule.oapenwb.entity.content.basedata.tlConfig.TypeLanguageConfig;
 import dk.ule.oapenwb.entity.ui.UiLanguage;
-import dk.ule.oapenwb.entity.ui.UiResultCategory;
 import dk.ule.oapenwb.entity.ui.UiTranslationScope;
 import dk.ule.oapenwb.faces.UiTranslationSetsFace;
 import dk.ule.oapenwb.faces.admin.*;
@@ -23,11 +22,9 @@ class AdminFaces
 {
 	public static final String FACE_UI_LANGUAGES = "Face_UiLanguages";
 	public static final String FACE_UI_SCOPES = "Face_UiScopes";
-	public static final String FACE_UI_RESULT_CATEGORIES = "Face_UiResultCategories";
 
 	public static final String FACE_ORTHOGRAPHIES = "Face_Orthographies";
 	public static final String FACE_LO_MAPPINGS = "Face_LoMappings";
-	public static final String FACE_LEXEME_TYPES = "Face_LexemeTypes";
 	public static final String FACE_LEXEME_FORM_TYPES = "Face_LexemeFormTypes";
 	public static final String FACE_TL_CONFIGS = "Face_TlConfigs";
 	public static final String FACE_LEMMA_TEMPLATES = "Face_LemmaTemplates";
@@ -52,8 +49,7 @@ class AdminFaces
 
 	@Getter
 	@Inject
-	@Named(FACE_UI_RESULT_CATEGORIES)
-	private EntityFace<UiResultCategory, Integer> uiResultCategoriesFace;
+	private UiResultCategoriesFace uiResultCategoriesFace;
 
 	@Getter
 	@Inject
@@ -75,8 +71,7 @@ class AdminFaces
 
 	@Getter
 	@Inject
-	@Named(FACE_LEXEME_TYPES)
-	private EntityFace<LexemeType, Integer> lexemeTypesFace;
+	private LexemeTypesFace lexemeTypesFace;
 
 	@Getter
 	@Inject

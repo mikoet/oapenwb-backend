@@ -22,9 +22,9 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Tag;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.LangPairsController;
+import dk.ule.oapenwb.logic.admin.LexemeTypesController;
 import dk.ule.oapenwb.logic.admin.LinkTypesController;
 import dk.ule.oapenwb.logic.admin.TagsController;
-import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
 import dk.ule.oapenwb.logic.admin.syngroup.SynGroupsController;
@@ -68,7 +68,7 @@ public class LexemesController
 	private static final Logger LOG = LoggerFactory.getLogger(LexemesController.class);
 
 	private final CGEntityController<LexemeFormType, Integer, Integer> lexemeFormTypesController;
-	private final CEntityController<LexemeType, Integer> lexemeTypesController;
+	private final LexemeTypesController lexemeTypesController;
 	private final CGEntityController<LemmaTemplate, Integer, Integer> lemmaTemplatesController;
 	private final TagsController tagsController;
 	private final SynGroupsController synGroupsController;
@@ -82,8 +82,7 @@ public class LexemesController
 	public LexemesController(
 		@Named(AdminControllers.CONTROLLER_LEXEME_FORM_TYPES)
 			final CGEntityController<LexemeFormType, Integer, Integer> lexemeFormTypesController,
-		@Named(AdminControllers.CONTROLLER_LEXEME_TYPES)
-			final CEntityController<LexemeType, Integer> lexemeTypesController,
+		final LexemeTypesController lexemeTypesController,
 		@Named(AdminControllers.CONTROLLER_LEMMA_TEMPLATES)
 			final CGEntityController<LemmaTemplate, Integer, Integer> lemmaTemplatesController,
 		TagsController tagsController,

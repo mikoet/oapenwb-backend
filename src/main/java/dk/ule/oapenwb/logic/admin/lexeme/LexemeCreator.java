@@ -17,6 +17,7 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.LangPairsController;
+import dk.ule.oapenwb.logic.admin.LexemeTypesController;
 import dk.ule.oapenwb.logic.admin.LinkTypesController;
 import dk.ule.oapenwb.logic.admin.TagsController;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
@@ -41,7 +42,7 @@ import java.util.stream.Collectors;
 public class LexemeCreator
 {
 	private final CGEntityController<LexemeFormType, Integer, Integer> lexemeFormTypesController;
-	private final CEntityController<LexemeType, Integer> lexemeTypesController;
+	private final LexemeTypesController lexemeTypesController;
 	private final CGEntityController<LemmaTemplate, Integer, Integer> lemmaTemplatesController;
 	private final TagsController tagsController;
 	private final SynGroupsController synGroupsController;
@@ -58,7 +59,7 @@ public class LexemeCreator
 
 	public LexemeCreator(
 		final CGEntityController<LexemeFormType, Integer, Integer> lexemeFormTypesController,
-		final CEntityController<LexemeType, Integer> lexemeTypesController,
+		final LexemeTypesController lexemeTypesController,
 		final CGEntityController<LemmaTemplate, Integer, Integer> lemmaTemplatesController,
 		final TagsController tagsController, final SynGroupsController synGroupsController,
 		final LangPairsController langPairsController, final LexemesController lexemesController,
