@@ -52,6 +52,8 @@ public class LexemeProvider extends AbstractLexemeProvider
 	{
 		List<Variant> variantList = new LinkedList<>();
 		for (var builder : variantBuilders) {
+			// TODO Probably the first variant should be taken here, and be set as the main variant.
+			//  Besides this, the LexemeController must make sure that only one variant has mainVariant==true set!
 			variantList.addAll(builder.build(context, typeFormPair, rowData));
 		}
 		return variantList;

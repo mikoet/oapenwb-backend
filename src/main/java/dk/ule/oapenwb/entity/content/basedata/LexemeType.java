@@ -75,7 +75,7 @@ public class LexemeType implements IEntity<Integer>
 	// only nullable for internal types like Rektion
 	@Column
 	@JsonView({Views.BaseConfig.class, Views.REST.class})
-	private int uiCategoryID;
+	private Integer uiCategoryID;
 
 	@Column(length = 64, nullable = false)
 	@JsonView({Views.BaseConfig.class, Views.REST.class})

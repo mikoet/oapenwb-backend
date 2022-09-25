@@ -21,8 +21,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * <p>The basic concepts of this controller were copied from class CEntityController.
  * <ul>
  *   <li>TODO Why is the localesCache created, but never used? Purpose? Was it meant to be used to aid creation
- *     of the mappings in the frontend? How are the languages mapped there now?</li>
+ *         of the mappings in the frontend? How are the languages mapped there now?</li>
  *   <li>TODO So check if this must be a class on its own, and only if so, do some more commenting.</li>
+ *   <li>TODO EVENTS Basically, if languages get modified this controller needs to reload its cache -- or parts of
+ *         it at least. So this controller should one listen on events for language changes.</li>
  * </ul>
  * </p>
  */
