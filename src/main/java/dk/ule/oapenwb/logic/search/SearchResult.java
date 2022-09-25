@@ -4,6 +4,7 @@ package dk.ule.oapenwb.logic.search;
 
 import lombok.Data;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,18 @@ public class SearchResult
 	}
 
 	@Data
+	static class ResultCategory
+	{
+		ResultCategory(String uitID) {
+			this.uitID = uitID;
+		}
+
+		String uitID;
+		int totalWeight = 0;
+		List<ResultEntry> entries = new LinkedList<>();
+	}
+
+	@Data
 	static class ResultEntry
 	{
 		SememeEntry sememeOne;
@@ -32,5 +45,5 @@ public class SearchResult
 		short weight;
 	}
 
-	private List<ResultEntry> entries;
+	private List<ResultCategory> entries;
 }

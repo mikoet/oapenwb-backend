@@ -11,7 +11,10 @@ import dk.ule.oapenwb.entity.content.basedata.LangPair;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import dk.ule.oapenwb.entity.ui.UiResultCategory;
 import dk.ule.oapenwb.logic.admin.LangPairsController;
+import dk.ule.oapenwb.logic.admin.LexemeTypesController;
+import dk.ule.oapenwb.logic.admin.UiResultCategoriesController;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemesController;
 import dk.ule.oapenwb.logic.admin.lexeme.VariantController;
 import dk.ule.oapenwb.logic.presentation.ControllerSet;
@@ -54,8 +57,9 @@ public class SearchController
 
 	private final AppConfig appConfig;
 	private final LexemesController lexemesController;
-	// TODO ENHANCE Maybe create a read-only interface
+	private final LexemeTypesController lexemeTypesController;
 	private final LangPairsController langPairsController;
+	private final UiResultCategoriesController uiResultCategoriesController;
 	private final ControllerSet lemmaControllers;
 	private final VariantController variantsController = new VariantController();
 
@@ -63,12 +67,16 @@ public class SearchController
 	public SearchController(
 		AppConfig appConfig,
 		LexemesController lexemesController,
+		LexemeTypesController lexemeTypesController,
 		LangPairsController langPairsController,
+		UiResultCategoriesController uiResultCategoriesController,
 		ControllerSet lemmaControllers)
 	{
 		this.appConfig = appConfig;
 		this.lexemesController = lexemesController;
+		this.lexemeTypesController = lexemeTypesController;
 		this.langPairsController = langPairsController;
+		this.uiResultCategoriesController = uiResultCategoriesController;
 		this.lemmaControllers = lemmaControllers;
 	}
 
@@ -174,7 +182,8 @@ public class SearchController
 
 				// Build and fill the resultEntryList
 				WholeLemmaBuilder lemmaBuilder = new WholeLemmaBuilder();
-				List<SearchResult.ResultEntry> resultEntryList = new LinkedList<>();
+				// <resultCategory ID, SearchResult.ResultCategory>
+				Map<Integer, SearchResult.ResultCategory> resultMap = new HashMap<>();
 				for (MappingResult mappingResult : mappingsList) {
 					Sememe sememeOne = sememesMap.get(mappingResult.sememeOneID);
 					Sememe sememeTwo = sememesMap.get(mappingResult.sememeTwoID);
@@ -223,10 +232,21 @@ public class SearchController
 					// Further properties
 					entry.weight = mappingResult.weight;
 
-					// Add entry to resultEntryList
-					resultEntryList.add(entry);
+					// Add entry to resultMap
+					UiResultCategory uiResultCategory = uiResultCategoriesController.get(
+						lexemeTypesController.get(lexemeOne.getTypeID()).getUiCategoryID());
+					SearchResult.ResultCategory resultCategory = resultMap.computeIfAbsent(uiResultCategory.getId(),
+						k -> new SearchResult.ResultCategory(uiResultCategory.getUitID()));
+					resultCategory.totalWeight += entry.weight;
+					resultCategory.entries.add(entry);
 				}
-				result.setEntries(resultEntryList);
+
+				//
+				List<SearchResult.ResultCategory> resultList = new ArrayList<>(resultMap.size());
+				resultList.addAll(resultMap.values());
+				resultList.sort((o1, o2) -> o2.totalWeight - o1.totalWeight);
+
+				result.setEntries(resultList);
 			}
 
 			long duration = TimeUtil.durationInMilis();
