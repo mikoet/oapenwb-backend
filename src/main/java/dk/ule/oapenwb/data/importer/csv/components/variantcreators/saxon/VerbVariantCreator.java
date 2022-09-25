@@ -38,6 +38,9 @@ public class VerbVariantCreator extends AbstractVariantCreator
 	public static final String FT_FORM2 = "s3pt"; // singular 3rd person preterite
 	public static final String FT_FORM3 = "ptc2"; // participle II
 
+	private static final String AUX_HEVVEN = "hevven_v";
+	private static final String AUX_WEASEN = "weasen_v";
+
 	private final int orthographyID;
 
 	// FormTypes are the same for every language
@@ -63,9 +66,9 @@ public class VerbVariantCreator extends AbstractVariantCreator
 
 		this.orthographyID = orthographyID;
 
-		allowedAuxiliaries.put("hevven", "hevven_v");
-		allowedAuxiliaries.put("hebben", "hevven_v");
-		allowedAuxiliaries.put("weasen", "weasen_v");
+		allowedAuxiliaries.put("hevven", AUX_HEVVEN);
+		allowedAuxiliaries.put("hebben", AUX_HEVVEN);
+		allowedAuxiliaries.put("weasen", AUX_WEASEN);
 	}
 
 	@Override
@@ -295,6 +298,11 @@ public class VerbVariantCreator extends AbstractVariantCreator
 				throw new RuntimeException(String.format("Specified auxiliary verb '%s' is unknown.", auxiliary));
 			}
 			parserIDs.add(allowedAuxiliaries.get(auxiliary));
+		}
+
+		if (parserIDs.size() == 0) {
+			// Add auxiliary verb 'hevven' as default
+			parserIDs.add(AUX_HEVVEN);
 		}
 
 		return new Pair<>(partFour, parserIDs);
