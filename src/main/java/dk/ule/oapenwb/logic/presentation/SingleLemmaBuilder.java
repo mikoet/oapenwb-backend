@@ -53,6 +53,58 @@ public class SingleLemmaBuilder
 		}
 
 		StringBuilder sb = new StringBuilder();
+		sb.append(this.buildLemmaWithOrthographyOnly(options, controllers, variant));
+
+		// Add the dialects if set and available on the sememe
+		if (options.includeDialects)
+		{
+			Set<Integer> variantDialectIDs = variant.getDialectIDs();
+			// Are there any dialects set on the variant?
+			if (variantDialectIDs != null && variantDialectIDs.size() > 0 && sememeDialects != null && sememeDialects.size() > 0)
+			{
+				// Filter out the dialects so that only those remain that are both, part of the variant and the sememe
+				List<Integer> dialectIDs = variantDialectIDs.stream().filter(sememeDialects::contains).collect(Collectors.toList());
+				// Are there dialects left that were set on the sememe?
+				if (dialectIDs.size() > 0)
+				{
+					// Sort the IDs (i.e. the dialects will for now only be sorted via their ID)
+					Collections.sort(dialectIDs);
+
+					// Now add the dialects
+					sb.append(" ((");
+					boolean first = true;
+					LanguagesController langController = controllers.getLanguagesController();
+					for (Integer id : dialectIDs)
+					{
+						// Only take those dialectIDs into account that are also set on the sememe!
+						if (sememeDialects.contains(id))
+						{
+							if (!first) {
+								sb.append(", ");
+							} else {
+								first = false;
+							}
+							Language l = langController.get(id);
+							sb.append(l.getUitID_abbr());
+						}
+					}
+					sb.append("))");
+				}
+			}
+		}
+
+		return sb.toString();
+	}
+
+	public String buildLemmaWithOrthographyOnly(final SingleLemmaOptions options, final IControllerSet controllers,
+		final Variant variant) throws CodeException
+	{
+		if (options.activeDataOnly && !variant.isActive())
+		{
+			return "";
+		}
+
+		StringBuilder sb = new StringBuilder();
 
 		/*
 		 * Examples of SingleLemmas:
@@ -92,46 +144,8 @@ public class SingleLemmaBuilder
 			if (o != null) {
 				sb.append("^[");
 				sb.append(o.getAbbreviation()); // TODO This could be switched to the ID instead of the abbreviation
-				                                //   - could make sense if the client already knows all abbrebiations
+				//   - could make sense if the client already knows all abbrebiations
 				sb.append("]");
-			}
-		}
-
-		// Add the dialects if set and available on the sememe
-		if (options.includeDialects)
-		{
-			Set<Integer> variantDialectIDs = variant.getDialectIDs();
-			// Are there any dialects set on the variant?
-			if (variantDialectIDs != null && variantDialectIDs.size() > 0 && sememeDialects != null && sememeDialects.size() > 0)
-			{
-				// Filter out the dialects so that only those remain that are both, part of the variant and the sememe
-				List<Integer> dialectIDs = variantDialectIDs.stream().filter(sememeDialects::contains).collect(Collectors.toList());
-				// Are there dialects left that were set on the sememe?
-				if (dialectIDs.size() > 0)
-				{
-					// Sort the IDs (i.e. the dialects will for now only be sorted via their ID)
-					Collections.sort(dialectIDs);
-
-					// Now add the dialects
-					sb.append(" ((");
-					boolean first = true;
-					LanguagesController langController = controllers.getLanguagesController();
-					for (Integer id : dialectIDs)
-					{
-						// Only take those dialectIDs into account that are also set on the sememe!
-						if (sememeDialects.contains(id))
-						{
-							if (!first) {
-								sb.append(", ");
-							} else {
-								first = false;
-							}
-							Language l = langController.get(id);
-							sb.append(l.getUitID_abbr());
-						}
-					}
-					sb.append("))");
-				}
 			}
 		}
 

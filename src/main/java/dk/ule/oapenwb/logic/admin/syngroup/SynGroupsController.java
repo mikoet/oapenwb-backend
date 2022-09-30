@@ -57,8 +57,7 @@ public class SynGroupsController extends EntityController<SynGroup, Integer>
 		return " order by E.presentation ASC";
 	}
 
-	public void persist(final SynGroup synGroup, final Context context) throws CodeException
-	{
+	public void persist(final SynGroup synGroup, final Context context) throws CodeException {
 		if (synGroup.getSememeIDs().size() > 0) {
 			this.generatePresentation(synGroup);
 			if (synGroup.getApiAction() == ApiAction.Insert) {

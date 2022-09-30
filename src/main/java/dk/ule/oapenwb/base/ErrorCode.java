@@ -77,7 +77,9 @@ public enum ErrorCode implements IMessage {
 	Import_AppPropertyEmpty(20001, "The application property '{{property}}' is not set."),
 	Import_AppPropertyInvalidPath(20002, "The path in application property '{{property}}' is not valid or not writable."),
 	Import_FileNotExists(20003, "File specified in property '{{property}}' does not exist."),
-	Import_FilenameCheckFailed(20010, "Filename in property '{{property}}' contains invalid characters.");
+	Import_FilenameCheckFailed(20010, "Filename in property '{{property}}' contains invalid characters."),
+
+	Other_CloningFailed(90010, "Cloning an instance of type '{{type}}' failed in '{{scope}}'.");
 
 	@Getter
 	final int code;

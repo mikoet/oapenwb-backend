@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @Embeddable
 @NoArgsConstructor
-public class Lemma
+public class Lemma implements Cloneable
 {
 	public static final int FILL_LEMMA_AUTOMATICALLY = -2;
 	public static final int FILL_LEMMA_MANUALLY = -1;
@@ -50,6 +50,11 @@ public class Lemma
 	@Column(nullable = false)
 	@NotNull
 	private int fillLemma = FILL_LEMMA_AUTOMATICALLY;
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 
 	@Override
 	public String toString()

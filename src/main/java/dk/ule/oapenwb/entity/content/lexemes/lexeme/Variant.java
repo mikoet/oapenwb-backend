@@ -31,7 +31,7 @@ import java.util.*;
 @NoArgsConstructor
 @Table(name = "Variants")
 @TypeDefs({ @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class) })
-public class Variant implements IRPCEntity<Long>
+public class Variant implements IRPCEntity<Long>, Cloneable
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "variant_seq")
@@ -114,4 +114,15 @@ public class Variant implements IRPCEntity<Long>
 	@NotNull
 	@JsonView(Views.REST.class)
 	private ApiAction apiAction = ApiAction.None;
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		// For now we don't care about other complex attributes like metaInfos or properties because this clone() method
+		// is only used in lemma building where those don't play a role.
+		Variant clone = (Variant) super.clone();
+		if (this.lemma != null) {
+			clone.lemma = (Lemma) this.lemma.clone();
+		}
+		return clone;
+	}
 }
