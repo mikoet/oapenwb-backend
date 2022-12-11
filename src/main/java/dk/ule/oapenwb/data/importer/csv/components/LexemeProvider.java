@@ -30,7 +30,7 @@ public class LexemeProvider extends AbstractLexemeProvider
 		RowData rowData)
 	{
 		LexemeDetailedDTO detailedDTO = createDTO(context, typeFormPair,
-			buildVariants(context, typeFormPair, rowData));
+			buildVariants(context, typeFormPair, rowData), rowData);
 
 		if (detailedDTO.getVariants().size() == 0) {
 			// No variants, no lexeme provided.

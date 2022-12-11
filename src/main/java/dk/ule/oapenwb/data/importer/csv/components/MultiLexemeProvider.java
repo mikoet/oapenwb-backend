@@ -77,7 +77,7 @@ public class MultiLexemeProvider extends AbstractLexemeProvider
 		List<LexemeDetailedDTO> result = new LinkedList<>();
 		for (String textPart : textParts) {
 			LexemeDetailedDTO detailedDTO = createDTO(context, typeFormPair,
-				buildVariants(context, typeFormPair, rowData, textPart));
+				buildVariants(context, typeFormPair, rowData, textPart), rowData);
 
 			if (detailedDTO.getVariants().size() == 0) {
 				// No variants, no lexeme provided.

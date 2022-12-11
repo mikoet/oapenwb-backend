@@ -6,6 +6,9 @@ import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterContext;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
+import dk.ule.oapenwb.data.importer.csv.components.sememecreators.DefaultSememeCreator;
+import dk.ule.oapenwb.data.importer.csv.components.sememecreators.ISememeCreator;
+import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.data.importer.messages.MessageType;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.Language;
@@ -16,12 +19,12 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemeDetailedDTO;
 import dk.ule.oapenwb.util.HibernateUtil;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.type.LongType;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AbstractLexemeProvider
 {
@@ -38,6 +41,10 @@ public class AbstractLexemeProvider
 
 	@Getter
 	protected List<VariantBuilder> variantBuilders = new LinkedList<>();
+
+	@Getter
+	@Setter
+	protected ISememeCreator sememeCreator = new DefaultSememeCreator();
 
 	public AbstractLexemeProvider(
 		AdminControllers adminControllers,
@@ -67,7 +74,8 @@ public class AbstractLexemeProvider
 	protected LexemeDetailedDTO createDTO(
 		CsvImporterContext context,
 		CsvRowBasedImporter.TypeFormPair typeFormPair,
-		List<Variant> variants)
+		List<Variant> variants,
+		RowData rowData)
 	{
 		LexemeDetailedDTO result = new LexemeDetailedDTO();
 
@@ -109,20 +117,10 @@ public class AbstractLexemeProvider
 		// Set the variants
 		result.setVariants(variants);
 
-		// Create a common default sememe
-		{
-			Sememe sememe = new Sememe();
-			sememe.setId(-1L);
-			sememe.setInternalName("$default");
-			sememe.setVariantIDs(variantIDs);
-			sememe.setFillSpec(Sememe.FILL_SPEC_NONE);
-			sememe.setDialectIDs(dialectIDs);
-
-			sememe.setActive(true);
-			sememe.setApiAction(ApiAction.Insert);
-			sememe.setChanged(true);
-			result.setSememes(List.of(sememe));
-		}
+		// Create a common sememe
+		result.setSememes(List.of(
+			this.sememeCreator.create(context, rowData, variantIDs, dialectIDs)
+		));
 
 		result.setMappings(new ArrayList<>());
 		result.setLinks(new ArrayList<>());
