@@ -21,9 +21,6 @@ import dk.ule.oapenwb.data.importer.csv.CheckType;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterConfig;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.setting.SaxonFirstImportSetting;
-import dk.ule.oapenwb.data.importer.sheet.SheetConfig;
-import dk.ule.oapenwb.data.importer.sheet.SheetFileImporter;
-import dk.ule.oapenwb.data.importer.sheet.SheetResult;
 import dk.ule.oapenwb.entity.basis.RoleType;
 import dk.ule.oapenwb.logic.users.LoginToken;
 import dk.ule.oapenwb.util.CurrentUser;
@@ -460,13 +457,6 @@ public class Dict
 						ImportResult result = importer.run();
 						ctx.json(result);
 					}, adminRole);
-
-					path("sheet", () -> post(ctx -> {
-						final SheetConfig cfg = ctx.bodyAsClass(SheetConfig.class);
-						final SheetFileImporter importer = new SheetFileImporter(cfg, adminControllers);
-						SheetResult result = importer.run();
-						ctx.json(result);
-					}, adminRole));
 
 					path("saxonFI", () -> get(ctx -> {
 						SaxonFirstImportSetting setting = new SaxonFirstImportSetting(adminControllers);
