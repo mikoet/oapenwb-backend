@@ -7,6 +7,7 @@ import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterConfig;
 import dk.ule.oapenwb.data.importer.csv.components.*;
+import dk.ule.oapenwb.data.importer.csv.components.sememecreators.saxon.SaxonSememeCreator;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.multi.MultiVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.multi.OperationMode;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.ImportMode;
@@ -117,10 +118,23 @@ public class SaxonFirstImportSetting
 			if (langIdLowSaxon != dto.getLexeme().getLangID()) {
 				return null;
 			}
-			Set<String> result = new HashSet<>();
+
+			// Is there a 'vaste vorbinding'?
+			String vasteVorbinding = null;
+			final Map<String, Object> sememeProperties = dto.getSememes().get(0).getProperties();
+			if (sememeProperties.containsKey("vaste-vorbinding")) {
+				vasteVorbinding = (String) sememeProperties.get("vaste-vorbinding");
+			}
+
+			// Build a key for each variant
+			final Set<String> result = new HashSet<>();
 			for (Variant variant : dto.getVariants()) {
 				if (variant.getLexemeForms().size() > 0) {
-					result.add(variant.getLexemeForms().get(0).getText());
+					String text = variant.getLexemeForms().get(0).getText();
+					if (vasteVorbinding != null) {
+						text += "/" + vasteVorbinding;
+					}
+					result.add(text);
 				}
 			}
 			return result;
@@ -203,6 +217,7 @@ public class SaxonFirstImportSetting
 		lexemeProvider.getVariantBuilders().add(variantBuilderNndsNss);
 		lexemeProvider.getVariantBuilders().add(variantBuilderNdsNlNss);
 		lexemeProvider.getVariantBuilders().add(variantBuilderNndsDbo);
+		lexemeProvider.setSememeCreator(new SaxonSememeCreator());
 
 		return lexemeProvider;
 	}
