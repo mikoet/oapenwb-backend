@@ -28,6 +28,7 @@ import dk.ule.oapenwb.util.EmailUtil;
 import dk.ule.oapenwb.util.HibernateUtil;
 import io.javalin.Javalin;
 import io.javalin.core.security.RouteRole;
+import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import io.javalin.http.InternalServerErrorResponse;
 import io.javalin.plugin.json.JavalinJackson;
@@ -38,6 +39,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +48,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -58,6 +62,8 @@ public class Dict
 
 	// 8 character version info, e.g. 01.03.05, or SNAP00.01 for 00.01 snapshots on development branch
 	public static final String VERSION = "SNAP00.01";
+
+	private Integer alive = 0;
 
 	// oapenwb's entry point
 	public static void main(String[] args) throws IOException, CodeException
@@ -204,8 +210,22 @@ public class Dict
 		}, anyoneRole);
 		 */
 
+		// Set 10s timer for alive route
+		Timer timer = new Timer();
+		timer.schedule(wrap(() -> {
+			synchronized (this) {
+				this.alive = 1;
+			}
+		}), 10_000L);
+
 		// Configure the routes, connect the Javalin faces
 		app.routes(() -> {
+			
+			get("alive", (@NotNull Context ctx) -> {
+				synchronized (this) {
+					ctx.result("" + this.alive);
+				}
+			}, allRoles);
 
 			post("searchResults", faces.getSearch()::executeQuery, allRoles);
 
@@ -506,5 +526,15 @@ public class Dict
 		} catch (InterruptedException e) {
 			LOG.error("Failed", e);
 		}
+	}
+
+	private static TimerTask wrap(Runnable r)
+	{
+		return new TimerTask() {
+			@Override
+			public void run() {
+				r.run();
+			}
+		};
 	}
 }
