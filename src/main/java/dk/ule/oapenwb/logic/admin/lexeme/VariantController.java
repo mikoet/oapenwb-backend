@@ -24,12 +24,13 @@ public class VariantController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(VariantController.class);
 
-	public List<Variant> loadByIDs(final Set<Long> variantIDs) throws CodeException {
+	public List<Variant> loadByIDs(final Set<Long> variantIDs, boolean activeOnly) throws CodeException {
 		List<Variant> entities;
 		try {
 			Session session = HibernateUtil.getSession();
 			Query<Variant> qVariants = session.createQuery(
-				"FROM Variant V WHERE V.id IN (:variantIDs)", Variant.class);
+				activeOnly ? "FROM Variant V.active = true AND V WHERE V.id IN (:variantIDs)"
+					: "FROM Variant V WHERE V.id IN (:variantIDs)",Variant.class);
 			qVariants.setParameterList("variantIDs", variantIDs);
 			entities = qVariants.list();
 		} catch (Exception e) {
@@ -38,5 +39,9 @@ public class VariantController
 				Arrays.asList(new Pair<>("operation", "GET-BY-IDS"), new Pair<>("entity", "Variant")));
 		}
 		return entities;
+	}
+
+	public List<Variant> loadByIDs(final Set<Long> variantIDs) throws CodeException {
+		return this.loadByIDs(variantIDs, false);
 	}
 }

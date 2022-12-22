@@ -63,7 +63,7 @@ from Mappings m
 where m.langPair in (:langPairs) and sememeOneID in (
 	select s.id from Sememes s inner join Lexemes l on s.lexemeID = l.id,
 		jsonb_array_elements(s.variantIDs) va(variantID)
-	where l.langID in (:langOneIDs) and variantID::int in ( -- escape the :: (!)
+	where l.active = true and s.active = true and l.langID in (:langOneIDs) and variantID::int in ( -- escape the :: (!)
 		select variantID from LexemeForms
 			where searchableText @@ websearch_to_tsquery('simple', :term)
 	)
@@ -74,7 +74,7 @@ from Mappings m
 where m.langPair in (:langPairs) and sememeTwoID in (
 	select s.id from Sememes s inner join Lexemes l on s.lexemeID = l.id,
 		jsonb_array_elements(s.variantIDs) va(variantID)
-	where l.langID in (:langTwoIDs) and variantID::int in ( -- escape the :: (!)
+	where l.active = true and s.active = true and l.langID in (:langTwoIDs) and variantID::int in ( -- escape the :: (!)
 		select variantID from LexemeForms
 			where searchableText @@ websearch_to_tsquery('simple', :term)
 	)

@@ -98,28 +98,7 @@ public class SearchController
 
 			TimeUtil.startTimeMeasure();
 
-			List<LangPair> langPairs = new ArrayList<>(10);
-			if (request.getPair().equals("nds-*")) {
-				// Special case 'nds-*'
-				for (LangPair langPair : this.langPairsController.list()) {
-					if (langPair.getId().startsWith("nds-")) {
-						langPairs.add(langPair);
-					}
-				}
-			} else {
-				// Get the single LangPair, or throw an exception
-				LangPair langPair = this.langPairsController.get(request.getPair());
-				if (langPair == null) {
-					throw new CodeException(ErrorCode.Search_QueryParameterInvalid,
-						Arrays.asList(new Pair<>("param", "pair"),
-							new Pair<>("value", request.getPair())));
-				}
-				if (appConfig.isVerbose()) {
-					LOG.info(String.format("Lang pair loaded with ID %s, langOneID = %d, langTwoID = %d",
-						langPair.getId(), langPair.getLangOneID(), langPair.getLangTwoID()));
-				}
-				langPairs.add(langPair);
-			}
+			List<LangPair> langPairs = getLangPairList(this.langPairsController, request.getPair());
 
 			// Query the Mappings
 			List<MappingResult> mappingsList = new LinkedList<>();
@@ -171,7 +150,7 @@ public class SearchController
 					variantIDs.addAll(sememe.getVariantIDs());
 				}
 				HashMap<Long, Variant> allVariantsMap = PresentationBuilder.variantListToHashMap(
-					variantsController.loadByIDs(variantIDs));
+					variantsController.loadByIDs(variantIDs, true));
 
 				// Load the lexemes and transfer into hashmap
 				List<Lexeme> lexemes = lexemesController.loadByIDs(lexemeIDs);
@@ -263,6 +242,30 @@ public class SearchController
 		return result;
 	}
 
+	public static List<LangPair> getLangPairList(final LangPairsController langPairsController, final String pair) throws CodeException
+	{
+		List<LangPair> langPairs = new ArrayList<>(10);
+		if (pair.equals("nds-*")) {
+			// Special case 'nds-*'
+			for (LangPair langPair : langPairsController.list()) {
+				if (langPair.getId().startsWith("nds-")) {
+					langPairs.add(langPair);
+				}
+			}
+		} else {
+			// Get the single LangPair, or throw an exception
+			LangPair langPair = langPairsController.get(pair);
+			if (langPair == null) {
+				throw new CodeException(ErrorCode.Search_QueryParameterInvalid,
+					Arrays.asList(new Pair<>("param", "pair"),
+						new Pair<>("value", pair)));
+			}
+			langPairs.add(langPair);
+		}
+
+		return langPairs;
+	}
+
 	private NativeQuery<?> createMappingsSearchQuery(final SearchRequest request, final List<LangPair> langPairs)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -275,7 +278,7 @@ public class SearchController
 			sb.append("where m.langPair in (:langPairs) and sememeOneID in (\n");
 			sb.append("\tselect s.id from Sememes s inner join Lexemes l on s.lexemeID = l.id,\n");
 			sb.append("\t\tjsonb_array_elements(s.variantIDs) va(variantID)\n");
-			sb.append("\twhere l.langID in (:langOneIDs) and variantID");
+			sb.append("\twhere l.active = true and s.active = true and l.langID in (:langOneIDs) and variantID");
 			sb.append(HibernateUtil.CONSTANT_INT); // escape the :: (!)
 			sb.append(" in (\n"); // escape the :: (!)
 			sb.append("\t\tselect variantID from LexemeForms\n");
@@ -296,7 +299,7 @@ public class SearchController
 			sb.append("where m.langPair in (:langPairs) and sememeTwoID in (\n");
 			sb.append("\tselect s.id from Sememes s inner join Lexemes l on s.lexemeID = l.id,\n");
 			sb.append("\t\tjsonb_array_elements(s.variantIDs) va(variantID)\n");
-			sb.append("\twhere l.langID in (:langTwoIDs) and variantID");
+			sb.append("\twhere l.active = true and s.active = true and l.langID in (:langTwoIDs) and variantID");
 			sb.append(HibernateUtil.CONSTANT_INT); // escape the :: (!)
 			sb.append(" in (\n");
 			sb.append("\t\tselect variantID from LexemeForms\n");

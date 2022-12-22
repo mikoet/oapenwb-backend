@@ -12,7 +12,6 @@ import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.base.error.MultiCodeException;
 import dk.ule.oapenwb.entity.content.basedata.LemmaTemplate;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
-import dk.ule.oapenwb.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.Link;
 import dk.ule.oapenwb.entity.content.lexemes.Mapping;
