@@ -4,9 +4,6 @@ package dk.ule.oapenwb.faces;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import dk.ule.oapenwb.logic.search.SearchController;
-import dk.ule.oapenwb.logic.search.SearchRequest;
-import dk.ule.oapenwb.logic.search.SearchResult;
 import dk.ule.oapenwb.logic.search.autocomplete.ACSearchRequest;
 import dk.ule.oapenwb.logic.search.autocomplete.ACSearchResult;
 import dk.ule.oapenwb.logic.search.autocomplete.AutocompleteController;

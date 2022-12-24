@@ -5,7 +5,6 @@ package dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon;
 import dk.ule.oapenwb.data.importer.VariantUtil;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.AbstractVariantCreator;
-import dk.ule.oapenwb.data.importer.csv.components.variantcreators.CreatorUtils;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.Language;

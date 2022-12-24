@@ -16,7 +16,6 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.LexemeTypesController;
-import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
 import dk.ule.oapenwb.util.Pair;
 import org.hibernate.Session;

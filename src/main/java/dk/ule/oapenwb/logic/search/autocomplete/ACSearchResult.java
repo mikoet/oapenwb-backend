@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * <p>The ACSearchResult delivers the result for an auto-completion query.</p>

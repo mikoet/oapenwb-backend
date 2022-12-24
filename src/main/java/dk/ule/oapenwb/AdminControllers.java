@@ -8,7 +8,6 @@ import com.google.inject.name.Named;
 import dk.ule.oapenwb.entity.content.basedata.*;
 import dk.ule.oapenwb.entity.content.basedata.tlConfig.TypeLanguageConfig;
 import dk.ule.oapenwb.entity.ui.UiLanguage;
-import dk.ule.oapenwb.entity.ui.UiResultCategory;
 import dk.ule.oapenwb.entity.ui.UiTranslationScope;
 import dk.ule.oapenwb.logic.admin.*;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;

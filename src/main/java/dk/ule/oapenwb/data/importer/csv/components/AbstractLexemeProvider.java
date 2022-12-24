@@ -14,7 +14,6 @@ import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemeDetailedDTO;
 import dk.ule.oapenwb.util.HibernateUtil;

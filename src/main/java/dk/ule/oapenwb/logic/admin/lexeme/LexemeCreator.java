@@ -20,7 +20,6 @@ import dk.ule.oapenwb.logic.admin.LangPairsController;
 import dk.ule.oapenwb.logic.admin.LexemeTypesController;
 import dk.ule.oapenwb.logic.admin.LinkTypesController;
 import dk.ule.oapenwb.logic.admin.TagsController;
-import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememesController;
 import dk.ule.oapenwb.logic.admin.syngroup.SynGroupsController;
