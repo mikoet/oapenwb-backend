@@ -229,6 +229,8 @@ public class Dict
 
 			post("searchResults", faces.getSearch()::executeQuery, allRoles);
 
+			post("autocompletions", faces.getAutocomplete()::executeQuery, allRoles);
+
 			path("l10n", () -> {
 				get("__reload__", faces.getL10n()::reloadTranslations, allRoles);
 				get("{locale}", faces.getL10n()::getTranslations, allRoles);

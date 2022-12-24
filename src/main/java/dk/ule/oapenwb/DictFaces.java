@@ -4,10 +4,7 @@ package dk.ule.oapenwb;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import dk.ule.oapenwb.faces.ConfigFace;
-import dk.ule.oapenwb.faces.L10nFace;
-import dk.ule.oapenwb.faces.SearchFace;
-import dk.ule.oapenwb.faces.UsersFace;
+import dk.ule.oapenwb.faces.*;
 import lombok.Getter;
 
 /**
@@ -27,6 +24,10 @@ class DictFaces
 	@Getter
 	@Inject
 	private SearchFace search;
+
+	@Getter
+	@Inject
+	private AutocompleteFace autocomplete;
 
 	@Getter
 	@Inject

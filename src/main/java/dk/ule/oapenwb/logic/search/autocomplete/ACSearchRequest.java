@@ -11,4 +11,5 @@ public class ACSearchRequest
 	private String pair;	// the LangPair
 	private String term;	// the search term
 	private Direction direction = Direction.Both;
+	private int maxResults;
 }

@@ -4,6 +4,7 @@ package dk.ule.oapenwb.logic.search.autocomplete;
 
 import lombok.Data;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,5 +26,5 @@ public class ACSearchResult
 		String locale;
 	}
 
-	private List<ACSearchResult.VariantEntry> entries;
+	private List<ACSearchResult.VariantEntry> entries = new LinkedList<>();
 }

@@ -81,6 +81,18 @@ where m.langPair in (:langPairs) and sememeTwoID in (
 )
 order by weight desc
 
+-- Q550
+-- Autocomplete query
+select V.id as id, L.typeID as typeID, L.langID as langID, S.id as sememeID
+from Lexemes L left join Variants V on (L.id = V.lexemeID)
+  left join Sememes S on (L.id = S.lexemeID AND S.id = (SELECT MIN(lexemeID) FROM Sememes WHERE lexemeID = L.id))
+where L.active = true AND V.active = true AND s.active = true
+  and L.id in (select lexemeID from Variants Vi
+    where Vi.id in (select variantID from LexemeForms where searchableText @@ to_tsquery('simple', 'gehen')))
+  and L.langID in (1, 2)
+order by V.main
+limit 5 offset 0
+
 
 -- Q900 TODO deprecated
 -- FileImporter / Existence Checker -> lexemeExists (simple check)
