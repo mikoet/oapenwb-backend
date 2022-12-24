@@ -56,6 +56,8 @@
 						<view>dk.ule.oapenwb.base.Views$REST</view>
 					</jackson2Configuration>
 					<classes>
+						<class>dk.ule.oapenwb.logic.search.autocomplete.ACSearchRequest</class>
+						<class>dk.ule.oapenwb.logic.search.autocomplete.ACSearchResult</class>
 						<class>dk.ule.oapenwb.logic.search.SearchRequest</class>
 						<class>dk.ule.oapenwb.logic.search.SearchResult</class>
 					</classes>
