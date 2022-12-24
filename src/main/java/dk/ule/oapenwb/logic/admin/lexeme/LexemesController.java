@@ -335,7 +335,7 @@ public class LexemesController
 				resultList.add(new LexemeSlimDTO(
 					(Long) row[0],		// id
 					(String) row[1],	// parserID
-					(Long) row[2],		// typeID
+					(Integer) row[2],	// typeID
 					(Integer) row[3],	// langID
 					(String) row[4],	// pre
 					(String) row[5],	// main
@@ -391,7 +391,7 @@ public class LexemesController
 		NativeQuery<?> query = session.createSQLQuery(sb.toString())
 			.addScalar("id", new LongType())
 			.addScalar("parserID", new StringType())
-			.addScalar("typeID", new LongType())
+			.addScalar("typeID", new IntegerType())
 			.addScalar("langID", new IntegerType())
 			.addScalar("pre", new StringType())
 			.addScalar("main", new StringType())
@@ -425,7 +425,7 @@ public class LexemesController
 				resultList.add(new LexemeSlimDTO(
 					(Long) row[0],		// id
 					(String) row[1],	// parserID
-					(Long) row[2],		// typeID
+					(Integer) row[2],	// typeID
 					(Integer) row[3],	// langID
 					(String) row[4],	// pre
 					(String) row[5],	// main
