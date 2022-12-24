@@ -29,7 +29,7 @@ public class VariantController
 		try {
 			Session session = HibernateUtil.getSession();
 			Query<Variant> qVariants = session.createQuery(
-				activeOnly ? "FROM Variant V.active = true AND V WHERE V.id IN (:variantIDs)"
+				activeOnly ? "FROM Variant V WHERE V.active = true AND V.id IN (:variantIDs)"
 					: "FROM Variant V WHERE V.id IN (:variantIDs)",Variant.class);
 			qVariants.setParameterList("variantIDs", variantIDs);
 			entities = qVariants.list();
