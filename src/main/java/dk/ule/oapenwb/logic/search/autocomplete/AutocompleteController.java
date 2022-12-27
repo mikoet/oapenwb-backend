@@ -126,8 +126,8 @@ public class AutocompleteController
 			result.setEntries(resultList);
 
 			long duration = TimeUtil.durationInMilis();
-			if (appConfig.isVerbose()) {
-				LOG.info(String.format("Auto completion request took %d ms", duration));
+			if (appConfig.isVerbose() && duration > 80) {
+				LOG.info(String.format("Auto completion request took >100 ms: %d ms", duration));
 			}
 		} catch (Exception e) {
 			LOG.error("Error building autocompletion result", e);
@@ -165,6 +165,17 @@ public class AutocompleteController
 			sb.append("    where Vi.id in (select variantID from LexemeForms where " + filterStatement + "))\n");
 		}
 		sb.append("  and L.langID in (:langIDs)\n");
+
+		sb.append("  and V.id = ( select min(Vi.id) from Variants Vi\n");
+		sb.append("    where (Vi.pre=V.pre or (Vi.pre is null and V.pre is null)) and\n");
+		sb.append("      Vi.main=V.main and\n");
+		sb.append("      (Vi.post=V.post or (Vi.post is null and V.post is null))\n");
+		/* If this part is included doublets with the same lemma can appear in the autocompletion
+		   result, but those dubblets would then have different attributes like lexemeID, thus
+		   belonging to different lexemes with e.g. different typeIDs.
+		   It'd be better to use this in future. */
+		//sb.append("      and Vi.lexemeID = V.lexemeID\n");
+		sb.append("  )\n");
 
 		// Add the order clause and the paging data
 		sb.append("order by V.main\n");

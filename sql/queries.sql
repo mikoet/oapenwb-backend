@@ -85,11 +85,16 @@ order by weight desc
 -- Autocomplete query
 select V.id as id, L.typeID as typeID, L.langID as langID, S.id as sememeID
 from Lexemes L left join Variants V on (L.id = V.lexemeID)
-  left join Sememes S on (L.id = S.lexemeID AND S.id = (SELECT MIN(lexemeID) FROM Sememes WHERE lexemeID = L.id))
+	left join Sememes S on (L.id = S.lexemeID AND S.id = (SELECT MIN(lexemeID) FROM Sememes WHERE lexemeID = L.id))
 where L.active = true AND V.active = true AND s.active = true
-  and L.id in (select lexemeID from Variants Vi
-    where Vi.id in (select variantID from LexemeForms where searchableText @@ to_tsquery('simple', 'gehen')))
-  and L.langID in (1, 2)
+	and L.id in (select lexemeID from Variants Vi
+		where Vi.id in (select variantID from LexemeForms where searchableText @@ to_tsquery('simple', 'gehen')))
+	and L.langID in (1, 2)
+	and V.id = ( select min(Vi.id) from Variants Vi
+		where (Vi.pre=V.pre or (Vi.pre is null and V.pre is null)) and
+			Vi.main=V.main and
+			(Vi.post=V.post or (Vi.post is null and V.post is null)) and
+			Vi.lexemeID = V.lexemeID )
 order by V.main
 limit 5 offset 0
 
