@@ -42,6 +42,8 @@ public enum ErrorCode implements IMessage {
 	Search_QueryDataInconsistent(2002, "The submitted query data is not consistent."),
 	Search_QueryParameterInvalid(2003, "Query parameter '{{param}}' has invalid value '{{value}}'"),
 
+	Autocomplete_OperationFailed(2101, "Building autocompletion result failed with error: {{error}}"),
+
 	Email_NotConfigured(3001, "E-mail transport was not configured"),
 	Email_SendFailed(3002, "Sending e-mail failed"),
 

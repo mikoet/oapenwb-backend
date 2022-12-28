@@ -22,6 +22,7 @@ import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
 import dk.ule.oapenwb.util.TimeUtil;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
@@ -68,6 +69,7 @@ public class AutocompleteController
 
 		try {
 			TimeUtil.startTimeMeasure();
+			checkTerm(request);
 
 			final List<LangPair> langPairs = SearchController.getLangPairList(this.langPairsController, request.getPair());
 			final Set<Integer> langIDs = getLangIDs(langPairs, request.getDirection());
@@ -131,10 +133,17 @@ public class AutocompleteController
 			}
 		} catch (Exception e) {
 			LOG.error("Error building autocompletion result", e);
-			throw new CodeException(ErrorCode.Admin_EntityOperation,
-				Arrays.asList(new Pair<>("operation", "GET-ALL"), new Pair<>("entity", Variant.class.getSimpleName())));
+			throw new CodeException(ErrorCode.Autocomplete_OperationFailed,
+				List.of(new Pair<>("error", e.getMessage())));
 		}
 		return result;
+	}
+
+	private void checkTerm(final ACSearchRequest request) {
+		final int quotesCount = StringUtils.countMatches(request.getTerm(), '\'');
+		if (quotesCount % 2 == 1) {
+			request.setTerm(request.getTerm().replace("'", ""));
+		}
 	}
 
 	/*
