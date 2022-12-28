@@ -4,10 +4,12 @@ package dk.ule.oapenwb.faces;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.logic.search.autocomplete.ACSearchRequest;
 import dk.ule.oapenwb.logic.search.autocomplete.ACSearchResult;
 import dk.ule.oapenwb.logic.search.autocomplete.AutocompleteController;
 import dk.ule.oapenwb.util.json.Response;
+import dk.ule.oapenwb.util.json.ResponseStatus;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -28,12 +30,17 @@ public class AutocompleteFace
 		this.controller = controller;
 	}
 
-	public void executeQuery(@NotNull Context ctx) throws Exception
+	public void executeQuery(@NotNull Context ctx)
 	{
-		ACSearchRequest queryData = ctx.bodyAsClass(ACSearchRequest.class);
-		ACSearchResult result = this.controller.autocomplete(queryData);
 		Response res = new Response();
-		res.setData(result);
+		try {
+			ACSearchRequest queryData = ctx.bodyAsClass(ACSearchRequest.class);
+			ACSearchResult result = this.controller.autocomplete(queryData);
+			res.setData(result);
+		} catch (CodeException e) {
+			res.setMessage(e);
+			res.setStatus(ResponseStatus.Error);
+		}
 		ctx.json(res);
 	}
 }
