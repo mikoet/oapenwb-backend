@@ -20,12 +20,13 @@ public class SaxonDictData implements DataStrategy
 	private final Map<String, Language> langMap = new HashMap<>();
 
 	@Override
-	public void createData(Session session) {
+	public void createData(final Session session) {
 		createLangData(session);
 		createLexemeTypes(session);
+		createMetaTagData(session);
 	}
 
-	private void createLangData(Session session) {
+	private void createLangData(final Session session) {
 		// Setup orthographies
 		Orthography oNSS = new Orthography(null, null, "o:nss", Orthography.ABBR_SAXON_NYSASSISKE_SKRYVWYSE, "Nysassiske Skryvwyse", true);
 		Orthography oDBO = new Orthography(null, null, "o:dbo", Orthography.ABBR_SAXON_GERMAN_BASED, "Düütschbaseerde Schriefwies", true);
@@ -783,11 +784,38 @@ public class SaxonDictData implements DataStrategy
 		 */
 	}
 
-	private void createFormType(Session session, Integer lexemeTypeID, String name, String uitID, String description,
+	private void createFormType(final Session session, Integer lexemeTypeID, String name, String uitID, String description,
 		boolean mandatory, int position)
 	{
 		LexemeFormType formType = new LexemeFormType(null, null, lexemeTypeID, name, uitID, description, mandatory,
 			(short) position);
 		session.save(formType);
+	}
+
+	private void createMetaTagData(final Session session) {
+		DataInitializer.createUiTranslations(session, "metaTags", "itemprop='name'", true,
+			new Pair<>("nds", "ULE wöördebook"),
+			new Pair<>("de", "ULE Wörterbuch"),
+			new Pair<>("en", "ULE dictionary"));
+
+		DataInitializer.createUiTranslations(session, "metaTags", "itemprop='description'", true,
+			new Pair<>("nds", "Grensöäverstryden neddersassisk/ platdüütsk wöördebook med öäversettings nå düütsk, nedderlandsk, engelsk un ander språken."),
+			new Pair<>("de", "Grenzübergreifendes Niedersächsisch-/ Plattdeutsch-Wörterbuch mit Übersetzungen nach Deutsch, Niederländisch, Englisch und weiteren Sprachen."),
+			new Pair<>("en", "Cross-border dictionary for the Low Saxon/ Low German language with translations to English, German, Dutch and other languages."));
+
+		DataInitializer.createUiTranslations(session, "metaTags", "property='og:site_name'", true,
+			new Pair<>("nds", "ULE wöördebook"),
+			new Pair<>("de", "ULE Wörterbuch"),
+			new Pair<>("en", "ULE dictionary"));
+
+		DataInitializer.createUiTranslations(session, "metaTags", "property='og:title'", true,
+			new Pair<>("nds", "ULE.DK – Grensöäverstryden neddersassisk/ platdüütsk wöördebook"),
+			new Pair<>("de", "ULE.DK – Grenzübergreifendes Niedersächsisch-/ Plattdeutsch-Wörterbuch"),
+			new Pair<>("en", "ULE.DK – Cross-border dictionary for the Low Saxon/ Low German language"));
+
+		DataInitializer.createUiTranslations(session, "metaTags", "property='og:description'", true,
+			new Pair<>("nds", "Grensöäverstryden neddersassisk/ platdüütsk wöördebook med öäversettings nå düütsk, nedderlandsk, engelsk un ander språken."),
+			new Pair<>("de", "Grenzübergreifendes Niedersächsisch-/ Plattdeutsch-Wörterbuch mit Übersetzungen nach Deutsch, Niederländisch, Englisch und weiteren Sprachen."),
+			new Pair<>("en", "Cross-border dictionary for the Low Saxon/ Low German language with translations to English, German, Dutch and other languages."));
 	}
 }

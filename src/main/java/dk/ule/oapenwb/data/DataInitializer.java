@@ -217,6 +217,7 @@ public class DataInitializer
 		session.save(new UiTranslationScope("dftpa", null, "Dialog: Form Type Position Adjusting", true));
 		session.save(new UiTranslationScope("dyn", null, "Dialog: Yes No questions", true));
 		session.save(new UiTranslationScope("derr", null, "Dialog: Errors", true));
+		session.save(new UiTranslationScope("metaTags", null, "Meta tags for SEO and Social Media", true));
 
 		createUiTranslations(session, "dyn", "discardL:title", true,
 			new Pair<>("nds", "Lekseem wegdoon"),
