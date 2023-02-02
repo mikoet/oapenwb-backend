@@ -11,6 +11,7 @@ import dk.ule.oapenwb.entity.content.basedata.LangPair;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import dk.ule.oapenwb.entity.statistics.SearchRun;
 import dk.ule.oapenwb.entity.ui.UiResultCategory;
 import dk.ule.oapenwb.logic.admin.LangPairsController;
 import dk.ule.oapenwb.logic.admin.LexemeTypesController;
@@ -34,6 +35,7 @@ import org.hibernate.type.StringType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -96,6 +98,12 @@ public class SearchController
 					request.getPair(), request.getDirection(), request.getTerm()));
 			}
 
+			SearchRun run = null;
+			if (appConfig.isLogSearchRuns()) {
+				run = new SearchRun(Instant.now(), request.getTerm(), request.getPair(),
+					request.getDirection(), -1, -1);
+			}
+
 			TimeUtil.startTimeMeasure();
 
 			List<LangPair> langPairs = getLangPairList(this.langPairsController, request.getPair());
@@ -123,9 +131,10 @@ public class SearchController
 						mappingResult.sememeOneID, mappingResult.sememeTwoID, mappingResult.weight));
 				}
 			}
+			int mappingCount = mappingsList.size();
 
 			if (appConfig.isVerbose()) {
-				LOG.info(String.format("Number of mappings found: %d", mappingsList.size()));
+				LOG.info(String.format("Number of mappings found: %d", mappingCount));
 			}
 
 			if (mappingsList.size() > 0) {
@@ -233,7 +242,12 @@ public class SearchController
 				LOG.info(String.format("Search request took %d ms", duration));
 			}
 
-			// TODO Create and store SearchRun instance
+			// If configured, log this searchRun
+			if (appConfig.isLogSearchRuns() && run != null) {
+				run.setMillis((int) duration);
+				run.setResultCount(mappingCount);
+				HibernateUtil.getSession().persist(run);
+			}
 		} catch (Exception e) {
 			LOG.error("Error fetching instances of type " + Lexeme.class.getSimpleName(), e);
 			throw new CodeException(ErrorCode.Admin_EntityOperation,

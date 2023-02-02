@@ -9,20 +9,17 @@ public enum LinkTypeTarget {
 	SynGroup('S');
 
 	@Getter
-	private char character;
+	private final char character;
 
 	LinkTypeTarget(char character) { this.character = character; }
 
 	public static LinkTypeTarget fromChar(char character)
 	{
-		switch (character) {
-			case 'L':
-				return LinkTypeTarget.Lexeme;
-			case 'S':
-				return LinkTypeTarget.SynGroup;
-			default:
-				throw new IllegalArgumentException("Character [" + character
+		return switch (character) {
+			case 'L' -> LinkTypeTarget.Lexeme;
+			case 'S' -> LinkTypeTarget.SynGroup;
+			default -> throw new IllegalArgumentException("Character [" + character
 				+ "] not supported.");
-		}
+		};
 	}
 }

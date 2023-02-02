@@ -33,6 +33,9 @@ public class AppConfig
 	@Getter
 	private boolean verbose = false;
 
+	@Getter
+	private boolean logSearchRuns = false;
+
 	/**
 	 * Shall emails be sent when a user registers, for notifications, etc.?
 	 */

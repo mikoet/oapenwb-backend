@@ -9,6 +9,7 @@
 	"timeOutMillis": 60000,
 	"secret": "32 character (8 bits) long secret",
 	"verbose": false,				// verbose logging on info level (e.g. in controllers)
+	"logSearchRuns": false,
 	"sendEmails": false,
 	"emailConfig": {
 		"smtpHostname": "localhost",

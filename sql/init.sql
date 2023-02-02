@@ -23,7 +23,6 @@ create table Orthographies (id int4 not null, version int4 not null, abbreviatio
 create table Orthographies_AUD (id int4 not null, REV int8 not null, REVTYPE int2, abbreviation varchar(32), description varchar(1024), parentID int4, publicly boolean, uitID varchar(64), primary key (id, REV));
 create table Permissions (id int4 not null, version int4 not null, access varchar(4) not null, entity varchar(128) not null, entityID varchar(64) not null, userID int4 not null, primary key (id));
 create table Permissions_AUD (id int4 not null, REV int8 not null, REVTYPE int2, access varchar(4), entity varchar(128), entityID varchar(64), userID int4, primary key (id, REV));
-create table SearchRuns (whenTS timestamp not null, hit boolean not null, searchText varchar(255) not null, primary key (whenTS));
 --create table SentenceGroups (id int4 not null, version int4 not null, description varchar(512), primary key (id));
 --create table Sentences (id int4 not null, version int4 not null, dialectID int4, groupID int4 not null, langID int4 not null, orthographyID int4 not null, text varchar(256) not null, primary key (id));
 create table SynLinks (id int4 not null, version int4 not null, endSynGroupID int8 not null, startSynGroupID int8 not null, typeID int4 not null, primary key (id));
@@ -670,6 +669,17 @@ create table SynGroups_AUD (
 	presentation varchar(2048),
 	updatedAt timestamp,
 	primary key (id, REV)
+);
+
+
+create table SearchRuns (
+	whenTS timestamp not null,
+	direction character not null,
+	langPair varchar(32) not null,
+	millis int4 not null,
+	resultCount int4 not null,
+	searchText varchar(255) not null,
+	primary key (whenTS)
 );
 
 

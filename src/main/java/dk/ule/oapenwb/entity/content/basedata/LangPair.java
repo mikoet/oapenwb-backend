@@ -26,6 +26,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class LangPair implements IEntity<String>
 {
+	public static final int ID_LENGTH = 32;
+
 	public LangPair(String id, int langOneID, int langTwoID, int position)
 	{
 		this.id = id;
@@ -35,7 +37,7 @@ public class LangPair implements IEntity<String>
 	}
 
 	@Id
-	@Column(length = 32)
+	@Column(length = ID_LENGTH)
 	@JsonView({Views.BaseConfig.class, Views.REST.class})
 	private String id;
 
