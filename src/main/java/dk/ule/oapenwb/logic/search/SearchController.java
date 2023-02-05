@@ -27,6 +27,7 @@ import dk.ule.oapenwb.util.Pair;
 import dk.ule.oapenwb.util.TimeUtil;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.hibernate.type.LongType;
@@ -244,9 +245,14 @@ public class SearchController
 
 			// If configured, log this searchRun
 			if (appConfig.isLogSearchRuns() && run != null) {
+				Session session = HibernateUtil.getSession();
+				Transaction t = session.beginTransaction();
+
 				run.setMillis((int) duration);
 				run.setResultCount(mappingCount);
-				HibernateUtil.getSession().persist(run);
+
+				session.persist(run);
+				t.commit();
 			}
 		} catch (Exception e) {
 			LOG.error("Error fetching instances of type " + Lexeme.class.getSimpleName(), e);
