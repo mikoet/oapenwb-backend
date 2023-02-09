@@ -566,7 +566,7 @@ public class LexemesController
 		NativeQuery<?> query = session.createSQLQuery(sb.toString())
 			.addScalar("id", new LongType())
 			.addScalar("parserID", new StringType())
-			.addScalar("typeID", new LongType())
+			.addScalar("typeID", new IntegerType())
 			.addScalar("langID", new IntegerType())
 			.addScalar("pre", new StringType())
 			.addScalar("main", new StringType())
