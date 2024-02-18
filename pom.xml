@@ -18,10 +18,6 @@
 		<exec.mainClass>dk.ule.oapenwb.Dict</exec.mainClass>
 	</properties>
 
-	<prerequisites>
-		<maven>3.0.0</maven>
-	</prerequisites>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
