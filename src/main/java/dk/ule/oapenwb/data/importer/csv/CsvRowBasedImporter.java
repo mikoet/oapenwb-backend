@@ -398,6 +398,7 @@ public class CsvRowBasedImporter
 										}
 										// A duplicate was found
 										isDuplicate = true;
+										LOG.warn(String.format("Duplicate found for key: %s", dcKey)); // TODO hwa remove later
 									}
 								}
 								// If no DCEntry was found previously then create one now

@@ -182,6 +182,8 @@ public class LexemeCreator
 			return;
 		}
 
+		checkAndCorrectMainVariantFlags(session, lexemeDTO);
+
 		for (final Variant variant : lexemeDTO.getVariants()) {
 			if (variant.getApiAction().equals(ApiAction.Delete)) {
 				continue;
@@ -198,6 +200,39 @@ public class LexemeCreator
 			session.save(variant);
 			this.variantIdMapping.put(internalID, variant.getId());
 			persistLexemeForms(session, variant);
+		}
+	}
+
+	// TODO Temporary fix: refactore Variant#mainVariant to Lexeme#mainVariantID
+	private void checkAndCorrectMainVariantFlags(final Session session, final LexemeDetailedDTO lexemeDTO)
+	{
+		if (lexemeDTO.getVariants() == null) {
+			return;
+		}
+
+		int mainVariantCount = 0;
+		for (final Variant variant : lexemeDTO.getVariants()) {
+			if (variant.isMainVariant()) {
+				mainVariantCount++;
+			}
+		}
+
+		if (mainVariantCount == 0 && lexemeDTO.getVariants().size() > 0) {
+			// If there is no main variant make the first variant the main variant
+			lexemeDTO.getVariants().get(0).setMainVariant(true);
+		} else if (mainVariantCount > 1) {
+			boolean foundFirst = false;
+
+			for (final Variant variant : lexemeDTO.getVariants()) {
+				if (variant.isMainVariant()) {
+					if (foundFirst) {
+						// Make every further main variant a non-main variant
+						variant.setMainVariant(false);
+					} else {
+						foundFirst = true;
+					}
+				}
+			}
 		}
 	}
 
