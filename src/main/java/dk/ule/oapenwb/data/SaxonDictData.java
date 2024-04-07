@@ -453,9 +453,9 @@ public class SaxonDictData implements DataStrategy
 		LexemeFormType lftAdjPositive = new LexemeFormType(null, null, ltAdj.getId(), "pos", "positive",
 			null, true, (short) 0);
 		LexemeFormType lftAdjComparative = new LexemeFormType(null, null, ltAdj.getId(), "com", "comparative",
-			null, true, (short) 1);
+			null, false, (short) 1);
 		LexemeFormType lftAdjSuperlative = new LexemeFormType(null, null, ltAdj.getId(), "sup", "superlative",
-			null, true, (short) 2);
+			null, false, (short) 2);
 		session.save(lftAdjPositive);
 		session.save(lftAdjComparative);
 		session.save(lftAdjSuperlative);
