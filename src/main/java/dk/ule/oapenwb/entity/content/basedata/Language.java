@@ -23,9 +23,16 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class Language implements IEntity<Integer>
 {
-	public Language(Integer id, Integer parentID, String locale, String localName, String uitID, String uitID_abbr,
-		Integer mainOrthographyID, String importAbbreviation)
-	{
+	public Language(
+		final Integer id,
+		final Integer parentID,
+		final String locale,
+		final String localName,
+		final String uitID,
+		final String uitID_abbr,
+		final Integer mainOrthographyID,
+		final String importAbbreviation
+	) {
 		this.id = id;
 		this.parentID = parentID;
 		this.locale = locale;

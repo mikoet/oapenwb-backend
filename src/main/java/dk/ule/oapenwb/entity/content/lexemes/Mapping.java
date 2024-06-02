@@ -72,8 +72,8 @@ public class Mapping implements IRPCEntity<Long>
 	private SememeSlim sememeTwo;
 
 	/**
-	 * De resultaten wardet nå wicht öärdned. En wicht van 0 is de standard.
-	 * Ouk negative wichten sünt möäglik.
+	 * <p>De resultaten wardet nå wicht öärdned. En wicht van 0 is de standard.
+	 * Ouk negative wichten sünt möäglik.<p>
 	 *
 	 * Vgl. etwa linguee.com:
 	 * almost always used = 90
