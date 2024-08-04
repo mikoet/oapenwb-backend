@@ -37,7 +37,6 @@ import javalinjwt.JWTProvider;
 import javalinjwt.JavalinJWT;
 import lombok.Getter;
 import lombok.Setter;
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;

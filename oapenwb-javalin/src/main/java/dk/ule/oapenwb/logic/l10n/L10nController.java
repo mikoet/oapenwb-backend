@@ -98,7 +98,7 @@ public class L10nController
 			// 4.a) Query all UiTranslations that belong to the locales put into the locales list, all this for the
 			//      current scope.
 			List<UiTranslation> translations;
-			if (locales.size() > 0) {
+			if (!locales.isEmpty()) {
 				Query<UiTranslation> qTranslation = session.createQuery(
 					"FROM UiTranslation T WHERE T.uitKey.locale IN (:locales) AND T.uitKey.scopeID = :scope " +
 					"ORDER BY T.uitKey.id ASC", UiTranslation.class);

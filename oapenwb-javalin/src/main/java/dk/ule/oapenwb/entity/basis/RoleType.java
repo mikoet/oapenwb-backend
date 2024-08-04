@@ -17,27 +17,21 @@ public enum RoleType implements RouteRole
 	Admin("A");
 
 	@Getter
-	private String character;
+	private final String character;
 
 	RoleType(String character) { this.character = character; }
 
 	public static RoleType fromShortName(String character)
 	{
-		switch (character) {
-			case "-":
-				return RoleType.Anyone;
-			case "U":
-				return RoleType.User;
-			case "M":
-				return RoleType.Moderator;
-			case "E":
-				return RoleType.Editor;
-			case "A":
-				return RoleType.Admin;
+		return switch (character) {
+			case "-" -> RoleType.Anyone;
+			case "U" -> RoleType.User;
+			case "M" -> RoleType.Moderator;
+			case "E" -> RoleType.Editor;
+			case "A" -> RoleType.Admin;
 
-			default:
-				throw new IllegalArgumentException("Character [" + character
+			default -> throw new IllegalArgumentException("Character [" + character
 				+ "] not supported.");
-		}
+		};
 	}
 }
