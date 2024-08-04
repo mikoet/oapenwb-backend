@@ -6,12 +6,14 @@
 >
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>oapenwb</artifactId>
+	<groupId>dk.ule</groupId>
 	<version>0.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>parent-project</name>
 
 	<modules>
 		<module>oapenwb-javalin</module>
+		<module>oapenwb-spring</module>
 	</modules>
 
 	<dependencyManagement>
