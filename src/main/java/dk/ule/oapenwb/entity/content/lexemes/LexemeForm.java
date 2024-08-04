@@ -71,10 +71,10 @@ public class LexemeForm implements Serializable
 		if (o == null || getClass() != o.getClass()) return false;
 		LexemeForm that = (LexemeForm) o;
 
-		return Objects.equals(this.variantID, that.variantID) &&
-				   Objects.equals(this.formTypeID, that.formTypeID) &&
-				   state == that.state &&
-				   Objects.equals(this.text, that.text);
+		return Objects.equals(this.variantID, that.variantID)
+			&& Objects.equals(this.formTypeID, that.formTypeID)
+			&& this.state == that.state
+			&& Objects.equals(this.text, that.text);
 	}
 
 	@Override
