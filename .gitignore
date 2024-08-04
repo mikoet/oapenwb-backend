@@ -10,6 +10,7 @@ config.json
 config.testing.json
 config.dev.json
 application-*.yml
+application-dev.yml
 
 # other backend files / directories
 db-schema.jpa.ddl
