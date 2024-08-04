@@ -8,6 +8,7 @@ import lombok.Getter;
 /**
  * Each user/visitor of the dictionary has got a RoleType that is expressed via this enumeration.
  */
+@Getter
 public enum RoleType implements RouteRole
 {
 	Anyone("-"),
@@ -16,7 +17,6 @@ public enum RoleType implements RouteRole
 	Editor("E"),
 	Admin("A");
 
-	@Getter
 	private final String character;
 
 	RoleType(String character) { this.character = character; }
