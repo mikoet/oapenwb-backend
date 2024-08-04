@@ -193,13 +193,18 @@ public class CsvRowBasedImporter
 		HibernateUtil.setDisableJsonIdChecks(false);
 
 		// Save the recorded messages to file system
+		dk.ule.oapenwb.util.io.Logger msgLogger = null;
 		try {
 			Path outputFilePath = Paths.get(appConfig.getImportConfig().getOutputDir(), config.getLogFilename());
-			dk.ule.oapenwb.util.io.Logger msgLogger = new dk.ule.oapenwb.util.io.Logger(outputFilePath.toString());
+			msgLogger = new dk.ule.oapenwb.util.io.Logger(outputFilePath.toString());
 			importerContext.getMessages().printToLogger(msgLogger, config.getOutputMinimumType());
-			msgLogger.close();
 		} catch (IOException e) {
 			LOG.error("Writing message log to file failed", e);
+		} finally {
+			if (msgLogger != null) {
+				msgLogger.close();
+				msgLogger = null;
+			}
 		}
 
 		// Return the result and reset it on the context

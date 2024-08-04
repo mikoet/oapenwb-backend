@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.entity.basis;
 
-import io.javalin.core.security.RouteRole;
+import io.javalin.security.RouteRole;
 import lombok.Getter;
 
 /**

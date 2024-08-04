@@ -27,11 +27,11 @@ import dk.ule.oapenwb.util.CurrentUser;
 import dk.ule.oapenwb.util.EmailUtil;
 import dk.ule.oapenwb.util.HibernateUtil;
 import io.javalin.Javalin;
-import io.javalin.core.security.RouteRole;
+import io.javalin.security.RouteRole;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import io.javalin.http.InternalServerErrorResponse;
-import io.javalin.plugin.json.JavalinJackson;
+import io.javalin.json.JavalinJackson;
 import javalinjwt.JWTAccessManager;
 import javalinjwt.JWTProvider;
 import javalinjwt.JavalinJWT;
@@ -46,10 +46,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -163,11 +160,26 @@ public class Dict
 			config.accessManager(accessManager);
 			config.showJavalinBanner = false;
 			//config.registerPlugin(new MicrometerPlugin());
-			config.server(() -> new Server(new QueuedThreadPool(appConfig.getMaxThreads(), appConfig.getMinThreads(),
+			config.jetty.server(() -> new Server(new QueuedThreadPool(appConfig.getMaxThreads(), appConfig.getMinThreads(),
 				appConfig.getTimeOutMillis())));
 			// TODO ENHANCE: En heavel in de konfig anleggen?
 			//   config.enableDevLogging();
-			config.enableCorsForOrigin(appConfig.getAllowedOrigins());
+			config.plugins.enableCors(cors -> {
+				cors.add(corsConfig -> {
+					final var allowedOrigins = appConfig.getAllowedOrigins();
+					if (allowedOrigins.length == 1) {
+						corsConfig.allowHost(
+							appConfig.getAllowedOrigins()[0]
+						);
+					} else if (allowedOrigins.length > 1) {
+						corsConfig.allowHost(
+							appConfig.getAllowedOrigins()[0],
+							Arrays.copyOfRange(appConfig.getAllowedOrigins(), 1, appConfig.getAllowedOrigins().length)
+						);
+					}
+				});
+			});
+
 			// Pass the customly configured object mapper over to Javalin
 			config.jsonMapper(new JavalinJackson(objMapper));
 		}).start(appConfig.getPort());
@@ -263,7 +275,7 @@ public class Dict
 			path("admin", () -> {
 				before(decodeHandler);
 				before((context) -> {
-					if ("OPTIONS".equals(context.req.getMethod())) {
+					if ("OPTIONS".equals(context.req().getMethod())) {
 						// The user ID extraction must not be done for requests of type OPTIONS
 						// because no Token will be set in the request's header and therefore it would fail.
 						return;

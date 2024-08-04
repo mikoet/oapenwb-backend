@@ -19,12 +19,6 @@ public final class Logger
 		writer = new PrintWriter(new BufferedWriter(new FileWriter(path)));
 	}
 
-	@Override
-	@SuppressWarnings("deprecation")
-	protected void finalize() {
-		close();
-	}
-
 	public void log(String line, Object... args) {
 		if (writer != null) {
 			writer.printf(line, args);

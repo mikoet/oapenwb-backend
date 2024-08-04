@@ -3,7 +3,7 @@
 package dk.ule.oapenwb.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.javalin.plugin.json.JavalinJackson;
+import io.javalin.json.JavalinJackson;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;

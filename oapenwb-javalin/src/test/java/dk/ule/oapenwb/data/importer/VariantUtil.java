@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
-import io.javalin.plugin.json.JavalinJackson;
+import io.javalin.json.JavalinJackson;
 
 import java.util.List;
 import java.util.Map;

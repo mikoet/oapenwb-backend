@@ -11,7 +11,7 @@ import dk.ule.oapenwb.entity.ui.UiTranslation;
 import dk.ule.oapenwb.entity.ui.UiTranslationScope;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.TimeUtil;
-import io.javalin.plugin.json.JavalinJackson;
+import io.javalin.json.JavalinJackson;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jetbrains.annotations.NotNull;
