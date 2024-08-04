@@ -276,7 +276,7 @@ public class VerbVariantCreatorTest
 					),
 					Map.of("auxiliaries", Set.of("hevven_v")),
 					ApiAction.Insert),
-				VariantUtil.createVariant(oNSS_ID, true, true, Set.of(),
+				VariantUtil.createVariant(oNSS_ID, false, true, Set.of(),
 					List.of(
 						createLexemeForm(lftVerbInf.getId(), LexemeForm.STATE_TYPED, "anslån"),
 						createLexemeForm(lftVerbInfDiv.getId(), LexemeForm.STATE_TYPED, "an|slån"),
@@ -287,8 +287,9 @@ public class VerbVariantCreatorTest
 					Map.of("auxiliaries", Set.of("hevven_v")),
 					ApiAction.Insert)
 			);
+			// HINT (change) Changed behaviour in parsing made adaptation of this test necessary.
 			List<Variant> result = creator.create(null /* no context for now */,
-				new RowData(1, new String[] {"an|slån, sleit an, sloug ~ slöyg an, het anslån", ""}));
+				new RowData(1, new String[] {"an|slån, sleit an, sloug an ~ slöyg an, het anslån", ""}));
 			VariantUtil.compareVariantLists(checkResult, result, "testMultiFormDefinitions-4");
 		}
 	}

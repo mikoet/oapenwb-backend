@@ -301,9 +301,9 @@ public class VerbVariantCreator extends AbstractVariantCreator
 		}
 
 		if (parserIDs.size() == 0) {
-			// FIXME (BUG) Why was this decided?
+			// FIXME (BUG) Why was this decided? Commented out for now.
 			// Add auxiliary verb 'hevven' as default
-			parserIDs.add(AUX_HEVVEN);
+			//parserIDs.add(AUX_HEVVEN);
 		}
 
 		return new Pair<>(partFour, parserIDs);
