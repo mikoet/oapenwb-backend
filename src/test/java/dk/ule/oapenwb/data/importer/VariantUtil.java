@@ -2,12 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.data.importer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import io.javalin.plugin.json.JavalinJackson;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,7 +61,39 @@ public class VariantUtil
 		if (listA == null || listB == null) {
 			return false;
 		}
-		return listA.containsAll(listB) && listB.containsAll(listA);
+		// return listA.containsAll(listB) && listB.containsAll(listA);
+
+		return containsAll(listA, listB, "B") && containsAll(listB, listA, "A");
+	}
+
+	private static <T> boolean containsAll(List<T> listA, List<T> listB, String listNameB) {
+		boolean listBContainsAllElementsOfListA = true;
+		for (T elementA : listA) {
+			boolean found = false;
+			for (T elementB : listB) {
+				if (Objects.equals(elementA, elementB)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				listBContainsAllElementsOfListA = false;
+
+				String jsonA, jsonB;
+				try {
+					jsonA = JavalinJackson.Companion.defaultMapper().writeValueAsString(listA);
+					jsonB = JavalinJackson.Companion.defaultMapper().writeValueAsString(listB);
+				} catch (JsonProcessingException e) {
+					jsonA = jsonB = "(err)";
+				}
+
+				// In case of error print the two lists json serialized for comparison
+				throw new RuntimeException(
+					String.format("Element %s of list %s was not found in other list.\nJSON A: %s\nJSON B: %s",
+						elementA.toString(), listNameB, jsonA, jsonB));
+			}
+		}
+		return listBContainsAllElementsOfListA;
 	}
 
 	public static Variant createVariant(
