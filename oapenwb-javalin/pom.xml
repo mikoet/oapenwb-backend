@@ -76,10 +76,10 @@
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
-			<version>6.0.0</version>
+			<version>7.0.0</version>
 		</dependency>
 
-		<!--Logging (Javalin, Hibernate?)-->
+		<!-- Logging (Javalin, Hibernate?) -->
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
