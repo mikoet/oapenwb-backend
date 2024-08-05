@@ -33,6 +33,7 @@ import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.JsonUtil;
 import dk.ule.oapenwb.util.Pair;
 import dk.ule.oapenwb.util.json.Pagination;
+import jakarta.persistence.OptimisticLockException;
 import org.hibernate.Session;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.query.NativeQuery;
@@ -44,7 +45,6 @@ import org.hibernate.type.StringType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.OptimisticLockException;
 import java.util.*;
 import java.util.stream.Collectors;
 

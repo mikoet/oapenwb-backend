@@ -7,11 +7,11 @@ import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.logic.admin.lexeme.IRPCEntity;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeSlim;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

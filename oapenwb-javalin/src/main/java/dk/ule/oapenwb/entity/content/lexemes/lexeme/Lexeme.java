@@ -3,18 +3,18 @@
 package dk.ule.oapenwb.entity.content.lexemes.lexeme;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.logic.admin.lexeme.IRPCEntity;
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -34,7 +34,6 @@ import java.util.Set;
 @Audited
 @NoArgsConstructor
 @Table(name = "Lexemes")
-@TypeDefs({ @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class) })
 public class Lexeme implements IRPCEntity<Long>
 {
 	@Id
@@ -84,9 +83,9 @@ public class Lexeme implements IRPCEntity<Long>
 	@Column(length = 48)
 	private String parserID;
 
-	@Type(type = "jsonb")
-	@Column(columnDefinition = "jsonb")
 	@Valid
+	@Column
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<@Size(min=3, max=32) String> tags = new LinkedHashSet<>();
 
@@ -107,8 +106,8 @@ public class Lexeme implements IRPCEntity<Long>
 	private Long showVariantsFrom;
 
 	@Valid
-	@Type(type = "jsonb")
-	@Column(columnDefinition = "jsonb")
+	@Column
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Map<String, Object> properties = new HashMap<>();
 

@@ -10,6 +10,8 @@ import dk.ule.oapenwb.logic.context.Context;
 import dk.ule.oapenwb.logic.context.ITransaction;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
+import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.PersistenceException;
 import lombok.Getter;
 import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
@@ -17,8 +19,6 @@ import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.OptimisticLockException;
-import javax.persistence.PersistenceException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;

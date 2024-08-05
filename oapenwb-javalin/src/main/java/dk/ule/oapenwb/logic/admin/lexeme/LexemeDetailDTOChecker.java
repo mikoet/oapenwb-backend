@@ -15,11 +15,11 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.generic.IGroupedEntitySupplier;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
+import jakarta.persistence.NoResultException;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.type.LongType;
 
-import javax.persistence.NoResultException;
 import java.util.*;
 import java.util.stream.Stream;
 

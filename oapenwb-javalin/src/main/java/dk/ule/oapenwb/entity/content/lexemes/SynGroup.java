@@ -4,19 +4,19 @@ package dk.ule.oapenwb.entity.content.lexemes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.logic.admin.generic.IEntity;
 import dk.ule.oapenwb.logic.admin.lexeme.IRPCEntity;
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.Instant;
@@ -32,7 +32,6 @@ import java.util.Set;
 @Table(name = "SynGroups")
 @Audited
 @NoArgsConstructor
-@TypeDefs({ @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class) })
 public class SynGroup implements IRPCEntity<Integer>, IEntity<Integer>
 {
 	@Id
@@ -62,8 +61,8 @@ public class SynGroup implements IRPCEntity<Integer>, IEntity<Integer>
 	/*
 	 * Must contain only sememe IDs. The lexemes of these sememes can be easily queried.
 	 */
-	@Type(type = "jsonb")
-	@Column(columnDefinition = "jsonb")
+	@Column
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	@Size(min = 2)
 	@NotNull

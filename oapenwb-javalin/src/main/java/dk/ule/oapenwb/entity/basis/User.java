@@ -4,11 +4,11 @@ package dk.ule.oapenwb.entity.basis;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.base.Views;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;

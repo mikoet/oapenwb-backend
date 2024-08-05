@@ -3,12 +3,11 @@
 package dk.ule.oapenwb.entity.basis;
 
 import dk.ule.oapenwb.data.UserRevisionListener;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
-
-import javax.persistence.*;
 
 /**
  * RevisionEntity for the revisions of data changes in the audited entities.

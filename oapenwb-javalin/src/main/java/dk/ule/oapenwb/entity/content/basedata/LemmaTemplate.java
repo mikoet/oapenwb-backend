@@ -4,21 +4,19 @@ package dk.ule.oapenwb.entity.content.basedata;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.generic.IEntity;
 import dk.ule.oapenwb.logic.admin.lexeme.LemmaTemplateProcessor;
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -34,9 +32,12 @@ import java.util.Set;
 @Data
 @Entity
 @Audited
-@Table(name = "LemmaTemplates",
-	uniqueConstraints=@UniqueConstraint(columnNames = {"name", "lexemeTypeID", "langID", "dialectIDs", "orthographyID"}))
-@TypeDefs({ @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class) })
+@Table(
+	name = "LemmaTemplates",
+	uniqueConstraints=@UniqueConstraint(
+		columnNames = {"name", "lexemeTypeID", "langID", "dialectIDs", "orthographyID"}
+	)
+)
 @NoArgsConstructor
 @AllArgsConstructor
 public class LemmaTemplate implements IEntity<Integer>
@@ -65,8 +66,8 @@ public class LemmaTemplate implements IEntity<Integer>
 	@JsonView(Views.REST.class)
 	private Integer langID;
 
-	@Type(type = "jsonb")
-	@Column(columnDefinition = "jsonb")
+	@Column
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<Integer> dialectIDs = new LinkedHashSet<>();
 

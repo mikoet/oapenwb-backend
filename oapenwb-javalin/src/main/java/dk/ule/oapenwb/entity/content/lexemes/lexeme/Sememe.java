@@ -4,21 +4,21 @@ package dk.ule.oapenwb.entity.content.lexemes.lexeme;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.lexemes.SynGroup;
 import dk.ule.oapenwb.logic.admin.generic.IEntity;
 import dk.ule.oapenwb.logic.admin.lexeme.IRPCEntity;
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -38,7 +38,6 @@ import java.util.Set;
 @Table(name = "Sememes")
 @NoArgsConstructor
 @EqualsAndHashCode
-@TypeDefs({ @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class) })
 public class Sememe implements IRPCEntity<Long>, IEntity<Long>
 {
 	public static final int FILL_SPEC_NONE = 1;
@@ -85,26 +84,26 @@ public class Sememe implements IRPCEntity<Long>, IEntity<Long>
 	@Column(length = 32)
 	private String internalName;
 
-	@Type(type = "jsonb")
-	@Column(columnDefinition = "jsonb")
+	@Column
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	@Size(min = 1)
 	@NotNull
 	private Set<Long> variantIDs = new LinkedHashSet<>();
 
 	// The dialects in which this meaning is valid
-	@Type(type = "jsonb")
-	@Column(columnDefinition = "jsonb")
+	@Column
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<Integer> dialectIDs = new LinkedHashSet<>();
 
-	@Type(type = "jsonb")
-	@Column(columnDefinition = "jsonb")
+	@Column
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<Integer> levelIDs = new LinkedHashSet<>();
 
-	@Type(type = "jsonb")
-	@Column(columnDefinition = "jsonb")
+	@Column
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<Integer> categoryIDs = new LinkedHashSet<>();
 
@@ -133,8 +132,8 @@ public class Sememe implements IRPCEntity<Long>, IEntity<Long>
 	private String spec; // specification, e.g. <method> for lexeme <way>
 
 	@Valid
-	@Type(type = "jsonb")
-	@Column(columnDefinition = "jsonb")
+	@Column
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Map<String, Object> properties = new HashMap<>();
 
