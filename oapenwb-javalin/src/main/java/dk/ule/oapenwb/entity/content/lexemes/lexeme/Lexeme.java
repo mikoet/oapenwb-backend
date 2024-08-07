@@ -84,7 +84,7 @@ public class Lexeme implements IRPCEntity<Long>
 	private String parserID;
 
 	@Valid
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<@Size(min=3, max=32) String> tags = new LinkedHashSet<>();
@@ -106,7 +106,7 @@ public class Lexeme implements IRPCEntity<Long>
 	private Long showVariantsFrom;
 
 	@Valid
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Map<String, Object> properties = new HashMap<>();

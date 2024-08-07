@@ -84,7 +84,7 @@ public class Sememe implements IRPCEntity<Long>, IEntity<Long>
 	@Column(length = 32)
 	private String internalName;
 
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	@Size(min = 1)
@@ -92,17 +92,17 @@ public class Sememe implements IRPCEntity<Long>, IEntity<Long>
 	private Set<Long> variantIDs = new LinkedHashSet<>();
 
 	// The dialects in which this meaning is valid
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<Integer> dialectIDs = new LinkedHashSet<>();
 
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<Integer> levelIDs = new LinkedHashSet<>();
 
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<Integer> categoryIDs = new LinkedHashSet<>();
@@ -132,7 +132,7 @@ public class Sememe implements IRPCEntity<Long>, IEntity<Long>
 	private String spec; // specification, e.g. <method> for lexeme <way>
 
 	@Valid
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Map<String, Object> properties = new HashMap<>();

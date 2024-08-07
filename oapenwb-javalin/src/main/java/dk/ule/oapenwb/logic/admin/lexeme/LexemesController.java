@@ -38,10 +38,7 @@ import org.hibernate.Session;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
-import org.hibernate.type.BooleanType;
-import org.hibernate.type.IntegerType;
-import org.hibernate.type.LongType;
-import org.hibernate.type.StringType;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -322,16 +319,17 @@ public class LexemesController
 	private void loadLexemesWithoutFilter(List<LexemeSlimDTO> resultList, final Pagination pagination)
 		throws JsonProcessingException
 	{
-		Session session = HibernateUtil.getSession();
+		final Session session = HibernateUtil.getSession();
+
 		// Get the count
-		Long total = (Long) session.createQuery("SELECT count(*) FROM "+ Lexeme.class.getSimpleName()).uniqueResult();
+		final Long total = (Long) session.createQuery("SELECT count(*) FROM "+ Lexeme.class.getSimpleName(), Object.class).uniqueResult();
 		pagination.setTotal(total.intValue());
-		// Get the lexemes
-		NativeQuery<?> query = null;
+
 		try {
-			query = createQuery(pagination);
-			List<Object[]> rows = HibernateUtil.listAndCast(query);
-			for (Object[] row : rows) {
+			// Get the lexemes
+			final NativeQuery<Object[]> query = this.createQuery(pagination);
+			final List<Object[]> rows = query.list();
+			for (final Object[] row : rows) {
 				resultList.add(new LexemeSlimDTO(
 					(Long) row[0],		// id
 					(String) row[1],	// parserID
@@ -373,33 +371,35 @@ public class LexemesController
 		 */
 	}
 
-	private NativeQuery<?> createQuery(final Pagination pagination)
+	private NativeQuery<Object[]> createQuery(final Pagination pagination)
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
+
 		// Basis query (related to Q011)
 		sb.append("select L.id as id, L.parserID as parserID, L.typeID as typeID, L.langID as langID,\n");
 		sb.append("  V.pre as pre, V.main as main, V.post as post, L.active as active, 5 as condition,\n");
 		sb.append("  L.tags as tags, S.id as sememeID\n");
 		sb.append("from Lexemes L left join Variants V on (L.id = V.lexemeID and V.mainVariant=true)\n");
 		sb.append("  left join Sememes S on (L.id = S.lexemeID AND S.id = (SELECT MIN(lexemeID) FROM Sememes WHERE lexemeID = L.id))\n");
+
 		// Add the order clause and the paging data
 		sb.append("order by V.main\n");
 		sb.append("limit :limit offset :offset");
 
 		// Create the query
-		Session session = HibernateUtil.getSession();
-		NativeQuery<?> query = session.createSQLQuery(sb.toString())
-			.addScalar("id", new LongType())
-			.addScalar("parserID", new StringType())
-			.addScalar("typeID", new IntegerType())
-			.addScalar("langID", new IntegerType())
-			.addScalar("pre", new StringType())
-			.addScalar("main", new StringType())
-			.addScalar("post", new StringType())
-			.addScalar("active", new BooleanType())
-			.addScalar("condition", new IntegerType())
-			.addScalar("tags", new StringType())
-			.addScalar("sememeID", new LongType());
+		final Session session = HibernateUtil.getSession();
+		final NativeQuery<Object[]> query = session.createNativeQuery(sb.toString(), Object[].class)
+			.addScalar("id", StandardBasicTypes.LONG)
+			.addScalar("parserID", StandardBasicTypes.STRING)
+			.addScalar("typeID", StandardBasicTypes.INTEGER)
+			.addScalar("langID", StandardBasicTypes.INTEGER)
+			.addScalar("pre", StandardBasicTypes.STRING)
+			.addScalar("main", StandardBasicTypes.STRING)
+			.addScalar("post", StandardBasicTypes.STRING)
+			.addScalar("active", StandardBasicTypes.BOOLEAN)
+			.addScalar("condition", StandardBasicTypes.INTEGER)
+			.addScalar("tags", StandardBasicTypes.STRING)
+			.addScalar("sememeID", StandardBasicTypes.LONG);
 
 		query.setParameter("offset", pagination.getOffset());
 		query.setParameter("limit", pagination.getLimit());
@@ -411,8 +411,8 @@ public class LexemesController
 		final Pagination pagination) throws JsonProcessingException
 	{
 		// Get the count
-		NativeQuery<?> countQuery = null;
-		NativeQuery<?> query = null;
+		NativeQuery<Object> countQuery = null;
+		NativeQuery<Object[]> query = null;
 		try {
 			countQuery = createFilteredCountQuery(request);
 			Integer total = (Integer) countQuery.uniqueResult();
@@ -420,7 +420,7 @@ public class LexemesController
 
 			// Get the lexemes
 			query = createFilteredQuery(request);
-			List<Object[]> rows = HibernateUtil.listAndCast(query);
+			List<Object[]> rows = query.list();
 			for (Object[] row : rows) {
 				resultList.add(new LexemeSlimDTO(
 					(Long) row[0],		// id
@@ -453,7 +453,7 @@ public class LexemesController
 
 	//
 
-	private NativeQuery<?> createFilteredCountQuery(final LSearchRequest request)
+	private NativeQuery<Object> createFilteredCountQuery(final LSearchRequest request)
 	{
 		StringBuilder sb = new StringBuilder();
 		// Basis query
@@ -477,13 +477,13 @@ public class LexemesController
 			if (!fo.getState().equals(State.Both)) {
 				sb.append("  and active = :active\n");
 			}
-			if (fo.getLangIDs() != null && fo.getLangIDs().size() > 0) {
+			if (fo.getLangIDs() != null && !fo.getLangIDs().isEmpty()) {
 				sb.append("  and langID in (:langIDs)\n");
 			}
-			if (fo.getTypeIDs() != null && fo.getTypeIDs().size() > 0) {
+			if (fo.getTypeIDs() != null && !fo.getTypeIDs().isEmpty()) {
 				sb.append("  and typeID in (:typeIDs)\n");
 			}
-			if (fo.getTags() != null && fo.getTags().size() > 0) {
+			if (fo.getTags() != null && !fo.getTags().isEmpty()) {
 				sb.append("  and tags @> ");
 				sb.append(createTagsString(fo.getTags()));
 				sb.append("\n");
@@ -492,8 +492,8 @@ public class LexemesController
 
 		// Create the query
 		Session session = HibernateUtil.getSession();
-		NativeQuery<?> countQuery = session.createSQLQuery(sb.toString())
-			.addScalar("total", new IntegerType());
+		NativeQuery<Object> countQuery = session.createNativeQuery(sb.toString(), Object.class)
+			.addScalar("total", StandardBasicTypes.INTEGER);
 
 		// Set the parameters
 		if (filterText != null) {
@@ -505,10 +505,10 @@ public class LexemesController
 			if (!fo.getState().equals(State.Both)) {
 				countQuery.setParameter("active", State.Active.equals(fo.getState()));
 			}
-			if (fo.getLangIDs() != null && fo.getLangIDs().size() > 0) {
+			if (fo.getLangIDs() != null && !fo.getLangIDs().isEmpty()) {
 				countQuery.setParameterList("langIDs", fo.getLangIDs());
 			}
-			if (fo.getTypeIDs() != null && fo.getTypeIDs().size() > 0) {
+			if (fo.getTypeIDs() != null && !fo.getTypeIDs().isEmpty()) {
 				countQuery.setParameterList("typeIDs", fo.getTypeIDs());
 			}
 			// Tags string was already added
@@ -517,9 +517,9 @@ public class LexemesController
 		return countQuery;
 	}
 
-	private NativeQuery<?> createFilteredQuery(final LSearchRequest request)
+	private NativeQuery<Object[]> createFilteredQuery(final LSearchRequest request)
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
 		// Basis query (related to Q011)
 		sb.append("select L.id as id, L.parserID as parserID, L.typeID as typeID, L.langID as langID,\n");
@@ -537,7 +537,9 @@ public class LexemesController
 			filterText = filterResult.getRight();
 			// Add the text filtering part if it's set
 			sb.append("  and L.id in (select lexemeID from Variants Vi\n");
-			sb.append("    where Vi.id in (select variantID from LexemeForms where " + filterStatement + "))\n");
+			sb.append("    where Vi.id in (select variantID from LexemeForms where ")
+				.append(filterStatement)
+				.append("))\n");
 		}
 		if (request.getOptions() != null) {
 			// Add the different filter options
@@ -545,13 +547,13 @@ public class LexemesController
 			if (!fo.getState().equals(State.Both)) {
 				sb.append("  and L.active = :active\n");
 			}
-			if (fo.getLangIDs() != null && fo.getLangIDs().size() > 0) {
+			if (fo.getLangIDs() != null && !fo.getLangIDs().isEmpty()) {
 				sb.append("  and L.langID in (:langIDs)\n");
 			}
-			if (fo.getTypeIDs() != null && fo.getTypeIDs().size() > 0) {
+			if (fo.getTypeIDs() != null && !fo.getTypeIDs().isEmpty()) {
 				sb.append("  and L.typeID in (:typeIDs)\n");
 			}
-			if (fo.getTags() != null && fo.getTags().size() > 0) {
+			if (fo.getTags() != null && !fo.getTags().isEmpty()) {
 				sb.append("  and L.tags @> ");
 				sb.append(createTagsString(fo.getTags()));
 				sb.append("\n");
@@ -562,19 +564,19 @@ public class LexemesController
 		sb.append("limit :limit offset :offset");
 
 		// Create the query
-		Session session = HibernateUtil.getSession();
-		NativeQuery<?> query = session.createSQLQuery(sb.toString())
-			.addScalar("id", new LongType())
-			.addScalar("parserID", new StringType())
-			.addScalar("typeID", new IntegerType())
-			.addScalar("langID", new IntegerType())
-			.addScalar("pre", new StringType())
-			.addScalar("main", new StringType())
-			.addScalar("post", new StringType())
-			.addScalar("active", new BooleanType())
-			.addScalar("condition", new IntegerType())
-			.addScalar("tags", new StringType())
-			.addScalar("sememeID", new LongType());
+		final Session session = HibernateUtil.getSession();
+		final NativeQuery<Object[]> query = session.createNativeQuery(sb.toString(), Object[].class)
+			.addScalar("id", StandardBasicTypes.LONG)
+			.addScalar("parserID", StandardBasicTypes.STRING)
+			.addScalar("typeID", StandardBasicTypes.INTEGER)
+			.addScalar("langID", StandardBasicTypes.INTEGER)
+			.addScalar("pre", StandardBasicTypes.STRING)
+			.addScalar("main", StandardBasicTypes.STRING)
+			.addScalar("post", StandardBasicTypes.STRING)
+			.addScalar("active", StandardBasicTypes.BOOLEAN)
+			.addScalar("condition", StandardBasicTypes.INTEGER)
+			.addScalar("tags", StandardBasicTypes.STRING)
+			.addScalar("sememeID", StandardBasicTypes.LONG);
 
 		query.setParameter("offset", request.getOffset());
 		query.setParameter("limit", request.getLimit());
@@ -589,10 +591,10 @@ public class LexemesController
 			if (!fo.getState().equals(State.Both)) {
 				query.setParameter("active", State.Active.equals(fo.getState()));
 			}
-			if (fo.getLangIDs() != null && fo.getLangIDs().size() > 0) {
+			if (fo.getLangIDs() != null && !fo.getLangIDs().isEmpty()) {
 				query.setParameterList("langIDs", fo.getLangIDs());
 			}
-			if (fo.getTypeIDs() != null && fo.getTypeIDs().size() > 0) {
+			if (fo.getTypeIDs() != null && !fo.getTypeIDs().isEmpty()) {
 				query.setParameterList("typeIDs", fo.getTypeIDs());
 			}
 			// Tags string was already added (about 40 lines above)
@@ -608,13 +610,13 @@ public class LexemesController
 	 */
 	public static Pair<String, String> buildFilterStatementAndText(
 		String filterText,
-		Optional<TextSearchType> textSearchType)
+		final Optional<TextSearchType> textSearchType)
 	{
 		if (filterText == null || filterText.isEmpty()) {
 			throw new RuntimeException("Function has been called with an empty filter in the request");
 		}
 		// Build the text search part
-		TextSearchType searchType = textSearchType.isEmpty() ? TextSearchType.PostgreWeb : textSearchType.get();
+		final TextSearchType searchType = textSearchType.orElse(TextSearchType.PostgreWeb);
 		final String filterStatement;
 		switch (searchType) {
 			case PostgreWeb -> {

@@ -68,7 +68,7 @@ public class Variant implements IRPCEntity<Long>, Cloneable
 	@JsonView(Views.REST.class)
 	private boolean mainVariant;
 
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<Integer> dialectIDs = new LinkedHashSet<>();
@@ -90,13 +90,13 @@ public class Variant implements IRPCEntity<Long>, Cloneable
 	private Lemma lemma;
 
 	@Valid
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<@Valid MetaInfo> metaInfos;
 
 	@Valid
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Map<String, Object> properties = new HashMap<>();

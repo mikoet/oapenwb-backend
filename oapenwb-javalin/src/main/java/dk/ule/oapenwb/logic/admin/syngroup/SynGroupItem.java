@@ -4,22 +4,22 @@ package dk.ule.oapenwb.logic.admin.syngroup;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.base.Views;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Part of the {@link SGSearchResult}
  */
-@Data
-@AllArgsConstructor
+@Getter
+@RequiredArgsConstructor
 public class SynGroupItem
 {
 	@JsonView(Views.REST.class)
-	private int id;
+	private final int id;
 
 	@JsonView(Views.REST.class)
-	private String description;
+	private final String description;
 
 	@JsonView(Views.REST.class)
-	private String presentation;
+	private final String presentation;
 }

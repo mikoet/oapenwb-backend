@@ -66,7 +66,7 @@ public class LemmaTemplate implements IEntity<Integer>
 	@JsonView(Views.REST.class)
 	private Integer langID;
 
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<Integer> dialectIDs = new LinkedHashSet<>();

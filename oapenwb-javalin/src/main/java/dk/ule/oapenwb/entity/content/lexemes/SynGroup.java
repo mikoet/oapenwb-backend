@@ -61,7 +61,7 @@ public class SynGroup implements IRPCEntity<Integer>, IEntity<Integer>
 	/*
 	 * Must contain only sememe IDs. The lexemes of these sememes can be easily queried.
 	 */
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	@Size(min = 2)

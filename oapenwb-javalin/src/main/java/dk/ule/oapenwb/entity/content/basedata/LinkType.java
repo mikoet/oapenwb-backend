@@ -89,7 +89,7 @@ public class LinkType implements IEntity<Integer>
 	 * - …
 	 */
 	@Valid
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Map<String, Object> properties = new HashMap<>();

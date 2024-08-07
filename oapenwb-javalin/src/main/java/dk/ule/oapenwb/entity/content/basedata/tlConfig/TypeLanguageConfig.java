@@ -58,7 +58,7 @@ public class TypeLanguageConfig implements IEntity<Integer>
 	private int langID;
 
 	@Valid
-	@Column
+	@Column(columnDefinition = "jsonb")
 	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private List<FormTypePos> formTypePositions = new LinkedList<>();

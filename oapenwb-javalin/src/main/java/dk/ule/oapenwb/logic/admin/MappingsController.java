@@ -5,7 +5,7 @@ package dk.ule.oapenwb.logic.admin;
 import dk.ule.oapenwb.entity.content.lexemes.Mapping;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
-import org.hibernate.type.LongType;
+import org.hibernate.type.StandardBasicTypes;
 
 /**
  * <p>The MappingsController is no full controller by now as the persisting is currently done by the
@@ -16,16 +16,16 @@ public class MappingsController
 {
 	// no exception handling done within this method!
 	public static boolean mappingExists(final Session session, final Mapping mapping) {
-		String queryString = String.format(
+		final String queryString = String.format(
 			"SELECT COUNT(*) AS col from %ss E where E.langPair = :langPair AND E.sememeOneID = :sememeOneID "
 				+ "AND E.sememeTwoID = :sememeTwoID", Mapping.class.getSimpleName());
-		NativeQuery<?> query = session.createSQLQuery(queryString)
-			.addScalar("col", new LongType());
+		final NativeQuery<Object> query = session.createNativeQuery(queryString, Object.class)
+			.addScalar("col", StandardBasicTypes.LONG);
 		query.setParameter("langPair", mapping.getLangPair());
 		query.setParameter("sememeOneID", mapping.getSememeOneID());
 		query.setParameter("sememeTwoID", mapping.getSememeTwoID());
 
-		long count = (Long) query.getSingleResult();
+		final long count = (Long) query.getSingleResult();
 		return count > 0;
 	}
 }

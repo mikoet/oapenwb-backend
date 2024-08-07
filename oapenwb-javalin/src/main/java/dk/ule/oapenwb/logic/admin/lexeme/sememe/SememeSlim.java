@@ -5,7 +5,7 @@ package dk.ule.oapenwb.logic.admin.lexeme.sememe;
 import dk.ule.oapenwb.entity.content.lexemes.Mapping;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
  * in the {@link Mapping}s and the frontend functionality to create and handle
  * the mappings.
  */
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SememeSlim
