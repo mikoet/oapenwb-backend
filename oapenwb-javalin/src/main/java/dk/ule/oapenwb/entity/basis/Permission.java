@@ -4,11 +4,10 @@ package dk.ule.oapenwb.entity.basis;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.base.Views;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
-
-import javax.persistence.*;
 
 /**
  * Contains a permission for a user to a type of entity and/or specific IDs of that entity.

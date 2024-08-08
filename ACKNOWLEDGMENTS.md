@@ -1,4 +1,4 @@
-<!-- Copyright 2020-2022 Signal Messenger, LLC -->
+<!-- SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com> -->
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
 
 # Acknowledgments

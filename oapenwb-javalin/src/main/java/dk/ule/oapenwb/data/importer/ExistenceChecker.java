@@ -5,7 +5,7 @@ package dk.ule.oapenwb.data.importer;
 import dk.ule.oapenwb.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
-import org.hibernate.type.IntegerType;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,23 +27,20 @@ public class ExistenceChecker
 	public boolean lexemeExists(String lemma, int lexemeTypeID, int langID)
 	{
 		try {
-			NativeQuery<?> lexemesQuery = createSimpleCheckQuery(lemma, lexemeTypeID, langID);
-			Object result = (Object) HibernateUtil.getSingleResult(lexemesQuery);
+			final NativeQuery<Object> lexemesQuery = createSimpleCheckQuery(lemma, lexemeTypeID, langID);
+			final Integer result = (Integer) HibernateUtil.getSingleResult(lexemesQuery);
 
-			if (result != null && (Integer) result == 1) {
-				return true;
-			}
+			return result != null && result == 1;
 		} catch (Exception e) {
 			LOG.error("Error quering lexeme for lemma '{}', typeID {}, langID {}", lemma, lexemeTypeID, langID);
 			LOG.error("  Exception thrown: ", e);
 			throw new RuntimeException("Error quering lexeme for lemma '" + lemma + "', typeID " + lexemeTypeID);
 		}
-		return false;
 	}
 
-	private NativeQuery<?> createSimpleCheckQuery(String lemma, int lexemeTypeID, int langID)
+	private NativeQuery<Object> createSimpleCheckQuery(String lemma, int lexemeTypeID, int langID)
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
 		// Query (Q900)
 		sb.append("select 1 as id from Lexemes l\n");
@@ -53,8 +50,8 @@ public class ExistenceChecker
 
 		// Create the query
 		Session session = HibernateUtil.getSession();
-		NativeQuery<?> query = session.createSQLQuery(sb.toString())
-			.addScalar("id", new IntegerType());
+		NativeQuery<Object> query = session.createNativeQuery(sb.toString(), Object.class)
+			.addScalar("id", StandardBasicTypes.INTEGER);
 
 		query.setParameter("lemma", lemma);
 		query.setParameter("typeID", lexemeTypeID);

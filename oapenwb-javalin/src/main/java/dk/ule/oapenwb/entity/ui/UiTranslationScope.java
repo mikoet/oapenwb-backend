@@ -6,12 +6,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.logic.admin.generic.IEntity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
-
-import javax.persistence.*;
 
 /**
  * A {@link UiTranslation} can have an optional scope. All UiTranslations outside of the default scope (non/empty scope)

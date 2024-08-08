@@ -25,14 +25,11 @@ import dk.ule.oapenwb.logic.presentation.options.PresentationOptions;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
 import dk.ule.oapenwb.util.TimeUtil;
-import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
-import org.hibernate.type.LongType;
-import org.hibernate.type.ShortType;
-import org.hibernate.type.StringType;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,14 +46,12 @@ public class SearchController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
 
-	@AllArgsConstructor
-	private static class MappingResult
-	{
-		String langPair;
-		Long sememeOneID;
-		Long sememeTwoID;
-		short weight;
-	}
+	private record MappingRow(
+		String langPair,
+		Long sememeOneID,
+		Long sememeTwoID,
+		Short weight
+	) {}
 
 	private final AppConfig appConfig;
 	private final LexemesController lexemesController;
@@ -110,46 +105,40 @@ public class SearchController
 			List<LangPair> langPairs = getLangPairList(this.langPairsController, request.getPair());
 
 			// Query the Mappings
-			List<MappingResult> mappingsList = new LinkedList<>();
+			//List<MappingRow> mappingsList = new LinkedList<>();
 			Map<Long, Sememe> sememesMap = new HashMap<>();
 
-			NativeQuery<?> mappingsQuery = createMappingsSearchQuery(request, langPairs);
-			List<Object[]> mappingsRows = HibernateUtil.listAndCast(mappingsQuery);
-			for (Object[] row : mappingsRows) {
-				MappingResult mappingResult = new MappingResult(
-					(String) row[0],  // langPair ID
-					(Long) row[1],    // sememeOneID
-					(Long) row[2],    // sememeTwoID
-					(short) row[3]    // weight
-				);
-				mappingsList.add(mappingResult);
+			final NativeQuery<MappingRow> mappingsQuery = createMappingsSearchQuery(request, langPairs);
+			final List<MappingRow> mappingsList = mappingsQuery.list();
+
+			for (final MappingRow mappingRow : mappingsList) {
 				// Add all sememeIDs to the sememesMap for later loading of the sememes
-				sememesMap.put(mappingResult.sememeOneID, null);
-				sememesMap.put(mappingResult.sememeTwoID, null);
+				sememesMap.put(mappingRow.sememeOneID, null);
+				sememesMap.put(mappingRow.sememeTwoID, null);
 
 				if (appConfig.isVerbose()) {
 					LOG.info(String.format("Mapping with sememeOne %d, sememeTwo %d and weight %d",
-						mappingResult.sememeOneID, mappingResult.sememeTwoID, mappingResult.weight));
+						mappingRow.sememeOneID, mappingRow.sememeTwoID, mappingRow.weight));
 				}
 			}
-			int mappingCount = mappingsList.size();
+			final int mappingCount = mappingsList.size();
 
 			if (appConfig.isVerbose()) {
 				LOG.info(String.format("Number of mappings found: %d", mappingCount));
 			}
 
-			if (mappingsList.size() > 0) {
+			if (!mappingsList.isEmpty()) {
 				// Query the sememes
-				Session session = HibernateUtil.getSession();
-				Query<Sememe> sememesQuery = session.createQuery("FROM Sememe s WHERE s.id IN (:sememeIDs)",
+				final Session session = HibernateUtil.getSession();
+				final Query<Sememe> sememesQuery = session.createQuery("FROM Sememe s WHERE s.id IN (:sememeIDs)",
 					Sememe.class);
 				sememesQuery.setParameterList("sememeIDs", sememesMap.keySet());
-				List<Sememe> sememes = sememesQuery.list();
+				final List<Sememe> sememes = sememesQuery.list();
 
 				// Catch all lexemeIDs to load essential data like the language and lexemeType of each sememe
-				Set<Long> lexemeIDs = new HashSet<>();
+				final Set<Long> lexemeIDs = new HashSet<>();
 				// Load all variants of the just loaded sememes
-				Set<Long> variantIDs = new HashSet<>();
+				final Set<Long> variantIDs = new HashSet<>();
 				for (Sememe sememe : sememes) {
 					if (appConfig.isVerbose()) {
 						LOG.info(String.format("Sememe with id %d", sememe.getId()));
@@ -159,34 +148,34 @@ public class SearchController
 					lexemeIDs.add(sememe.getLexemeID());
 					variantIDs.addAll(sememe.getVariantIDs());
 				}
-				HashMap<Long, Variant> allVariantsMap = PresentationBuilder.variantListToHashMap(
+				final HashMap<Long, Variant> allVariantsMap = PresentationBuilder.variantListToHashMap(
 					variantsController.loadByIDs(variantIDs, true));
 
 				// Load the lexemes and transfer into hashmap
-				List<Lexeme> lexemes = lexemesController.loadByIDs(lexemeIDs);
-				HashMap<Long, Lexeme> lexemesMap = new HashMap<>(lexemes.size());
+				final List<Lexeme> lexemes = lexemesController.loadByIDs(lexemeIDs);
+				final HashMap<Long, Lexeme> lexemesMap = new HashMap<>(lexemes.size());
 				for (Lexeme lexeme : lexemes) {
 					lexemesMap.put(lexeme.getId(), lexeme);
 				}
 
 				// Build and fill the resultEntryList
-				WholeLemmaBuilder lemmaBuilder = new WholeLemmaBuilder();
+				final WholeLemmaBuilder lemmaBuilder = new WholeLemmaBuilder();
 				// <resultCategory ID, SearchResult.ResultCategory>
-				Map<Integer, SearchResult.ResultCategory> resultMap = new HashMap<>();
-				for (MappingResult mappingResult : mappingsList) {
-					Sememe sememeOne = sememesMap.get(mappingResult.sememeOneID);
-					Sememe sememeTwo = sememesMap.get(mappingResult.sememeTwoID);
+				final Map<Integer, SearchResult.ResultCategory> resultMap = new HashMap<>();
+				for (final MappingRow mappingRow : mappingsList) {
+					Sememe sememeOne = sememesMap.get(mappingRow.sememeOneID);
+					Sememe sememeTwo = sememesMap.get(mappingRow.sememeTwoID);
 
 					if (sememeOne == null || sememeTwo == null) {
 						LOG.error(String.format("Sememe with ID %d could not be loaded",
-							sememeOne == null ? mappingResult.sememeOneID : mappingResult.sememeTwoID));
+							sememeOne == null ? mappingRow.sememeOneID : mappingRow.sememeTwoID));
 						LOG.error(String.format("Request data: pair = %s, direction = %s, term = %s",
 							request.getPair(), request.getDirection(), request.getTerm()));
 						continue;
 					}
 
-					Lexeme lexemeOne = lexemesMap.get(sememeOne.getLexemeID());
-					Lexeme lexemeTwo = lexemesMap.get(sememeTwo.getLexemeID());
+					final Lexeme lexemeOne = lexemesMap.get(sememeOne.getLexemeID());
+					final Lexeme lexemeTwo = lexemesMap.get(sememeTwo.getLexemeID());
 
 					if (lexemeOne == null || lexemeTwo == null) {
 						LOG.error(String.format("Lexeme with ID %d could not be loaded",
@@ -198,7 +187,7 @@ public class SearchController
 
 					LangPair langPair = null;
 					if (langPairs.size() > 1) {
-						langPair = langPairsController.get(mappingResult.langPair);
+						langPair = langPairsController.get(mappingRow.langPair);
 					}
 
 					SearchResult.ResultEntry entry = new SearchResult.ResultEntry();
@@ -219,7 +208,7 @@ public class SearchController
 						entry.sememeTwo.locale = Optional.of(langPair.getLangTwo().getLocale());
 					}
 					// Further properties
-					entry.weight = mappingResult.weight;
+					entry.weight = mappingRow.weight;
 
 					// Add entry to resultMap
 					UiResultCategory uiResultCategory = uiResultCategoriesController.get(
@@ -286,7 +275,7 @@ public class SearchController
 		return langPairs;
 	}
 
-	private NativeQuery<?> createMappingsSearchQuery(final SearchRequest request, final List<LangPair> langPairs)
+	private NativeQuery<MappingRow> createMappingsSearchQuery(final SearchRequest request, final List<LangPair> langPairs)
 	{
 		StringBuilder sb = new StringBuilder();
 
@@ -336,11 +325,11 @@ public class SearchController
 
 		// Create the query
 		Session session = HibernateUtil.getSession();
-		NativeQuery<?> query = session.createSQLQuery(sb.toString())
-			.addScalar("langPair", new StringType())
-			.addScalar("sememeOneID", new LongType())
-			.addScalar("sememeTwoID", new LongType())
-			.addScalar("weight", new ShortType());
+		NativeQuery<MappingRow> query = session.createNativeQuery(sb.toString(), MappingRow.class)
+			.addScalar("langPair", StandardBasicTypes.STRING)
+			.addScalar("sememeOneID", StandardBasicTypes.LONG)
+			.addScalar("sememeTwoID", StandardBasicTypes.LONG)
+			.addScalar("weight", StandardBasicTypes.SHORT);
 
 		// -- Set the parameters
 		query.setParameter("term", request.getTerm());
@@ -353,15 +342,15 @@ public class SearchController
 
 		if (request.getDirection() == Direction.Both || request.getDirection() == Direction.Right) {
 			Set<Integer> langIDs = new HashSet<>(langPairs.size());
-			for (int i = 0; i < langPairs.size(); i++) {
-				langIDs.add(langPairs.get(i).getLangOneID());
+			for (LangPair langPair : langPairs) {
+				langIDs.add(langPair.getLangOneID());
 			}
 			query.setParameterList("langOneIDs", langIDs);
 		}
 		if (request.getDirection() == Direction.Both || request.getDirection() == Direction.Left) {
 			Set<Integer> langIDs = new HashSet<>(langPairs.size());
-			for (int i = 0; i < langPairs.size(); i++) {
-				langIDs.add(langPairs.get(i).getLangTwoID());
+			for (LangPair langPair : langPairs) {
+				langIDs.add(langPair.getLangTwoID());
 			}
 			query.setParameter("langTwoIDs", langIDs);
 		}
@@ -410,5 +399,4 @@ public class SearchController
 		// TODO implement the checks here
 		return true;
 	}
-
 }

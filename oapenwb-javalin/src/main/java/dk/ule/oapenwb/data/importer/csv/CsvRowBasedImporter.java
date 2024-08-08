@@ -136,11 +136,11 @@ public class CsvRowBasedImporter
 			List<LexemeFormType> formTypes = this.adminControllers.getLexemeFormTypesController()
 				.getEntitiesByGroupKey(type.getId());
 			// Only when formTypes are already created for the lexeme type
-			if (formTypes != null && formTypes.size() > 0) {
+			if (formTypes != null && !formTypes.isEmpty()) {
 				// Sort the list by position so that the base type will be on first position
 				formTypes.sort(Comparator.comparingInt(LexemeFormType::getPosition));
 				// Find the base form type = the one with the smallest positional index
-				LexemeFormType baseFormType = formTypes.get(0);
+				LexemeFormType baseFormType = formTypes.getFirst();
 				for (LexemeFormType formType : formTypes) {
 					if (formType.getPosition() < baseFormType.getPosition()) {
 						baseFormType = formType;
@@ -173,7 +173,7 @@ public class CsvRowBasedImporter
 		if (languageList.size() != 1) {
 			throw new RuntimeException("Number of languages found for locale " + locale + " is " + languageList.size());
 		}
-		return languageList.get(0);
+		return languageList.getFirst();
 	}
 
 	public CrbiResult run() {
@@ -193,13 +193,18 @@ public class CsvRowBasedImporter
 		HibernateUtil.setDisableJsonIdChecks(false);
 
 		// Save the recorded messages to file system
+		dk.ule.oapenwb.util.io.Logger msgLogger = null;
 		try {
 			Path outputFilePath = Paths.get(appConfig.getImportConfig().getOutputDir(), config.getLogFilename());
-			dk.ule.oapenwb.util.io.Logger msgLogger = new dk.ule.oapenwb.util.io.Logger(outputFilePath.toString());
+			msgLogger = new dk.ule.oapenwb.util.io.Logger(outputFilePath.toString());
 			importerContext.getMessages().printToLogger(msgLogger, config.getOutputMinimumType());
-			msgLogger.close();
 		} catch (IOException e) {
 			LOG.error("Writing message log to file failed", e);
+		} finally {
+			if (msgLogger != null) {
+				msgLogger.close();
+				msgLogger = null;
+			}
 		}
 
 		// Return the result and reset it on the context
@@ -380,7 +385,7 @@ public class CsvRowBasedImporter
 							boolean isDuplicate = false;
 							// Build the keys
 							Set<String> dcKeys = config.getDuplicateCheckKeyBuilder().buildKeys(dto);
-							if (dcKeys != null && dcKeys.size() > 0) {
+							if (dcKeys != null && !dcKeys.isEmpty()) {
 								// <part of speech, <DC key, DC entry>>
 								Map<String, Map<String, DCEntry>> posMap = dcKeyMap.computeIfAbsent(provider.getLang(), k -> new HashMap<>());
 								// <DC key, DC entry>
@@ -430,7 +435,7 @@ public class CsvRowBasedImporter
 				for (var provider : config.getMultiLexemeProviders().values()) {
 					try {
 						List<LexemeDetailedDTO> dtoList = provider.provide(importerContext, typeFormPair, row);
-						if (provider.isMustProvide() && (dtoList == null || dtoList.size() == 0)) {
+						if (provider.isMustProvide() && (dtoList == null || dtoList.isEmpty())) {
 							// If no or an empty list is provided we will skip this row
 							String message = String.format("Row was skipped since %s returned no lexemes but should have",
 								provider.getMessageContext());
@@ -465,7 +470,7 @@ public class CsvRowBasedImporter
 			}
 		} // -- rowLoop
 
-		if (!config.isSimulate() && providerDataList.size() > 0) {
+		if (!config.isSimulate() && !providerDataList.isEmpty()) {
 			try {
 				persistProviderDataAndMakeMappingsAndLinks(providerDataList);
 				commitTransaction(t, transactionNumber, -1, providerDataList);
@@ -479,7 +484,7 @@ public class CsvRowBasedImporter
 
 	private void persistProviderDataAndMakeMappingsAndLinks(List<ProviderData> providerDataList)
 	{
-		if (providerDataList == null || providerDataList.size() == 0) {
+		if (providerDataList == null || providerDataList.isEmpty()) {
 			importerContext.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Warning,
 				"Method persistProviderData() was called without any data to persist", -1, -1);
 			return;
@@ -510,10 +515,10 @@ public class CsvRowBasedImporter
 				}
 
 				// Create the mappings
-				if (config.getMappingMakers() != null && config.getMappingMakers().size() > 0) {
+				if (config.getMappingMakers() != null && !config.getMappingMakers().isEmpty()) {
 					for (MappingMaker maker : config.getMappingMakers()) {
 						List<Mapping> mappings = maker.build(config, importerContext, sememeIDsOfLoop);
-						if (mappings != null && mappings.size() > 0) {
+						if (mappings != null && !mappings.isEmpty()) {
 							for (Mapping mapping : mappings) {
 								if (!MappingsController.mappingExists(session, mapping)) {
 									session.persist(mapping);
@@ -532,10 +537,10 @@ public class CsvRowBasedImporter
 				}
 
 				// Create the links
-				if (config.getLinkMakers() != null && config.getLinkMakers().size() > 0) {
+				if (config.getLinkMakers() != null && !config.getLinkMakers().isEmpty()) {
 					for (LinkMaker maker : config.getLinkMakers()) {
 						List<Link> links = maker.build(config, importerContext, sememeIDsOfLoop);
-						if (links != null && links.size() > 0) {
+						if (links != null && !links.isEmpty()) {
 							for (Link link : links) {
 								if (!LinksController.linkExists(session, link)) {
 									session.persist(link);
@@ -559,9 +564,9 @@ public class CsvRowBasedImporter
 				int batchFirstLine = -1;
 				int batchLastLine = -1;
 
-				if (providerDataList.size() > 0) {
-					batchFirstLine = providerDataList.get(0).getRowData().getLineNumber();
-					batchLastLine = providerDataList.get(providerDataList.size() - 1).getRowData().getLineNumber();
+				if (!providerDataList.isEmpty()) {
+					batchFirstLine = providerDataList.getFirst().getRowData().getLineNumber();
+					batchLastLine = providerDataList.getLast().getRowData().getLineNumber();
 				}
 
 				String message = String.format(
@@ -596,7 +601,7 @@ public class CsvRowBasedImporter
 		if (config.isSimulate() || importerContext.getLoadedLexemeIDs().contains(id)) {
 			// This lexeme already existed in the database and thus it already has a persistent sememeID to be used,
 			// or we are running in simulation mode and will just take the generated ID.
-			sememeID = detailedDTO.getSememes().get(0).getId();
+			sememeID = detailedDTO.getSememes().getFirst().getId();
 		} else {
 			// This lexeme was created by the import and thus will be persisted now in non-simulation mode.
 			LexemeSlimDTO slimDTO = this.adminControllers.getLexemesController().create(detailedDTO,
@@ -635,9 +640,9 @@ public class CsvRowBasedImporter
 				importerContext.getMessages().add(CONTEXT_PERSIST_PROVIDER_DATA, MessageType.Error,
 					String.format("Error: %s", e.getMessage()), lineNumber, -1);
 
-				if (providerDataList.size() > 0) {
-					int first = providerDataList.get(0).getRowData().getLineNumber();
-					int last = providerDataList.get(providerDataList.size() - 1).getRowData().getLineNumber();
+				if (!providerDataList.isEmpty()) {
+					int first = providerDataList.getFirst().getRowData().getLineNumber();
+					int last = providerDataList.getLast().getRowData().getLineNumber();
 					String warnMessage = String.format("Rows %d to %d have probably not been committed.",
 						first, last);
 					LOG.warn(warnMessage);

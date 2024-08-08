@@ -21,7 +21,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
-import org.hibernate.type.LongType;
+import org.hibernate.type.StandardBasicTypes;
 
 import java.util.*;
 
@@ -138,7 +138,7 @@ public class AbstractLexemeProvider
 	protected LexemeDetailedDTO lookup(CsvImporterContext context, int lineNumber, LexemeDetailedDTO detailedDTO)
 	{
 		List<Variant> variants = detailedDTO.getVariants();
-		if (variants == null || variants.size() == 0) {
+		if (variants == null || variants.isEmpty()) {
 			// Nothing to look up
 			return null;
 		}
@@ -150,13 +150,14 @@ public class AbstractLexemeProvider
 		// and collect the IDs of the lexemes of the already existing variants.
 		Set<Long> allLexemeIDs = new HashSet<>();
 		for (var variant : variants) {
-			NativeQuery<?> checkQuery = createCheckQuery(langID, typeID, variant);
-			List<Long> rows = HibernateUtil.listAndCast(checkQuery);
-			if (rows.size() > 0) {
+			final NativeQuery<Object> checkQuery = createCheckQuery(langID, typeID, variant);
+			final List<Long> rows = HibernateUtil.listAndCast(checkQuery);
+
+			if (!rows.isEmpty()) {
 				Set<Long> lexemeIDs = new HashSet<>(rows);
 				allLexemeIDs.addAll(lexemeIDs);
 				context.getMessages().add(this.messageContext, MessageType.Debug,
-					String.format("Specified variant '%s' already exists in database", variant.getLexemeForms().get(0)),
+					String.format("Specified variant '%s' already exists in database", variant.getLexemeForms().getFirst()),
 					lineNumber, -1);
 			}
 		}
@@ -195,10 +196,10 @@ public class AbstractLexemeProvider
 	 * @param variant variant to check for existence
 	 * @return the NativeQuery instance
 	 */
-	protected NativeQuery<?> createCheckQuery(int langID, int typeID, Variant variant)
+	protected NativeQuery<Object> createCheckQuery(int langID, int typeID, Variant variant)
 	{
 		// Q901
-		String sb = """
+		final String sb = """
 			SELECT distinct l.id AS lexemeID FROM Lexemes l
 			  INNER JOIN Variants v ON l.id = v.lexemeID
 			  INNER JOIN LexemeForms lf ON v.id = lf.variantID
@@ -206,12 +207,12 @@ public class AbstractLexemeProvider
 			    AND lf.text = :text AND lf.formTypeID = :formTypeID""";
 
 		// Create the query and set parameters
-		Session session = HibernateUtil.getSession();
-		NativeQuery<?> query = session.createSQLQuery(sb)
-			.addScalar("lexemeID", new LongType());
+		final Session session = HibernateUtil.getSession();
+		final NativeQuery<Object> query = session.createNativeQuery(sb, Object.class)
+			.addScalar("lexemeID", StandardBasicTypes.LONG);
 
 		// Get the first lexeme form
-		LexemeForm form1 = variant.getLexemeForms().get(0);
+		LexemeForm form1 = variant.getLexemeForms().getFirst();
 		int formTypeID = form1.getFormTypeID();
 
 		query.setParameter("langID", langID);

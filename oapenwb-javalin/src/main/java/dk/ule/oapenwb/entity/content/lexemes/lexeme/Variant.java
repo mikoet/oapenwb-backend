@@ -3,20 +3,20 @@
 package dk.ule.oapenwb.entity.content.lexemes.lexeme;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.entity.basis.ApiAction;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.MetaInfo;
 import dk.ule.oapenwb.logic.admin.lexeme.IRPCEntity;
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
@@ -30,7 +30,6 @@ import java.util.*;
 @Audited
 @NoArgsConstructor
 @Table(name = "Variants")
-@TypeDefs({ @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class) })
 public class Variant implements IRPCEntity<Long>, Cloneable
 {
 	@Id
@@ -69,8 +68,8 @@ public class Variant implements IRPCEntity<Long>, Cloneable
 	@JsonView(Views.REST.class)
 	private boolean mainVariant;
 
-	@Type(type = "jsonb")
 	@Column(columnDefinition = "jsonb")
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<Integer> dialectIDs = new LinkedHashSet<>();
 
@@ -91,14 +90,14 @@ public class Variant implements IRPCEntity<Long>, Cloneable
 	private Lemma lemma;
 
 	@Valid
-	@Type(type = "jsonb")
 	@Column(columnDefinition = "jsonb")
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Set<@Valid MetaInfo> metaInfos;
 
 	@Valid
-	@Type(type = "jsonb")
 	@Column(columnDefinition = "jsonb")
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Map<String, Object> properties = new HashMap<>();
 

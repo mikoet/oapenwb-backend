@@ -21,13 +21,11 @@ import dk.ule.oapenwb.logic.search.SearchController;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
 import dk.ule.oapenwb.util.TimeUtil;
-import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
-import org.hibernate.type.IntegerType;
-import org.hibernate.type.LongType;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,39 +73,37 @@ public class AutocompleteController
 			final Set<Integer> langIDs = getLangIDs(langPairs, request.getDirection());
 
 			final int maxResults = Math.min(MAX_RESULTS, request.getMaxResults());
-			final List<ResultSet> resultSets = new LinkedList<>();
 			final Set<Long> variantIDs = new HashSet<>(maxResults);
 			final List<ACSearchResult.VariantEntry> resultList = new LinkedList<>();
 
 			// 1) Query for the variants (sparse data) that match the search request
-			NativeQuery<?> query = createQuery(request, langIDs, maxResults);
-			List<Object[]> rows = HibernateUtil.listAndCast(query);
-			for (Object[] row : rows) {
-				final Long variantID = (Long) row[0];
-				resultSets.add(new ResultSet(variantID, (Integer) row[1], (Integer) row[2], (Long) row[3]));
+			final NativeQuery<AutoCompleteRow> query = createQuery(request, langIDs, maxResults);
+			final List<AutoCompleteRow> autoCompleteRows = query.list();
+
+			for (final AutoCompleteRow autoCompleteRow : autoCompleteRows) {
 				// Catch all IDs of the variants to load
-				variantIDs.add(variantID);
+				variantIDs.add(autoCompleteRow.variantID);
 			}
 
 			// 2) Query the variants
-			Session session = HibernateUtil.getSession();
-			Query<Variant> variantsQuery = session.createQuery("FROM Variant e WHERE e.id IN (:variantIDs)",
+			final Session session = HibernateUtil.getSession();
+			final Query<Variant> variantsQuery = session.createQuery("FROM Variant e WHERE e.id IN (:variantIDs)",
 				Variant.class);
 			variantsQuery.setParameterList("variantIDs", variantIDs);
-			List<Variant> variants = variantsQuery.list();
+			final List<Variant> variants = variantsQuery.list();
 
-			Map<Long, Variant> variantsMap = new HashMap<>(variants.size());
+			final Map<Long, Variant> variantsMap = new HashMap<>(variants.size());
 			for (final Variant variant : variants) {
 				variantsMap.put(variant.getId(), variant);
 			}
 
 			// 3) Build the result
-			for (ResultSet rs : resultSets) {
-				ACSearchResult.VariantEntry entry = new ACSearchResult.VariantEntry();
+			for (final AutoCompleteRow row : autoCompleteRows) {
+				final ACSearchResult.VariantEntry entry = new ACSearchResult.VariantEntry();
 
-				entry.setTypeID(rs.typeID);
+				entry.setTypeID(row.typeID);
 
-				Integer langID = rs.langID;
+				final Integer langID = row.langID;
 				if (langID != null) {
 					Language language = lemmaControllers.getLanguagesController().get(langID);
 					if (language != null) {
@@ -115,7 +111,7 @@ public class AutocompleteController
 					}
 				}
 
-				final Variant variant = variantsMap.get(rs.variantID);
+				final Variant variant = variantsMap.get(row.variantID);
 				final String lemma = singleLemmaBuilder.buildLemmaWithOrthographyOnly(
 					PresentationOptions.DEFAULT_PRESENTATION_OPTIONS, lemmaControllers, variant);
 				entry.setLemma(lemma);
@@ -127,7 +123,7 @@ public class AutocompleteController
 			}
 			result.setEntries(resultList);
 
-			long duration = TimeUtil.durationInMilis();
+			final long duration = TimeUtil.durationInMilis();
 			if (appConfig.isVerbose() && duration > 80) {
 				LOG.info(String.format("Auto completion request took >100 ms: %d ms", duration));
 			}
@@ -153,7 +149,7 @@ public class AutocompleteController
 	 * - langID, Integer
 	 * - sememeID, Long
 	 */
-	private NativeQuery<?> createQuery(final ACSearchRequest request, final Set<Integer> langIDs, int limit)
+	private NativeQuery<AutoCompleteRow> createQuery(final ACSearchRequest request, final Set<Integer> langIDs, int limit)
 	{
 		StringBuilder sb = new StringBuilder();
 
@@ -171,7 +167,9 @@ public class AutocompleteController
 			filterText = filterResult.getRight();
 			// Add the text filtering part if it's set
 			sb.append("  and L.id in (select lexemeID from Variants Vi\n");
-			sb.append("    where Vi.id in (select variantID from LexemeForms where " + filterStatement + "))\n");
+			sb.append("    where Vi.id in (select variantID from LexemeForms where ")
+				.append(filterStatement)
+				.append("))\n");
 		}
 		sb.append("  and L.langID in (:langIDs)\n");
 
@@ -179,6 +177,7 @@ public class AutocompleteController
 		sb.append("    where (Vi.pre=V.pre or (Vi.pre is null and V.pre is null)) and\n");
 		sb.append("      Vi.main=V.main and\n");
 		sb.append("      (Vi.post=V.post or (Vi.post is null and V.post is null))\n");
+
 		/* If this part is included doublets with the same lemma can appear in the autocompletion
 		   result, but those dubblets would then have different attributes like lexemeID, thus
 		   belonging to different lexemes with e.g. different typeIDs.
@@ -192,11 +191,11 @@ public class AutocompleteController
 
 		// Create the query
 		Session session = HibernateUtil.getSession();
-		NativeQuery<?> query = session.createSQLQuery(sb.toString())
-			.addScalar("id", new LongType())
-			.addScalar("typeID", new IntegerType())
-			.addScalar("langID", new IntegerType())
-			.addScalar("sememeID", new LongType());
+		NativeQuery<AutoCompleteRow> query = session.createNativeQuery(sb.toString(), AutoCompleteRow.class)
+			.addScalar("id", StandardBasicTypes.LONG)
+			.addScalar("typeID", StandardBasicTypes.INTEGER)
+			.addScalar("langID", StandardBasicTypes.INTEGER)
+			.addScalar("sememeID", StandardBasicTypes.LONG);
 
 		query.setParameter("offset", 0);
 		query.setParameter("limit", limit);
@@ -225,12 +224,10 @@ public class AutocompleteController
 		return result;
 	}
 
-	@AllArgsConstructor
-	private static class ResultSet
-	{
-		public Long variantID;
-		public Integer typeID;
-		public Integer langID;
-		public Long sememeID;
-	}
+	private record AutoCompleteRow(
+		Long variantID,
+		Integer typeID,
+		Integer langID,
+		Long sememeID
+	) {}
 }

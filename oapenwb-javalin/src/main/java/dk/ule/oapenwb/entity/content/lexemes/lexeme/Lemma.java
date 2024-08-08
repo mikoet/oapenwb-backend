@@ -4,11 +4,11 @@ package dk.ule.oapenwb.entity.content.lexemes.lexeme;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.base.Views;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 /**

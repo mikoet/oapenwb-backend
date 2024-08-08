@@ -4,20 +4,18 @@ package dk.ule.oapenwb.entity.content.basedata;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.entity.content.lexemes.Link;
 import dk.ule.oapenwb.entity.content.lexemes.SynLink;
 import dk.ule.oapenwb.logic.admin.generic.IEntity;
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
@@ -33,7 +31,6 @@ import java.util.Map;
 @Audited
 @NoArgsConstructor
 @AllArgsConstructor
-@TypeDefs({ @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class) })
 public class LinkType implements IEntity<Integer>
 {
 	// Descriptions of link types that will just exist in the dictionary
@@ -92,8 +89,8 @@ public class LinkType implements IEntity<Integer>
 	 * - …
 	 */
 	@Valid
-	@Type(type = "jsonb")
 	@Column(columnDefinition = "jsonb")
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private Map<String, Object> properties = new HashMap<>();
 

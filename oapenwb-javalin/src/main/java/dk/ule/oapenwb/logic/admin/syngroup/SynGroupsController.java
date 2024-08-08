@@ -25,10 +25,7 @@ import dk.ule.oapenwb.util.Pair;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
-import org.hibernate.type.BooleanType;
-import org.hibernate.type.IntegerType;
-import org.hibernate.type.LongType;
-import org.hibernate.type.StringType;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +55,7 @@ public class SynGroupsController extends EntityController<SynGroup, Integer>
 	}
 
 	public void persist(final SynGroup synGroup, final Context context) throws CodeException {
-		if (synGroup.getSememeIDs().size() > 0) {
+		if (!synGroup.getSememeIDs().isEmpty()) {
 			this.generatePresentation(synGroup);
 			if (synGroup.getApiAction() == ApiAction.Insert) {
 				synGroup.setId(null);
@@ -97,27 +94,20 @@ public class SynGroupsController extends EntityController<SynGroup, Integer>
 	public SGSearchResult find(
 		final SGSearchRequest request) throws CodeException
 	{
-		SGSearchResult result = new SGSearchResult();
+		final SGSearchResult result = new SGSearchResult();
 		try {
 			// Query the SynGroups
-			List<SynGroupItem> synGroupList = new LinkedList<>();
-			NativeQuery<?> synGroupQuery = createSynGroupQuery(request);
-			List<Object[]> synGroupRows = HibernateUtil.listAndCast(synGroupQuery);
-			for (Object[] row : synGroupRows) {
-				synGroupList.add(new SynGroupItem(
-					(Integer) row[0],	// id
-					(String) row[1],	// description
-					(String) row[2]		// presentation
-				));
-			}
+			final NativeQuery<SynGroupItem> synGroupQuery = createSynGroupQuery(request);
+			final List<SynGroupItem> synGroupList = synGroupQuery.list();
 			result.setSynGroups(synGroupList);
 
 			// Query for the lexemes
-			List<LexemeSlimPlus> lexemesList = new LinkedList<>();
-			NativeQuery<?> lexemesQuery = createLexemesQuery(request);
-			List<Object[]> lexemeRows = HibernateUtil.listAndCast(lexemesQuery);
-			for (Object[] row : lexemeRows) {
-				LexemeSlimPlus lexemeSlimPlus = new LexemeSlimPlus(
+			final List<LexemeSlimPlus> lexemesList = new LinkedList<>();
+			final NativeQuery<Object[]> lexemesQuery = createLexemesQuery(request);
+			//List<Object[]> lexemeRows = HibernateUtil.listAndCast(lexemesQuery);
+			final List<Object[]> lexemeRows = lexemesQuery.list();
+			for (final Object[] row : lexemeRows) {
+				final LexemeSlimPlus lexemeSlimPlus = new LexemeSlimPlus(
 					(Long) row[0],		// id
 					(String) row[1],	// parserID
 					(Long) row[2],		// typeID
@@ -133,8 +123,8 @@ public class SynGroupsController extends EntityController<SynGroup, Integer>
 				lexemesList.add(lexemeSlimPlus);
 
 				// Query the sememes for each lexeme
-				Session session = HibernateUtil.getSession();
-				Query<Sememe> query = session.createQuery(
+				final Session session = HibernateUtil.getSession();
+				final Query<Sememe> query = session.createQuery(
 					"FROM " + Sememe.class.getSimpleName() + " S WHERE S.lexemeID = :lexemeID ORDER BY S.id ASC", Sememe.class);
 				query.setParameter("lexemeID", lexemeSlimPlus.getId());
 				lexemeSlimPlus.setSememes(query.list());
@@ -148,9 +138,9 @@ public class SynGroupsController extends EntityController<SynGroup, Integer>
 		return result;
 	}
 
-	private NativeQuery<?> createSynGroupQuery(final SGSearchRequest request)
+	private NativeQuery<SynGroupItem> createSynGroupQuery(final SGSearchRequest request)
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
 		// Basis query (Q010)
 		sb.append("select sg.id as id, sg.description as description, sg.presentation as presentation\n");
@@ -183,11 +173,11 @@ public class SynGroupsController extends EntityController<SynGroup, Integer>
 		sb.append("limit :limit offset :offset");
 
 		// Create the query
-		Session session = HibernateUtil.getSession();
-		NativeQuery<?> query = session.createSQLQuery(sb.toString())
-			.addScalar("id", new IntegerType())
-			.addScalar("description", new StringType())
-			.addScalar("presentation", new StringType());
+		final Session session = HibernateUtil.getSession();
+		final NativeQuery<SynGroupItem> query = session.createNativeQuery(sb.toString(), SynGroupItem.class)
+			.addScalar("id", StandardBasicTypes.INTEGER)
+			.addScalar("description", StandardBasicTypes.STRING)
+			.addScalar("presentation", StandardBasicTypes.STRING);
 
 		// Set the parameters
 		if (filterText != null) {
@@ -203,7 +193,7 @@ public class SynGroupsController extends EntityController<SynGroup, Integer>
 		return query;
 	}
 
-	private NativeQuery<?> createLexemesQuery(final SGSearchRequest request)
+	private NativeQuery<Object[]> createLexemesQuery(final SGSearchRequest request)
 	{
 		StringBuilder sb = new StringBuilder();
 
@@ -237,18 +227,18 @@ public class SynGroupsController extends EntityController<SynGroup, Integer>
 
 		// Create the query
 		Session session = HibernateUtil.getSession();
-		NativeQuery<?> query = session.createSQLQuery(sb.toString())
-			.addScalar("id", new LongType())
-			.addScalar("parserID", new StringType())
-			.addScalar("typeID", new LongType())
-			.addScalar("langID", new IntegerType())
-			.addScalar("pre", new StringType())
-			.addScalar("main", new StringType())
-			.addScalar("post", new StringType())
-			.addScalar("active", new BooleanType())
-			.addScalar("condition", new IntegerType())
-			.addScalar("tags", new StringType())
-			.addScalar("sememeID", new LongType());
+		NativeQuery<Object[]> query = session.createNativeQuery(sb.toString(), Object[].class)
+			.addScalar("id", StandardBasicTypes.LONG)
+			.addScalar("parserID", StandardBasicTypes.STRING)
+			.addScalar("typeID", StandardBasicTypes.LONG)
+			.addScalar("langID", StandardBasicTypes.INTEGER)
+			.addScalar("pre", StandardBasicTypes.STRING)
+			.addScalar("main", StandardBasicTypes.STRING)
+			.addScalar("post", StandardBasicTypes.STRING)
+			.addScalar("active", StandardBasicTypes.BOOLEAN)
+			.addScalar("condition", StandardBasicTypes.INTEGER)
+			.addScalar("tags", StandardBasicTypes.STRING)
+			.addScalar("sememeID", StandardBasicTypes.LONG);
 
 		query.setParameter("offset", 0);
 		query.setParameter("limit", MAX_LEXEMES);

@@ -5,7 +5,7 @@ package dk.ule.oapenwb.logic.admin;
 import dk.ule.oapenwb.entity.content.lexemes.Link;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
-import org.hibernate.type.LongType;
+import org.hibernate.type.StandardBasicTypes;
 
 /**
  * <p>The LinksController is no full controller by now as the persisting is currently done by the
@@ -16,16 +16,16 @@ public class LinksController
 {
 	// no exception handling done within this method!
 	public static boolean linkExists(final Session session, final Link link) {
-		String queryString = String.format(
+		final String queryString = String.format(
 			"SELECT COUNT(*) AS col from %ss E where E.typeID = :typeID AND E.startSememeID = :startSememeID "
 				+ "AND E.endSememeID = :endSememeID", Link.class.getSimpleName());
-		NativeQuery<?> query = session.createSQLQuery(queryString)
-			.addScalar("col", new LongType());
+		final NativeQuery<Object> query = session.createNativeQuery(queryString, Object.class)
+			.addScalar("col", StandardBasicTypes.LONG);
 		query.setParameter("typeID", link.getTypeID());
 		query.setParameter("startSememeID", link.getStartSememeID());
 		query.setParameter("endSememeID", link.getEndSememeID());
 
-		long count = (Long) query.getSingleResult();
+		final long count = (Long) query.getSingleResult();
 		return count > 0;
 	}
 }

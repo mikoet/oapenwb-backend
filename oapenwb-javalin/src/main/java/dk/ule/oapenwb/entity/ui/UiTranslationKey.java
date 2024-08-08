@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.entity.ui;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 

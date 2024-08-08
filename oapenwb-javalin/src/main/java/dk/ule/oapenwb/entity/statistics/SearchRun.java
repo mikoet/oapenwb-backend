@@ -5,11 +5,11 @@ package dk.ule.oapenwb.entity.statistics;
 import dk.ule.oapenwb.entity.content.basedata.LangPair;
 import dk.ule.oapenwb.logic.search.Direction;
 import dk.ule.oapenwb.logic.search.DirectionConverter;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.Instant;
 
 @Data

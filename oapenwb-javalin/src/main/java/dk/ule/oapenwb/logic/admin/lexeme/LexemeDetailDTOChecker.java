@@ -15,11 +15,11 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.generic.IGroupedEntitySupplier;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
+import jakarta.persistence.NoResultException;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
-import org.hibernate.type.LongType;
+import org.hibernate.type.StandardBasicTypes;
 
-import javax.persistence.NoResultException;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -66,7 +66,7 @@ public class LexemeDetailDTOChecker
 			}
 		}
 
-		if (messages.size() > 0) {
+		if (!messages.isEmpty()) {
 			throw new MultiCodeException(messages);
 		}
 	}
@@ -200,18 +200,23 @@ public class LexemeDetailDTOChecker
 			return;
 		}
 
-		if (entities != null && entities.size() > 0) {
+		if (entities != null && !entities.isEmpty()) {
 			final String tableName = HibernateUtil.getTableName(clazz);
 			// This idea was from https://stackoverflow.com/a/30118121 which also offers a more advanced one
 			entities.stream().flatMap(id -> {
 					try {
-						Session session = HibernateUtil.getSession();
-						String queryString = "SELECT 1 as col from "+ tableName + " E where E.id= :id";
-						NativeQuery<?> query = session.createSQLQuery(queryString)
-							.addScalar("col", new LongType());
+						final Session session = HibernateUtil.getSession();
+						final String queryString = "SELECT 1 as col from "+ tableName + " E where E.id= :id";
+						final NativeQuery<Object> query = session.createNativeQuery(queryString, Object.class)
+							.addScalar("col", StandardBasicTypes.INTEGER);
 						query.setParameter("id", id);
-						//Integer result = (Integer) query.uniqueResult();
+
+						/*
+						 * Call will throw an exception in both cases (no result and more than one / non-unique)
+						 * (while query.uniqueResult() will only throw in non-unique case)
+						 */
 						query.getSingleResult();
+
 						return null;
 					} catch (NoResultException e) {
 						return Stream.of(new Message(ErrorCode.Admin_EntityNotFound,

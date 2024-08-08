@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.entity.basis;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.Instant;
 
 /**

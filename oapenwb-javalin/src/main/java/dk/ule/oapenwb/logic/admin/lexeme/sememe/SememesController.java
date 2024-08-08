@@ -15,10 +15,7 @@ import dk.ule.oapenwb.util.Pair;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
-import org.hibernate.type.BooleanType;
-import org.hibernate.type.IntegerType;
-import org.hibernate.type.LongType;
-import org.hibernate.type.StringType;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,14 +63,14 @@ public class SememesController extends EntityController<Sememe, Long>
 	public SSearchResult find(
 		final SSearchRequest request) throws CodeException
 	{
-		SSearchResult result = new SSearchResult();
+		final SSearchResult result = new SSearchResult();
 		try {
 			// Query for the lexemes
-			List<LexemeSlimPlus> lexemesList = new LinkedList<>();
-			NativeQuery<?> lexemesQuery = createLexemesQuery(request);
-			List<Object[]> lexemeRows = HibernateUtil.listAndCast(lexemesQuery);
+			final List<LexemeSlimPlus> lexemesList = new LinkedList<>();
+			final NativeQuery<Object[]> lexemesQuery = createLexemesQuery(request);
+			final List<Object[]> lexemeRows = HibernateUtil.listAndCast(lexemesQuery);
 			for (Object[] row : lexemeRows) {
-				LexemeSlimPlus lexemeSlimPlus = new LexemeSlimPlus(
+				final LexemeSlimPlus lexemeSlimPlus = new LexemeSlimPlus(
 					(Long) row[0],		// id
 					(String) row[1],	// parserID
 					(Integer) row[2],	// typeID
@@ -89,8 +86,8 @@ public class SememesController extends EntityController<Sememe, Long>
 				lexemesList.add(lexemeSlimPlus);
 
 				// Query the sememes for each lexeme
-				Session session = HibernateUtil.getSession();
-				Query<Sememe> query = session.createQuery(
+				final Session session = HibernateUtil.getSession();
+				final Query<Sememe> query = session.createQuery(
 					"FROM " + Sememe.class.getSimpleName() + " S WHERE S.lexemeID = :lexemeID ORDER BY S.id ASC", Sememe.class);
 				query.setParameter("lexemeID", lexemeSlimPlus.getId());
 				lexemeSlimPlus.setSememes(query.list());
@@ -104,9 +101,9 @@ public class SememesController extends EntityController<Sememe, Long>
 		return result;
 	}
 
-	private NativeQuery<?> createLexemesQuery(final SSearchRequest request)
+	private NativeQuery<Object[]> createLexemesQuery(final SSearchRequest request)
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
 		// Basis query (Q011)
 		sb.append("select L.id as id, L.parserID as parserID, L.typeID as typeID, L.langID as langID,\n");
@@ -137,19 +134,19 @@ public class SememesController extends EntityController<Sememe, Long>
 		sb.append("limit :limit offset :offset");
 
 		// Create the query
-		Session session = HibernateUtil.getSession();
-		NativeQuery<?> query = session.createSQLQuery(sb.toString())
-			.addScalar("id", new LongType())
-			.addScalar("parserID", new StringType())
-			.addScalar("typeID", new IntegerType())
-			.addScalar("langID", new IntegerType())
-			.addScalar("pre", new StringType())
-			.addScalar("main", new StringType())
-			.addScalar("post", new StringType())
-			.addScalar("active", new BooleanType())
-			.addScalar("condition", new IntegerType())
-			.addScalar("tags", new StringType())
-			.addScalar("sememeID", new LongType());
+		final Session session = HibernateUtil.getSession();
+		final NativeQuery<Object[]> query = session.createNativeQuery(sb.toString(), Object[].class)
+			.addScalar("id", StandardBasicTypes.LONG)
+			.addScalar("parserID", StandardBasicTypes.STRING)
+			.addScalar("typeID", StandardBasicTypes.INTEGER)
+			.addScalar("langID", StandardBasicTypes.INTEGER)
+			.addScalar("pre", StandardBasicTypes.STRING)
+			.addScalar("main", StandardBasicTypes.STRING)
+			.addScalar("post", StandardBasicTypes.STRING)
+			.addScalar("active", StandardBasicTypes.BOOLEAN)
+			.addScalar("condition", StandardBasicTypes.INTEGER)
+			.addScalar("tags", StandardBasicTypes.STRING)
+			.addScalar("sememeID", StandardBasicTypes.LONG);
 
 		query.setParameter("offset", 0);
 		query.setParameter("limit", MAX_LEXEMES);
@@ -179,24 +176,9 @@ public class SememesController extends EntityController<Sememe, Long>
 	{
 		SememeSlim slim = null;
 		try {
-			NativeQuery<?> lexemesQuery = createLSememeSlimQuery(id);
-			Object[] result = (Object[]) HibernateUtil.getSingleResult(lexemesQuery);
-
-			if (result != null) {
-				slim = new SememeSlim(
-					(Long) result[0],		// id
-					(String) result[1],		// internalNale
-					(Boolean) result[2],	// active
-					(String) result[3],		// spec
-					(Long) result[4],		// lexemeID
-					(Integer) result[5],	// typeID
-					(Integer) result[6],	// langID
-					(Boolean) result[7],	// lexActive
-					(String) result[8],		// pre
-					(String) result[9],		// main
-					(String) result[10]		// post
-				);
-			}
+			// TODO (hibernate-update): test this part intensively
+			final NativeQuery<SememeSlim> lexemesQuery = createLSememeSlimQuery(id);
+			slim = HibernateUtil.getSingleResult(lexemesQuery);
 		} catch (Exception e) {
 			LOG.error("Error fetching instance of type " + Lexeme.class.getSimpleName(), e);
 			throw new CodeException(ErrorCode.Admin_EntityOperation,
@@ -206,9 +188,9 @@ public class SememesController extends EntityController<Sememe, Long>
 		return slim;
 	}
 
-	private NativeQuery<?> createLSememeSlimQuery(long sememeID)
+	private NativeQuery<SememeSlim> createLSememeSlimQuery(long sememeID)
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
 		// Query (Q030)
 		sb.append("select S.id as id, S.internalName as internalName, S.active as active, S.spec as spec,\n");
@@ -219,19 +201,19 @@ public class SememesController extends EntityController<Sememe, Long>
 		sb.append("where S.id = :sememeID");
 
 		// Create the query
-		Session session = HibernateUtil.getSession();
-		NativeQuery<?> query = session.createSQLQuery(sb.toString())
-			.addScalar("id", new LongType())
-			.addScalar("internalName", new StringType())
-			.addScalar("active", new BooleanType())
-			.addScalar("spec", new StringType())
-			.addScalar("lexemeID", new LongType())
-			.addScalar("typeID", new IntegerType())
-			.addScalar("langID", new IntegerType())
-			.addScalar("lexActive", new BooleanType())
-			.addScalar("pre", new StringType())
-			.addScalar("main", new StringType())
-			.addScalar("post", new StringType());
+		final Session session = HibernateUtil.getSession();
+		final NativeQuery<SememeSlim> query = session.createNativeQuery(sb.toString(), SememeSlim.class)
+			.addScalar("id", StandardBasicTypes.LONG)
+			.addScalar("internalName", StandardBasicTypes.STRING)
+			.addScalar("active", StandardBasicTypes.BOOLEAN)
+			.addScalar("spec", StandardBasicTypes.STRING)
+			.addScalar("lexemeID", StandardBasicTypes.LONG)
+			.addScalar("typeID", StandardBasicTypes.INTEGER)
+			.addScalar("langID", StandardBasicTypes.INTEGER)
+			.addScalar("lexActive", StandardBasicTypes.BOOLEAN)
+			.addScalar("pre", StandardBasicTypes.STRING)
+			.addScalar("main", StandardBasicTypes.STRING)
+			.addScalar("post", StandardBasicTypes.STRING);
 
 		query.setParameter("sememeID", sememeID);
 

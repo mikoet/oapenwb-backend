@@ -4,19 +4,17 @@ package dk.ule.oapenwb.entity.content.basedata.tlConfig;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
 import dk.ule.oapenwb.logic.admin.generic.IEntity;
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.LinkedList;
@@ -34,7 +32,6 @@ import java.util.List;
 @Entity
 @Table(name = "TypeLanguageConfigs", uniqueConstraints=@UniqueConstraint(columnNames={"lexemeTypeID", "langID"}))
 @Audited
-@TypeDefs({ @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class) })
 @NoArgsConstructor
 @AllArgsConstructor
 public class TypeLanguageConfig implements IEntity<Integer>
@@ -60,9 +57,9 @@ public class TypeLanguageConfig implements IEntity<Integer>
 	@JsonView(Views.REST.class)
 	private int langID;
 
-	@Type(type = "jsonb")
-	@Column(columnDefinition = "jsonb")
 	@Valid
+	@Column(columnDefinition = "jsonb")
+	@Type(JsonBinaryType.class)
 	@JsonView(Views.REST.class)
 	private List<FormTypePos> formTypePositions = new LinkedList<>();
 

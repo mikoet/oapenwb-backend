@@ -3,6 +3,7 @@
 package dk.ule.oapenwb.util;
 
 import dk.ule.oapenwb.data.UserRevisionListener;
+import jakarta.persistence.Table;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -12,7 +13,6 @@ import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.Table;
 import java.util.List;
 
 /**
@@ -115,11 +115,11 @@ public class HibernateUtil
 		if (list == null || list.isEmpty()) {
 			return null;
 		}
-		return list.get(0);
+		return list.getFirst();
 	}
 
 	/**
-	 * @param clazz Class instance that is an {@link javax.persistence.Entity}.
+	 * @param clazz Class instance that is an {@link jakarta.persistence.Entity}.
 	 * @return The table name from the {@link Table} annotation if present. If not the class' simple name will be returned.
 	 */
 	public static String getTableName(Class clazz)

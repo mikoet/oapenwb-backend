@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.entity.basis;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
 public class ShowNameConverter implements AttributeConverter<ShowName, Byte>

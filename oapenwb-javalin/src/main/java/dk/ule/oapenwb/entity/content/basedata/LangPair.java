@@ -8,11 +8,10 @@ import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.logic.admin.generic.IEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
-
-import javax.persistence.*;
 
 /**
  * A pair of two {@link Language}s. Creating a pairs of languages is what allows creating mappings between
