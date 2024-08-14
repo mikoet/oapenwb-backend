@@ -1,0 +1,20 @@
+// SPDX-FileCopyrightText: © 2024 Michael Köther <mkoether38@gmail.com>
+// SPDX-License-Identifier: AGPL-3.0-only
+
+syntax = "proto3";
+
+package dk.ule.oapenwb.rpc.v1.test;
+
+option java_multiple_files = true;
+option java_outer_classname = "TestProto";
+
+service Test {
+	rpc test(TestRequest) returns (TestResponse) {};
+}
+
+message TestRequest {
+}
+
+message TestResponse {
+	string some_string = 1;
+}
