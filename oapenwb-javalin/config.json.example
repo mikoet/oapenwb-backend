@@ -35,5 +35,6 @@
 	"importConfig": {
 		"inputDir": "",
 		"outputDir": ""
-	}
+	},
+     "rpcHostPort": 60300
 }
