@@ -34,7 +34,7 @@ public class DictSpring
 			HealthCheckResponse response = this.healthStub.check(HealthCheckRequest.newBuilder().build());
 			return response.getStatus() == HealthCheckResponse.ServingStatus.SERVING;
 		} catch (StatusRuntimeException e) {
-			log.error("Error checking health status");
+			log.debug("Error checking health status");
 		}
 		return false;
 	}

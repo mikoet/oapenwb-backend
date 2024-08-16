@@ -23,9 +23,11 @@ import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.setting.SaxonFirstImportSetting;
 import dk.ule.oapenwb.entity.basis.RoleType;
 import dk.ule.oapenwb.logic.users.LoginToken;
+import dk.ule.oapenwb.rpc.DictSpring;
 import dk.ule.oapenwb.util.CurrentUser;
 import dk.ule.oapenwb.util.EmailUtil;
 import dk.ule.oapenwb.util.HibernateUtil;
+import io.grpc.StatusRuntimeException;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -96,6 +98,8 @@ public class Dict
 
 	public void run() throws IOException, CodeException
 	{
+		LOG.info("Starting service oapenwb-javalin.");
+
 		// Create a customized ObjectMapper for Jackson
 		final ObjectMapper objMapper =  new ObjectMapper(); // JavalinJackson.Companion.defaultMapper();
 		objMapper.setConfig(objMapper.getSerializationConfig().withView(Views.REST.class));
@@ -116,11 +120,31 @@ public class Dict
 		// Update appConfig instance with file content
 		objMapper.readerForUpdating(appConfig).readValue(Files.readString(Paths.get(configFile)));
 
+		// Check for RPC host (oapenwb-spring) health before continuing
+		final DictSpring dictSpring = injector.getInstance(DictSpring.class);
+		if (!dictSpring.isHealthy()) {
+			int checkCount = 0;
+			do {
+				if (checkCount % 300 == 0) {
+					LOG.info("RPC host (oapenwb-spring) is not healthy.");
+				}
+				checkCount++;
+
+				try {
+					Thread.sleep(1_000);
+				} catch (InterruptedException e) {
+					LOG.info("Couldn't sleep ;).", e);
+				}
+			} while (!dictSpring.isHealthy());
+		}
+		LOG.info("RPC host (oapenwb-spring) is healthy.");
+
 		// Initialize email configuration if needed
 		if (appConfig.isSendEmails()) {
 			EmailUtil.configureEmail(appConfig.getEmailConfig());
 		}
 
+		// TODO Make DataInitializer disengageable, or move data initialization into oapenwb-spring.
 		// Initializes database if necessary as well as Hibernate
 		final DataInitializer dataInit = new DataInitializer(getRunMode(), appConfig);
 		dataInit.run();
