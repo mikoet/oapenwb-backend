@@ -14,6 +14,7 @@
 	<modules>
 		<module>oapenwb-javalin</module>
 		<module>oapenwb-spring</module>
+		<module>oapenwb-entities</module>
 		<module>oapenwb-interface</module>
 	</modules>
 
