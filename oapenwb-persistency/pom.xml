@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>dk.ule</groupId>
-	<artifactId>oapenwb-entities</artifactId>
+	<artifactId>oapenwb-persistency</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 
 	<properties>
