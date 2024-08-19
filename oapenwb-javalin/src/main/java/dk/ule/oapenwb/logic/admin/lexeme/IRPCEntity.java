@@ -4,7 +4,7 @@ package dk.ule.oapenwb.logic.admin.lexeme;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.base.Views;
-import dk.ule.oapenwb.entity.basis.ApiAction;
+import dk.ule.oapenwb.entity.ApiAction;
 
 /**
  * Interface for entities participating in Remote Procedure Calls.

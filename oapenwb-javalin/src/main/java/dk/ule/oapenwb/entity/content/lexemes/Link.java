@@ -4,7 +4,7 @@ package dk.ule.oapenwb.entity.content.lexemes;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.base.Views;
-import dk.ule.oapenwb.entity.basis.ApiAction;
+import dk.ule.oapenwb.entity.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.LinkType;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;

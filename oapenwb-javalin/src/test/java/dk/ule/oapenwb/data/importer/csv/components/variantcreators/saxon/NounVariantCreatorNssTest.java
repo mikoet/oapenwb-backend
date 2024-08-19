@@ -6,7 +6,7 @@ import dk.ule.oapenwb.data.importer.VariantUtil;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.AbstractVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
-import dk.ule.oapenwb.entity.basis.ApiAction;
+import dk.ule.oapenwb.entity.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
 import dk.ule.oapenwb.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
