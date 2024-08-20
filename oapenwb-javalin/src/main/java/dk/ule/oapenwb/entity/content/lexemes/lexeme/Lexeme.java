@@ -3,7 +3,7 @@
 package dk.ule.oapenwb.entity.content.lexemes.lexeme;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.base.Views;
+import dk.ule.oapenwb.entity.Views;
 import dk.ule.oapenwb.entity.ApiAction;
 import dk.ule.oapenwb.logic.admin.lexeme.IRPCEntity;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;

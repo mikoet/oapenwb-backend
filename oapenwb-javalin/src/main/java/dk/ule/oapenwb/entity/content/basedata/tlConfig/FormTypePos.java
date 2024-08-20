@@ -3,7 +3,7 @@
 package dk.ule.oapenwb.entity.content.basedata.tlConfig;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.base.Views;
+import dk.ule.oapenwb.entity.Views;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -5,7 +5,7 @@ package dk.ule.oapenwb.entity.ui;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.base.Views;
+import dk.ule.oapenwb.entity.Views;
 import dk.ule.oapenwb.logic.admin.generic.IEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

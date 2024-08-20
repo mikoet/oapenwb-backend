@@ -3,7 +3,7 @@
 package dk.ule.oapenwb.logic.admin.syngroup;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.base.Views;
+import dk.ule.oapenwb.entity.Views;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

@@ -3,7 +3,7 @@
 package dk.ule.oapenwb.entity.content.lexemes;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.base.Views;
+import dk.ule.oapenwb.entity.Views;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
