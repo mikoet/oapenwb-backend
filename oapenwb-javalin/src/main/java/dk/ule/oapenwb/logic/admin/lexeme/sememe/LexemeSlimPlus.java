@@ -3,7 +3,7 @@
 package dk.ule.oapenwb.logic.admin.lexeme.sememe;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.entity.Views;
+import dk.ule.oapenwb.persistency.entity.Views;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemeSlimDTO;
 import lombok.AllArgsConstructor;

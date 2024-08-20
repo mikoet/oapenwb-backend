@@ -10,7 +10,7 @@ import dk.ule.oapenwb.data.importer.csv.components.sememecreators.DefaultSememeC
 import dk.ule.oapenwb.data.importer.csv.components.sememecreators.ISememeCreator;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.data.importer.messages.MessageType;
-import dk.ule.oapenwb.entity.ApiAction;
+import dk.ule.oapenwb.persistency.entity.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;

@@ -5,7 +5,7 @@ package dk.ule.oapenwb.logic.admin.generic;
 import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
-import dk.ule.oapenwb.entity.IEntity;
+import dk.ule.oapenwb.persistency.entity.IEntity;
 import dk.ule.oapenwb.logic.admin.common.FilterCriterion;
 import dk.ule.oapenwb.logic.context.Context;
 import dk.ule.oapenwb.logic.context.ITransaction;

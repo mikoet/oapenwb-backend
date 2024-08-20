@@ -4,8 +4,8 @@ package dk.ule.oapenwb.entity.ui;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.entity.IEntity;
-import dk.ule.oapenwb.entity.Views;
+import dk.ule.oapenwb.persistency.entity.IEntity;
+import dk.ule.oapenwb.persistency.entity.Views;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

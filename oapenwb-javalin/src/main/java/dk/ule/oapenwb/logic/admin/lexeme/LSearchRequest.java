@@ -3,7 +3,7 @@
 package dk.ule.oapenwb.logic.admin.lexeme;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.entity.Views;
+import dk.ule.oapenwb.persistency.entity.Views;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;

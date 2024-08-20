@@ -4,7 +4,7 @@ package dk.ule.oapenwb.data.importer;
 
 import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.base.error.CodeException;
-import dk.ule.oapenwb.entity.ApiAction;
+import dk.ule.oapenwb.persistency.entity.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
 import dk.ule.oapenwb.entity.content.basedata.LexemeType;

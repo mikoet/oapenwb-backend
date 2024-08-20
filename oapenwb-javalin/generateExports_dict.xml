@@ -58,7 +58,7 @@
 				<configuration>
 					<jsonLibrary>jackson2</jsonLibrary>
 					<jackson2Configuration>
-						<view>dk.ule.oapenwb.entity.Views$REST</view>
+						<view>dk.ule.oapenwb.persistency.entity.Views$REST</view>
 					</jackson2Configuration>
 					<classes>
 						<class>dk.ule.oapenwb.logic.search.autocomplete.ACSearchRequest</class>

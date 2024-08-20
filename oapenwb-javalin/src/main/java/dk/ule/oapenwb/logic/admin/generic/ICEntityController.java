@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.admin.generic;
 
-import dk.ule.oapenwb.entity.IEntity;
+import dk.ule.oapenwb.persistency.entity.IEntity;
 
 import java.io.Serializable;
 

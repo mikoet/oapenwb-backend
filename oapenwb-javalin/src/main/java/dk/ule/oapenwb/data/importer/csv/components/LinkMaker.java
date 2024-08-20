@@ -5,7 +5,7 @@ package dk.ule.oapenwb.data.importer.csv.components;
 import dk.ule.oapenwb.AdminControllers;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterConfig;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterContext;
-import dk.ule.oapenwb.entity.ApiAction;
+import dk.ule.oapenwb.persistency.entity.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.LinkType;
 import dk.ule.oapenwb.entity.content.lexemes.Link;
 import lombok.Getter;

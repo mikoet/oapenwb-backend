@@ -7,7 +7,7 @@ import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.base.error.IMessage;
 import dk.ule.oapenwb.base.error.Message;
 import dk.ule.oapenwb.base.error.MultiCodeException;
-import dk.ule.oapenwb.entity.ApiAction;
+import dk.ule.oapenwb.persistency.entity.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.*;
 import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.entity.content.lexemes.Link;

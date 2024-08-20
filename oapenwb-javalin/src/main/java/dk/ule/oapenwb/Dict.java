@@ -20,7 +20,7 @@ import dk.ule.oapenwb.data.importer.csv.CheckType;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterConfig;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.setting.SaxonFirstImportSetting;
-import dk.ule.oapenwb.entity.Views;
+import dk.ule.oapenwb.persistency.entity.Views;
 import dk.ule.oapenwb.entity.basis.RoleType;
 import dk.ule.oapenwb.logic.users.LoginToken;
 import dk.ule.oapenwb.rpc.DictSpring;

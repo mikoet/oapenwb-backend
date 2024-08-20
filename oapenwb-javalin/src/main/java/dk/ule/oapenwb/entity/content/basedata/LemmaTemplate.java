@@ -4,8 +4,8 @@ package dk.ule.oapenwb.entity.content.basedata;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.entity.IEntity;
-import dk.ule.oapenwb.entity.Views;
+import dk.ule.oapenwb.persistency.entity.IEntity;
+import dk.ule.oapenwb.persistency.entity.Views;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.lexeme.LemmaTemplateProcessor;

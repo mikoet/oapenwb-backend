@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
-import dk.ule.oapenwb.entity.ApiAction;
+import dk.ule.oapenwb.persistency.entity.ApiAction;
 import dk.ule.oapenwb.entity.content.lexemes.SynGroup;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
