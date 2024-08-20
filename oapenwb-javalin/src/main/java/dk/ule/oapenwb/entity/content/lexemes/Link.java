@@ -8,7 +8,7 @@ import dk.ule.oapenwb.entity.ApiAction;
 import dk.ule.oapenwb.entity.content.basedata.LinkType;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
-import dk.ule.oapenwb.logic.admin.lexeme.IRPCEntity;
+import dk.ule.oapenwb.entity.IRPCEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.entity.Views;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
-import dk.ule.oapenwb.logic.admin.generic.IEntity;
+import dk.ule.oapenwb.entity.IEntity;
 import dk.ule.oapenwb.logic.admin.lexeme.LemmaTemplateProcessor;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;

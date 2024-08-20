@@ -8,6 +8,7 @@ import dk.ule.oapenwb.base.error.IMessage;
 import dk.ule.oapenwb.base.error.Message;
 import dk.ule.oapenwb.base.error.MultiCodeException;
 import dk.ule.oapenwb.entity.ApiAction;
+import dk.ule.oapenwb.entity.IRPCEntity;
 import dk.ule.oapenwb.entity.content.basedata.LangPair;
 import dk.ule.oapenwb.entity.content.basedata.LemmaTemplate;
 import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;

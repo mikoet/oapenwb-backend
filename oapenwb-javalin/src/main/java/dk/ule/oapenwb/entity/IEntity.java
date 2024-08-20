@@ -1,9 +1,12 @@
 // SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-only
-package dk.ule.oapenwb.logic.admin.generic;
+package dk.ule.oapenwb.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dk.ule.oapenwb.logic.admin.UiTranslationSetsController;
+import dk.ule.oapenwb.logic.admin.generic.CEntityController;
+import dk.ule.oapenwb.logic.admin.generic.CGEntityController;
+import dk.ule.oapenwb.logic.admin.generic.EntityController;
 
 /**
  * <p>Interface that must be implemented by entities that are to be managed by a generic controller,
