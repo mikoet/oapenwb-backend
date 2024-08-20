@@ -3,12 +3,12 @@
 package dk.ule.oapenwb.entity.content.lexemes;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.entity.Views;
 import dk.ule.oapenwb.entity.ApiAction;
+import dk.ule.oapenwb.entity.IRPCEntity;
+import dk.ule.oapenwb.entity.Views;
 import dk.ule.oapenwb.entity.content.basedata.LinkType;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
-import dk.ule.oapenwb.entity.IRPCEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -4,11 +4,11 @@ package dk.ule.oapenwb.entity.content.lexemes.lexeme;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.entity.Views;
 import dk.ule.oapenwb.entity.ApiAction;
-import dk.ule.oapenwb.entity.content.lexemes.SynGroup;
 import dk.ule.oapenwb.entity.IEntity;
 import dk.ule.oapenwb.entity.IRPCEntity;
+import dk.ule.oapenwb.entity.Views;
+import dk.ule.oapenwb.entity.content.lexemes.SynGroup;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.Data;

@@ -3,9 +3,9 @@
 package dk.ule.oapenwb.entity.content.lexemes;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.entity.Views;
 import dk.ule.oapenwb.entity.ApiAction;
 import dk.ule.oapenwb.entity.IRPCEntity;
+import dk.ule.oapenwb.entity.Views;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeSlim;
 import jakarta.persistence.*;
 import lombok.Data;

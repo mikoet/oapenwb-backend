@@ -3,8 +3,6 @@
 package dk.ule.oapenwb.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.entity.Views;
-import dk.ule.oapenwb.entity.ApiAction;
 
 /**
  * Interface for entities participating in Remote Procedure Calls.

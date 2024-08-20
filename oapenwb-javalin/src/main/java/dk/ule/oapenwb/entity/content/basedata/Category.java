@@ -4,9 +4,9 @@ package dk.ule.oapenwb.entity.content.basedata;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import dk.ule.oapenwb.entity.IEntity;
 import dk.ule.oapenwb.entity.Views;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
-import dk.ule.oapenwb.entity.IEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
