@@ -12,7 +12,7 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.entity.statistics.SearchRun;
-import dk.ule.oapenwb.entity.ui.UiResultCategory;
+import dk.ule.oapenwb.persistency.entity.ui.UiResultCategory;
 import dk.ule.oapenwb.logic.admin.LangPairsController;
 import dk.ule.oapenwb.logic.admin.LexemeTypesController;
 import dk.ule.oapenwb.logic.admin.UiResultCategoriesController;

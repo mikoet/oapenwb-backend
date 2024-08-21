@@ -96,10 +96,10 @@
 						<class>dk.ule.oapenwb.entity.content.lexemes.Mapping</class>
 						<class>dk.ule.oapenwb.entity.content.lexemes.MetaInfo</class>
 
-						<class>dk.ule.oapenwb.entity.ui.UiLanguage</class>
-						<class>dk.ule.oapenwb.entity.ui.UiResultCategory</class>
-						<class>dk.ule.oapenwb.entity.ui.UiTranslationScope</class>
-						<class>dk.ule.oapenwb.entity.ui.UiTranslationSet</class>
+						<class>dk.ule.oapenwb.persistency.entity.ui.UiLanguage</class>
+						<class>dk.ule.oapenwb.persistency.entity.ui.UiResultCategory</class>
+						<class>dk.ule.oapenwb.persistency.entity.ui.UiTranslationScope</class>
+						<class>dk.ule.oapenwb.persistency.entity.ui.UiTranslationSet</class>
 					</classes>
 					<outputKind>module</outputKind>
 				</configuration>

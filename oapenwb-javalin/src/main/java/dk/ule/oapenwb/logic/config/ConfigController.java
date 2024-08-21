@@ -10,7 +10,7 @@ import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.persistency.entity.Views;
 import dk.ule.oapenwb.entity.content.basedata.*;
-import dk.ule.oapenwb.entity.ui.UiLanguage;
+import dk.ule.oapenwb.persistency.entity.ui.UiLanguage;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.TimeUtil;
 import org.hibernate.Session;
