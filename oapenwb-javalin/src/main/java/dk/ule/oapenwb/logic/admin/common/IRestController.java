@@ -3,8 +3,8 @@
 package dk.ule.oapenwb.logic.admin.common;
 
 import dk.ule.oapenwb.base.error.CodeException;
-import dk.ule.oapenwb.logic.admin.generic.IEntity;
 import dk.ule.oapenwb.logic.context.Context;
+import dk.ule.oapenwb.persistency.entity.IEntity;
 
 import java.util.List;
 

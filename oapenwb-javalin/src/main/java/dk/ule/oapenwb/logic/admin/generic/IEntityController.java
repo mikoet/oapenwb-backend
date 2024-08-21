@@ -3,6 +3,7 @@
 package dk.ule.oapenwb.logic.admin.generic;
 
 import dk.ule.oapenwb.logic.admin.common.IRestController;
+import dk.ule.oapenwb.persistency.entity.IEntity;
 
 public interface IEntityController<T extends IEntity<S>, S> extends IRestController<T, S>
 {

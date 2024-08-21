@@ -4,9 +4,9 @@ package dk.ule.oapenwb.logic.admin;
 
 import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.error.CodeException;
-import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.logic.admin.common.FilterCriterion;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
+import dk.ule.oapenwb.persistency.entity.content.basedata.Language;
 
 import java.util.HashMap;
 import java.util.List;

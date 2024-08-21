@@ -3,8 +3,8 @@
 package dk.ule.oapenwb.logic.admin;
 
 import com.google.inject.Singleton;
-import dk.ule.oapenwb.entity.content.basedata.LinkType;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
+import dk.ule.oapenwb.persistency.entity.content.basedata.LinkType;
 
 /**
  * <p>The LinkTypesController manages the {@link LinkType} instances and therefor utilises the

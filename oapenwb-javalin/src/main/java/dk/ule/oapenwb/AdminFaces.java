@@ -5,12 +5,12 @@ package dk.ule.oapenwb;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import dk.ule.oapenwb.entity.content.basedata.*;
-import dk.ule.oapenwb.entity.content.basedata.tlConfig.TypeLanguageConfig;
-import dk.ule.oapenwb.entity.ui.UiLanguage;
-import dk.ule.oapenwb.entity.ui.UiTranslationScope;
 import dk.ule.oapenwb.faces.UiTranslationSetsFace;
 import dk.ule.oapenwb.faces.admin.*;
+import dk.ule.oapenwb.persistency.entity.content.basedata.*;
+import dk.ule.oapenwb.persistency.entity.content.basedata.tlConfig.TypeLanguageConfig;
+import dk.ule.oapenwb.persistency.entity.ui.UiLanguage;
+import dk.ule.oapenwb.persistency.entity.ui.UiTranslationScope;
 import lombok.Getter;
 import lombok.Setter;
 

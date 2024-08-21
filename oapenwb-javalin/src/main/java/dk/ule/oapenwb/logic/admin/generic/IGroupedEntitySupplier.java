@@ -3,6 +3,7 @@
 package dk.ule.oapenwb.logic.admin.generic;
 
 import dk.ule.oapenwb.base.error.CodeException;
+import dk.ule.oapenwb.persistency.entity.IEntity;
 
 import java.io.Serializable;
 import java.util.List;

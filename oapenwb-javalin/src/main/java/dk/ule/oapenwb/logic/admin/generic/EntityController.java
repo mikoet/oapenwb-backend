@@ -8,6 +8,7 @@ import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.logic.admin.common.FilterCriterion;
 import dk.ule.oapenwb.logic.context.Context;
 import dk.ule.oapenwb.logic.context.ITransaction;
+import dk.ule.oapenwb.persistency.entity.IEntity;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
 import jakarta.persistence.OptimisticLockException;

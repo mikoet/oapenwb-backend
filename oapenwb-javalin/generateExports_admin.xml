@@ -58,7 +58,7 @@
 				<configuration>
 					<jsonLibrary>jackson2</jsonLibrary>
 					<jackson2Configuration>
-						<view>dk.ule.oapenwb.base.Views$REST</view>
+						<view>dk.ule.oapenwb.persistency.entity.Views$REST</view>
 					</jackson2Configuration>
 					<classes>
 						<class>dk.ule.oapenwb.logic.admin.lexeme.LSearchRequest</class>
@@ -69,37 +69,37 @@
 						<class>dk.ule.oapenwb.logic.admin.lexeme.sememe.SSearchRequest</class>
 						<class>dk.ule.oapenwb.logic.admin.lexeme.sememe.SSearchResult</class>
 						<class>dk.ule.oapenwb.logic.admin.lexeme.sememe.LexemeSlimPlus</class>
-						<class>dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeSlim</class>
+						<class>dk.ule.oapenwb.persistency.dto.SememeSlim</class>
 
 						<class>dk.ule.oapenwb.logic.admin.syngroup.SGSearchRequest</class>
 						<class>dk.ule.oapenwb.logic.admin.syngroup.SGSearchResult</class>
 						<class>dk.ule.oapenwb.logic.admin.syngroup.SynGroupItem</class>
 
-						<class>dk.ule.oapenwb.entity.content.basedata.Language</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.LangOrthoMapping</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.LangPair</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.Orthography</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.LexemeType</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.LexemeFormType</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.tlConfig.FormTypePos</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.tlConfig.TypeLanguageConfig</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.LemmaTemplate</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.Category</class>
-						<class>dk.ule.oapenwb.entity.content.basedata.Level</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.basedata.Language</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.basedata.LangOrthoMapping</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.basedata.LangPair</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.basedata.Orthography</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.basedata.LexemeType</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.basedata.LexemeFormType</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.basedata.tlConfig.FormTypePos</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.basedata.tlConfig.TypeLanguageConfig</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.basedata.LemmaTemplate</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.basedata.Category</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.basedata.Level</class>
 
-						<class>dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.lexeme.Tag</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.LexemeForm</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.Link</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.Mapping</class>
-						<class>dk.ule.oapenwb.entity.content.lexemes.MetaInfo</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Lexeme</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Variant</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Sememe</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Tag</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.lexemes.LexemeForm</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.lexemes.Link</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.lexemes.Mapping</class>
+						<class>dk.ule.oapenwb.persistency.entity.content.lexemes.MetaInfo</class>
 
-						<class>dk.ule.oapenwb.entity.ui.UiLanguage</class>
-						<class>dk.ule.oapenwb.entity.ui.UiResultCategory</class>
-						<class>dk.ule.oapenwb.entity.ui.UiTranslationScope</class>
-						<class>dk.ule.oapenwb.entity.ui.UiTranslationSet</class>
+						<class>dk.ule.oapenwb.persistency.entity.ui.UiLanguage</class>
+						<class>dk.ule.oapenwb.persistency.entity.ui.UiResultCategory</class>
+						<class>dk.ule.oapenwb.persistency.entity.ui.UiTranslationScope</class>
+						<class>dk.ule.oapenwb.persistency.entity.ui.UiTranslationSet</class>
 					</classes>
 					<outputKind>module</outputKind>
 				</configuration>

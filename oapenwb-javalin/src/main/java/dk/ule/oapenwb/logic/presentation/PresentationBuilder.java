@@ -3,10 +3,10 @@
 package dk.ule.oapenwb.logic.presentation;
 
 import dk.ule.oapenwb.base.error.CodeException;
-import dk.ule.oapenwb.entity.content.lexemes.SynGroup;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.presentation.options.PresentationOptions;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.SynGroup;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Sememe;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.util.Pair;
 
 import java.util.HashMap;

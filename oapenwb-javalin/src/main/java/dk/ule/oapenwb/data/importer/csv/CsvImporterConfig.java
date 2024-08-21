@@ -4,6 +4,7 @@ package dk.ule.oapenwb.data.importer.csv;
 
 import dk.ule.oapenwb.data.importer.csv.components.*;
 import dk.ule.oapenwb.data.importer.messages.MessageType;
+import dk.ule.oapenwb.persistency.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.util.SecurityUtil;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -80,7 +81,7 @@ public class CsvImporterConfig
 
 	/**
 	 * Index of the column that contains the Part of Speech tag which is used to reference
-	 * the {@link dk.ule.oapenwb.entity.content.basedata.LexemeType}.
+	 * the {@link LexemeType}.
 	 */
 	private int posColIndex;
 

@@ -3,8 +3,8 @@
 package dk.ule.oapenwb.faces.admin;
 
 import com.google.inject.Inject;
-import dk.ule.oapenwb.entity.content.basedata.LinkType;
 import dk.ule.oapenwb.logic.admin.LinkTypesController;
+import dk.ule.oapenwb.persistency.entity.content.basedata.LinkType;
 
 /**
  * Javalin face to the {@link LinkTypesController}.

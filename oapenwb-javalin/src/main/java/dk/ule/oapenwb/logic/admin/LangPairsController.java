@@ -5,10 +5,10 @@ package dk.ule.oapenwb.logic.admin;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.error.CodeException;
-import dk.ule.oapenwb.entity.content.basedata.LangPair;
-import dk.ule.oapenwb.entity.content.basedata.Language;
 import dk.ule.oapenwb.logic.admin.generic.EntityController;
 import dk.ule.oapenwb.logic.context.Context;
+import dk.ule.oapenwb.persistency.entity.content.basedata.LangPair;
+import dk.ule.oapenwb.persistency.entity.content.basedata.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

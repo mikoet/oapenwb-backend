@@ -11,7 +11,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.base.RunMode;
-import dk.ule.oapenwb.base.Views;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.data.DataInitializer;
 import dk.ule.oapenwb.data.importer.FileImporter;
@@ -23,11 +22,11 @@ import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.setting.SaxonFirstImportSetting;
 import dk.ule.oapenwb.entity.basis.RoleType;
 import dk.ule.oapenwb.logic.users.LoginToken;
+import dk.ule.oapenwb.persistency.entity.Views;
 import dk.ule.oapenwb.rpc.DictSpring;
 import dk.ule.oapenwb.util.CurrentUser;
 import dk.ule.oapenwb.util.EmailUtil;
 import dk.ule.oapenwb.util.HibernateUtil;
-import io.grpc.StatusRuntimeException;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -508,7 +507,7 @@ public class Dict
 		});
 
 		// Set a shutdown hook to know when the application was terminated
-		Thread shutdownHook = new Thread(() -> shutdownHook(app));
+		Thread shutdownHook = new Thread(() -> shutdownHook(app, dictSpring));
 		Runtime.getRuntime().addShutdownHook(shutdownHook);
 
 		// Set the JWTAccessManager
@@ -541,12 +540,14 @@ public class Dict
 	 * 
 	 * @param app the Javalin app instance
 	 */
-	private void shutdownHook(final Javalin app)
+	private void shutdownHook(final Javalin app, final DictSpring dictSpring)
 	{
 		try {
 			LOG.info("Shutting down application…");
 			app.stop();
-			Thread.sleep(1000);
+			Thread.sleep(250);
+			dictSpring.shutdown();
+			Thread.sleep(1750);
 			LOG.info("Done.");
 		} catch (InterruptedException e) {
 			LOG.error("Failed", e);

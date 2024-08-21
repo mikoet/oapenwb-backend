@@ -3,8 +3,8 @@
 package dk.ule.oapenwb.data.importer.csv.components.variantcreators;
 
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
-import dk.ule.oapenwb.entity.content.basedata.Language;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import dk.ule.oapenwb.persistency.entity.content.basedata.Language;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Variant;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashSet;

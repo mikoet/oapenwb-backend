@@ -29,6 +29,10 @@ public class DictSpring
 		this.healthStub = HealthGrpc.newBlockingStub(this.channel);
 	}
 
+	public void shutdown() {
+		this.channel.shutdown();
+	}
+
 	public boolean isHealthy() {
 		try {
 			HealthCheckResponse response = this.healthStub.check(HealthCheckRequest.newBuilder().build());

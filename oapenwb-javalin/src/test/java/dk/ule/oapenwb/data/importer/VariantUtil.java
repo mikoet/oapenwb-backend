@@ -3,9 +3,9 @@
 package dk.ule.oapenwb.data.importer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import dk.ule.oapenwb.entity.basis.ApiAction;
-import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import dk.ule.oapenwb.persistency.entity.ApiAction;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.LexemeForm;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Variant;
 import io.javalin.json.JavalinJackson;
 
 import java.util.List;

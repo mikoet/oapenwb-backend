@@ -4,8 +4,8 @@ package dk.ule.oapenwb.faces.admin;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import dk.ule.oapenwb.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.logic.admin.LexemeTypesController;
+import dk.ule.oapenwb.persistency.entity.content.basedata.LexemeType;
 
 @Singleton
 public class LexemeTypesFace extends EntityFace<LexemeType, Integer>

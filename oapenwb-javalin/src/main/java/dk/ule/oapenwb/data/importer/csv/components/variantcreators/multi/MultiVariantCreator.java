@@ -7,9 +7,9 @@ import dk.ule.oapenwb.data.importer.csv.CsvImporterContext;
 import dk.ule.oapenwb.data.importer.csv.CsvRowBasedImporter;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.AbstractVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
-import dk.ule.oapenwb.entity.content.basedata.LexemeFormType;
-import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import dk.ule.oapenwb.persistency.entity.content.basedata.LexemeFormType;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.LexemeForm;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Variant;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;

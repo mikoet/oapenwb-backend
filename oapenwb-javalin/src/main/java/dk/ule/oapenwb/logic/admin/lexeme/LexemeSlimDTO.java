@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.admin.lexeme;
 
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Lexeme;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Sememe;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Variant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

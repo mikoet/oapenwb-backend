@@ -3,12 +3,12 @@
 package dk.ule.oapenwb.logic.presentation;
 
 import dk.ule.oapenwb.base.error.CodeException;
-import dk.ule.oapenwb.entity.content.basedata.Language;
-import dk.ule.oapenwb.entity.content.basedata.Orthography;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.LanguagesController;
 import dk.ule.oapenwb.logic.presentation.options.SingleLemmaOptions;
+import dk.ule.oapenwb.persistency.entity.content.basedata.Language;
+import dk.ule.oapenwb.persistency.entity.content.basedata.Orthography;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Lemma;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Variant;
 
 import java.util.Collections;
 import java.util.List;

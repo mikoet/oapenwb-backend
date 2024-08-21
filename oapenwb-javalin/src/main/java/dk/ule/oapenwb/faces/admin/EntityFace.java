@@ -6,7 +6,7 @@ import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.base.error.Message;
 import dk.ule.oapenwb.logic.admin.generic.EntityController;
-import dk.ule.oapenwb.logic.admin.generic.IEntity;
+import dk.ule.oapenwb.persistency.entity.IEntity;
 import dk.ule.oapenwb.util.json.Response;
 import dk.ule.oapenwb.util.json.ResponseStatus;
 import io.javalin.http.Context;
