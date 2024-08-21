@@ -42,30 +42,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>dk.ule</groupId>
-			<artifactId>oapenwb-javalin</artifactId>
-			<version>0.0.0-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-reload4j</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-envers</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-hikaricp</artifactId>
-				</exclusion>
-			</exclusions>
+			<artifactId>oapenwb-interface</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>dk.ule</groupId>
-			<artifactId>oapenwb-interface</artifactId>
+			<artifactId>oapenwb-persistency</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
 		</dependency>
 
