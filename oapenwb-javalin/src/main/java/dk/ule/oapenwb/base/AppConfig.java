@@ -51,6 +51,9 @@ public class AppConfig
 	@Getter
 	private ImportConfig importConfig = new ImportConfig();
 
+	@Getter
+	private int rpcHostPort = 60_300;
+
 	public static class DbConfig
 	{
 		@Getter

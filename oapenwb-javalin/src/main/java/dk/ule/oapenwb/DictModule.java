@@ -29,6 +29,7 @@ import dk.ule.oapenwb.logic.presentation.ControllerSet;
 import dk.ule.oapenwb.logic.search.SearchController;
 import dk.ule.oapenwb.logic.users.UserController;
 import dk.ule.oapenwb.logic.users.ViolationController;
+import dk.ule.oapenwb.rpc.DictSpring;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -48,6 +49,7 @@ public class DictModule extends AbstractModule
 	private void configureDictClasses()
 	{
 		bind(AppConfig.class).asEagerSingleton();
+		bind(DictSpring.class);
 		bind(DictJwtProvider.class);
 
 		bind(ViolationController.class);
