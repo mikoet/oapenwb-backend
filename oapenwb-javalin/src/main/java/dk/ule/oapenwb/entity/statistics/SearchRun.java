@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.entity.statistics;
 
-import dk.ule.oapenwb.persistency.entity.content.basedata.LangPair;
 import dk.ule.oapenwb.logic.search.Direction;
 import dk.ule.oapenwb.logic.search.DirectionConverter;
+import dk.ule.oapenwb.persistency.entity.content.basedata.LangPair;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

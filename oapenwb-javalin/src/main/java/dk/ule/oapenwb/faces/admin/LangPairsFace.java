@@ -4,8 +4,8 @@ package dk.ule.oapenwb.faces.admin;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import dk.ule.oapenwb.persistency.entity.content.basedata.LangPair;
 import dk.ule.oapenwb.logic.admin.LangPairsController;
+import dk.ule.oapenwb.persistency.entity.content.basedata.LangPair;
 
 @Singleton
 public class LangPairsFace extends EntityFace<LangPair, String>

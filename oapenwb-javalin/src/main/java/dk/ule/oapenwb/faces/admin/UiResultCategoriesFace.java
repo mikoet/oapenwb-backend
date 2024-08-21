@@ -4,8 +4,8 @@ package dk.ule.oapenwb.faces.admin;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import dk.ule.oapenwb.persistency.entity.ui.UiResultCategory;
 import dk.ule.oapenwb.logic.admin.UiResultCategoriesController;
+import dk.ule.oapenwb.persistency.entity.ui.UiResultCategory;
 
 @Singleton
 public class UiResultCategoriesFace extends EntityFace<UiResultCategory, Integer>

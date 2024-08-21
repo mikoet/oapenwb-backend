@@ -4,11 +4,11 @@ package dk.ule.oapenwb.logic.admin;
 
 import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.error.CodeException;
-import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Lexeme;
-import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Tag;
 import dk.ule.oapenwb.logic.admin.generic.EntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemeCreator;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemeUpdater;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Lexeme;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Tag;
 import org.hibernate.Session;
 
 /**

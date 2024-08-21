@@ -3,8 +3,8 @@
 package dk.ule.oapenwb.logic.admin.syngroup;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import dk.ule.oapenwb.persistency.entity.Views;
 import dk.ule.oapenwb.logic.admin.lexeme.sememe.LexemeSlimPlus;
+import dk.ule.oapenwb.persistency.entity.Views;
 import lombok.Data;
 
 import javax.validation.Valid;

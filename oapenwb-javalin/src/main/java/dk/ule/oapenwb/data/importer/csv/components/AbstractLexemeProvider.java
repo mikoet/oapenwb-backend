@@ -10,12 +10,12 @@ import dk.ule.oapenwb.data.importer.csv.components.sememecreators.DefaultSememeC
 import dk.ule.oapenwb.data.importer.csv.components.sememecreators.ISememeCreator;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
 import dk.ule.oapenwb.data.importer.messages.MessageType;
+import dk.ule.oapenwb.logic.admin.lexeme.LexemeDetailedDTO;
 import dk.ule.oapenwb.persistency.entity.ApiAction;
 import dk.ule.oapenwb.persistency.entity.content.basedata.Language;
 import dk.ule.oapenwb.persistency.entity.content.lexemes.LexemeForm;
 import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Variant;
-import dk.ule.oapenwb.logic.admin.lexeme.LexemeDetailedDTO;
 import dk.ule.oapenwb.util.HibernateUtil;
 import lombok.Getter;
 import lombok.Setter;

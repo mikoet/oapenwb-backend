@@ -3,8 +3,8 @@
 package dk.ule.oapenwb.faces.admin;
 
 import com.google.inject.Inject;
-import dk.ule.oapenwb.persistency.entity.content.basedata.Language;
 import dk.ule.oapenwb.logic.admin.LanguagesController;
+import dk.ule.oapenwb.persistency.entity.content.basedata.Language;
 
 public class LanguagesFace extends EntityFace<Language, Integer>
 {

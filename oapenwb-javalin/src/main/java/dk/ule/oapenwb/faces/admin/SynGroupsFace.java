@@ -4,9 +4,9 @@ package dk.ule.oapenwb.faces.admin;
 
 import com.google.inject.Inject;
 import dk.ule.oapenwb.base.error.CodeException;
-import dk.ule.oapenwb.persistency.entity.content.lexemes.SynGroup;
 import dk.ule.oapenwb.logic.admin.syngroup.SGSearchRequest;
 import dk.ule.oapenwb.logic.admin.syngroup.SynGroupsController;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.SynGroup;
 import dk.ule.oapenwb.util.json.Response;
 import dk.ule.oapenwb.util.json.ResponseStatus;
 import io.javalin.http.Context;

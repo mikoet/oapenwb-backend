@@ -4,8 +4,8 @@ package dk.ule.oapenwb.logic.admin.generic;
 
 import com.google.inject.Singleton;
 import dk.ule.oapenwb.base.error.CodeException;
-import dk.ule.oapenwb.persistency.entity.IEntity;
 import dk.ule.oapenwb.logic.context.Context;
+import dk.ule.oapenwb.persistency.entity.IEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
