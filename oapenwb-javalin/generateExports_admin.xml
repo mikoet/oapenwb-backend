@@ -69,7 +69,7 @@
 						<class>dk.ule.oapenwb.logic.admin.lexeme.sememe.SSearchRequest</class>
 						<class>dk.ule.oapenwb.logic.admin.lexeme.sememe.SSearchResult</class>
 						<class>dk.ule.oapenwb.logic.admin.lexeme.sememe.LexemeSlimPlus</class>
-						<class>dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeSlim</class>
+						<class>dk.ule.oapenwb.persistency.dto.SememeSlim</class>
 
 						<class>dk.ule.oapenwb.logic.admin.syngroup.SGSearchRequest</class>
 						<class>dk.ule.oapenwb.logic.admin.syngroup.SGSearchResult</class>

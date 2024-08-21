@@ -1,17 +1,16 @@
 // SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-only
-package dk.ule.oapenwb.logic.admin.lexeme.sememe;
 
-import dk.ule.oapenwb.entity.content.lexemes.Mapping;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
+package dk.ule.oapenwb.persistency.dto;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Slim DTO representation of a {@link Sememe} that is by now used
- * in the {@link Mapping}s and the frontend functionality to create and handle
- * the mappings.
+ * <p>Slim DTO representation of a <b>Sememe</b> that is by now used
+ * in the <b>Mapping</b>s and the frontend functionality to create and handle
+ * the mappings.</p>
  */
 @Getter
 @NoArgsConstructor

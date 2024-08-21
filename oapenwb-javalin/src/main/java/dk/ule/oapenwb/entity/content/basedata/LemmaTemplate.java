@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-only
+
 package dk.ule.oapenwb.entity.content.basedata;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -8,7 +9,6 @@ import dk.ule.oapenwb.persistency.entity.IEntity;
 import dk.ule.oapenwb.persistency.entity.Views;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lemma;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
-import dk.ule.oapenwb.logic.admin.lexeme.LemmaTemplateProcessor;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,7 +27,8 @@ import java.util.Set;
  * will the lemma automatically by either choosing a LemmaTemplate automatically or when a specific LemmaTemplate
  * is set to fill the lemma.</p>
  * <p>The process of picking a LemmaTemplate automatically is depending on properties like lexemeTypeID, langID and
- * orthographyID, and is done by the {@link LemmaTemplateProcessor}.</p>
+ * orthographyID, and is done by a <b>lemma template processor</b> (class LemmaTemplateProcessor in
+ * <b>oapenwb-javalin</b>.</p>
  */
 @Data
 @Entity

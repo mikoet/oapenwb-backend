@@ -9,6 +9,7 @@ import dk.ule.oapenwb.entity.content.lexemes.lexeme.Lexeme;
 import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.logic.admin.generic.EntityController;
 import dk.ule.oapenwb.logic.admin.lexeme.LexemesController;
+import dk.ule.oapenwb.persistency.dto.SememeSlim;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.JsonUtil;
 import dk.ule.oapenwb.util.Pair;

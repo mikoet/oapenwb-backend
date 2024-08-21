@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.persistency.entity.ApiAction;
 import dk.ule.oapenwb.persistency.entity.IRPCEntity;
 import dk.ule.oapenwb.persistency.entity.Views;
-import dk.ule.oapenwb.logic.admin.lexeme.sememe.SememeSlim;
+import dk.ule.oapenwb.persistency.dto.SememeSlim;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
