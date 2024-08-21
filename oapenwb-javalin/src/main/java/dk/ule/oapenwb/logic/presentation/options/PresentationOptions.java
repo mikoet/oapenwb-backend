@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.presentation.options;
 
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Sememe;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.util.Pair;
 
 import java.util.Comparator;

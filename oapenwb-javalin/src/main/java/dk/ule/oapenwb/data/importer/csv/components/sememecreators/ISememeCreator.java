@@ -4,7 +4,7 @@ package dk.ule.oapenwb.data.importer.csv.components.sememecreators;
 
 import dk.ule.oapenwb.data.importer.csv.CsvImporterContext;
 import dk.ule.oapenwb.data.importer.csv.data.RowData;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Sememe;
 
 import java.util.Set;
 

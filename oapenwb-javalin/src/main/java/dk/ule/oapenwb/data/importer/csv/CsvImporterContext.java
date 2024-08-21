@@ -4,7 +4,7 @@ package dk.ule.oapenwb.data.importer.csv;
 
 import dk.ule.oapenwb.data.importer.csv.dto.CrbiResult;
 import dk.ule.oapenwb.data.importer.messages.MessageContainer;
-import dk.ule.oapenwb.entity.content.basedata.Language;
+import dk.ule.oapenwb.persistency.entity.content.basedata.Language;
 import lombok.Data;
 
 import java.util.HashMap;

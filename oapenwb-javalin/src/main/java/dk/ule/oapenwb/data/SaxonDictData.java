@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.data;
 
-import dk.ule.oapenwb.entity.content.basedata.*;
+import dk.ule.oapenwb.persistency.entity.content.basedata.*;
 import dk.ule.oapenwb.persistency.entity.ui.UiResultCategory;
 import dk.ule.oapenwb.util.Pair;
 import org.hibernate.Session;

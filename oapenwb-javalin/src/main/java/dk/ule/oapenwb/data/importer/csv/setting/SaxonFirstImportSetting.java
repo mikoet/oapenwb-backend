@@ -15,11 +15,11 @@ import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.MiscVar
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.NounVariantCreator;
 import dk.ule.oapenwb.data.importer.csv.components.variantcreators.saxon.VerbVariantCreator;
 import dk.ule.oapenwb.data.importer.messages.MessageType;
-import dk.ule.oapenwb.entity.content.basedata.Language;
-import dk.ule.oapenwb.entity.content.basedata.LexemeType;
-import dk.ule.oapenwb.entity.content.basedata.LinkType;
-import dk.ule.oapenwb.entity.content.basedata.Orthography;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import dk.ule.oapenwb.persistency.entity.content.basedata.Language;
+import dk.ule.oapenwb.persistency.entity.content.basedata.LexemeType;
+import dk.ule.oapenwb.persistency.entity.content.basedata.LinkType;
+import dk.ule.oapenwb.persistency.entity.content.basedata.Orthography;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.logic.admin.common.FilterCriterion;
 import dk.ule.oapenwb.util.Pair;
 

@@ -4,7 +4,7 @@ package dk.ule.oapenwb.faces.admin;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Tag;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Tag;
 import dk.ule.oapenwb.logic.admin.TagsController;
 
 /**

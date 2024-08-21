@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-only
-package dk.ule.oapenwb.entity.content.basedata;
+package dk.ule.oapenwb.persistency.entity.content.basedata;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.persistency.entity.IEntity;
 import dk.ule.oapenwb.persistency.entity.Views;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Sememe;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Sememe;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

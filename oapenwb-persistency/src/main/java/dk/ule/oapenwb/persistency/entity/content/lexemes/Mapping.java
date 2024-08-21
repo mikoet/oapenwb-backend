@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-only
-package dk.ule.oapenwb.entity.content.lexemes;
+package dk.ule.oapenwb.persistency.entity.content.lexemes;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.persistency.entity.ApiAction;

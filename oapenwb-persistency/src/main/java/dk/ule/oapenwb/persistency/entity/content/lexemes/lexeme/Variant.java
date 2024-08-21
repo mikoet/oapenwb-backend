@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-only
-package dk.ule.oapenwb.entity.content.lexemes.lexeme;
+package dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.persistency.entity.ApiAction;
 import dk.ule.oapenwb.persistency.entity.IRPCEntity;
 import dk.ule.oapenwb.persistency.entity.Views;
-import dk.ule.oapenwb.entity.content.lexemes.LexemeForm;
-import dk.ule.oapenwb.entity.content.lexemes.MetaInfo;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.LexemeForm;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.MetaInfo;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.Data;

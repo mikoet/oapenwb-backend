@@ -4,7 +4,7 @@ package dk.ule.oapenwb.logic.config;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import dk.ule.oapenwb.persistency.entity.Views;
-import dk.ule.oapenwb.entity.content.basedata.*;
+import dk.ule.oapenwb.persistency.entity.content.basedata.*;
 import dk.ule.oapenwb.persistency.entity.ui.UiLanguage;
 import lombok.Data;
 

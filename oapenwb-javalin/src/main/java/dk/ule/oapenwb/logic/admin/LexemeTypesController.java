@@ -3,7 +3,7 @@
 package dk.ule.oapenwb.logic.admin;
 
 import com.google.inject.Singleton;
-import dk.ule.oapenwb.entity.content.basedata.LexemeType;
+import dk.ule.oapenwb.persistency.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.logic.admin.generic.CEntityController;
 
 @Singleton

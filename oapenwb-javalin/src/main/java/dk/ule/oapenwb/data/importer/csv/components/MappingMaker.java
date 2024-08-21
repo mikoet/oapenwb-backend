@@ -7,8 +7,8 @@ import dk.ule.oapenwb.base.error.CodeException;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterConfig;
 import dk.ule.oapenwb.data.importer.csv.CsvImporterContext;
 import dk.ule.oapenwb.persistency.entity.ApiAction;
-import dk.ule.oapenwb.entity.content.basedata.LangPair;
-import dk.ule.oapenwb.entity.content.lexemes.Mapping;
+import dk.ule.oapenwb.persistency.entity.content.basedata.LangPair;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.Mapping;
 import lombok.Getter;
 
 import java.util.LinkedList;

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 package dk.ule.oapenwb.logic.admin;
 
-import dk.ule.oapenwb.entity.content.lexemes.Mapping;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.Mapping;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.type.StandardBasicTypes;

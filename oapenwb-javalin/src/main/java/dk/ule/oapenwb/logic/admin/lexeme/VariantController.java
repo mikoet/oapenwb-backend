@@ -4,7 +4,7 @@ package dk.ule.oapenwb.logic.admin.lexeme;
 
 import dk.ule.oapenwb.base.ErrorCode;
 import dk.ule.oapenwb.base.error.CodeException;
-import dk.ule.oapenwb.entity.content.lexemes.lexeme.Variant;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.util.HibernateUtil;
 import dk.ule.oapenwb.util.Pair;
 import org.hibernate.Session;
