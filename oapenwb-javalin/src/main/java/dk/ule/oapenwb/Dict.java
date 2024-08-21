@@ -507,7 +507,7 @@ public class Dict
 		});
 
 		// Set a shutdown hook to know when the application was terminated
-		Thread shutdownHook = new Thread(() -> shutdownHook(app));
+		Thread shutdownHook = new Thread(() -> shutdownHook(app, dictSpring));
 		Runtime.getRuntime().addShutdownHook(shutdownHook);
 
 		// Set the JWTAccessManager
@@ -540,12 +540,14 @@ public class Dict
 	 * 
 	 * @param app the Javalin app instance
 	 */
-	private void shutdownHook(final Javalin app)
+	private void shutdownHook(final Javalin app, final DictSpring dictSpring)
 	{
 		try {
 			LOG.info("Shutting down application…");
 			app.stop();
-			Thread.sleep(1000);
+			Thread.sleep(250);
+			dictSpring.shutdown();
+			Thread.sleep(1750);
 			LOG.info("Done.");
 		} catch (InterruptedException e) {
 			LOG.error("Failed", e);
