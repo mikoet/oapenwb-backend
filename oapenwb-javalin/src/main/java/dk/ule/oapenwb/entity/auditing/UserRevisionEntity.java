@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-only
-package dk.ule.oapenwb.entity.basis;
+
+package dk.ule.oapenwb.entity.auditing;
 
 import dk.ule.oapenwb.data.UserRevisionListener;
 import jakarta.persistence.*;
@@ -10,7 +11,12 @@ import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
 
 /**
- * RevisionEntity for the revisions of data changes in the audited entities.
+ * <p>RevisionEntity for the revisions of data changes in the audited entities.</p>
+ *
+ * <p>This entity is defined in each of the currently two platforms (<b>oapenwb-javalin</b> and
+ * <b>oapenwb-spring</b>). Both entities are mapped for the exact same table and with the exact
+ * same columns. The difference, however, is that each of the two entities uses a different
+ * RevisionListener which is platform specific.</p>
  */
 @Data
 @Entity
@@ -18,6 +24,8 @@ import org.hibernate.envers.RevisionTimestamp;
 @RevisionEntity(UserRevisionListener.class)
 public class UserRevisionEntity /*extends DefaultRevisionEntity*/
 {
+	public static final String PLATFORM_JAVALIN = "javalin";
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "revision_seq")
 	@SequenceGenerator(name = "revision_seq", sequenceName = "revision_seq", allocationSize = 10)
@@ -25,7 +33,12 @@ public class UserRevisionEntity /*extends DefaultRevisionEntity*/
 	private long id;
 
 	@RevisionTimestamp
+	@Column(nullable = false)
 	private long timestamp;
+
+	/** Should be the name of the platform, e.g. "javalin" or "spring" */
+	@Column(length = 8, nullable = false)
+	private String platform;
 
 	@Column
 	private Integer userID;

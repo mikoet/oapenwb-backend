@@ -40,6 +40,7 @@ create table Violation (ip varchar(45) not null, whenTS timestamp not null, info
 create table RevInfos (
 	id int8 not null,
 	timestamp int8 not null,
+	platform varchar(8) not null,
 	userID int4,
 	comment varchar(384),
 	primary key (id)
