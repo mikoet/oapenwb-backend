@@ -4,6 +4,7 @@ package dk.ule.oapenwb.data;
 
 import dk.ule.oapenwb.base.AppConfig;
 import dk.ule.oapenwb.base.RunMode;
+import dk.ule.oapenwb.entity.auditing.UserRevisionEntity;
 import dk.ule.oapenwb.entity.basis.*;
 import dk.ule.oapenwb.entity.statistics.CondensedData;
 import dk.ule.oapenwb.entity.statistics.SearchRun;
@@ -29,8 +30,8 @@ import org.hibernate.cfg.Configuration;
  */
 public class HibernateConfiguratorImpl implements HibernateConfigurator
 {
-	private RunMode runMode;
-	private AppConfig appConfig;
+	private final RunMode runMode;
+	private final AppConfig appConfig;
 	@Getter @Setter
 	private boolean createTables = false;
 
@@ -41,17 +42,11 @@ public class HibernateConfiguratorImpl implements HibernateConfigurator
 
 	@Override
 	public String getHibernateConfigFile() {
-		switch (this.runMode) {
-			case Normal:
-			default:
-				return "/hibernate.prod.cfg.xml";
-
-			case Development:
-				return "/hibernate.dev.cfg.xml";
-
-			case Testing:
-				return "/hibernate.testing.cfg.xml";
-		}
+		return switch (this.runMode) {
+			default -> "/hibernate.prod.cfg.xml";
+			case Development -> "/hibernate.dev.cfg.xml";
+			case Testing -> "/hibernate.testing.cfg.xml";
+		};
 	}
 
 	@Override
@@ -62,21 +57,21 @@ public class HibernateConfiguratorImpl implements HibernateConfigurator
 		configuration.setProperty(AvailableSettings.FORMAT_SQL,
 				this.appConfig.getDbConfig().isShowSQL() ? "true" : "false");
 
-		configuration.setProperty(AvailableSettings.URL, this.buildConnectionURL());
-		configuration.setProperty(AvailableSettings.USER, this.appConfig.getDbConfig().getUsername());
-		configuration.setProperty(AvailableSettings.PASS, this.appConfig.getDbConfig().getPassword());
+		configuration.setProperty(AvailableSettings.JAKARTA_JDBC_URL, this.buildConnectionURL());
+		configuration.setProperty(AvailableSettings.JAKARTA_JDBC_USER, this.appConfig.getDbConfig().getUsername());
+		configuration.setProperty(AvailableSettings.JAKARTA_JDBC_PASSWORD, this.appConfig.getDbConfig().getPassword());
 	}
 
 	@Override
 	public void configurate(Configuration configuration) {
 		configurateMinimal(configuration);
 
+		/* TODO Hibernate shall not anymore create the tables etc., it is done manually
+			   by the initialization script for now.
 		if (this.isCreateTables()) {
-			/* TODO Hibernate shall not anymore create the tables etc., it is done manually
-			   by the initialization script for now. */
 			//configuration.setProperty(AvailableSettings.HBM2DDL_DATABASE_ACTION, "create");
 			//configuration.setProperty(AvailableSettings.HBM2DDL_AUTO, "update");
-		}
+		} */
 
 		// Minimal number of idle connections in the pool
 		configuration.setProperty("hibernate.hikari.minimumIdle",
