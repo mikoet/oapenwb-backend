@@ -65,6 +65,9 @@ public class EmailUtil
 			if (emailConfig.isUseSSL()) {
 				email.setSSLOnConnect(true);
 			}
+			if (emailConfig.isEnableStartTLS()) {
+				email.setStartTLSEnabled(true);
+			}
 			email.setFrom(from != null ? from : emailConfig.getFrom());
 			email.setSubject(subject);
 			email.setMsg(message);

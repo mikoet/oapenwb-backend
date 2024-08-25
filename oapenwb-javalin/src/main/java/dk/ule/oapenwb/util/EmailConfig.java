@@ -21,5 +21,6 @@ public class EmailConfig
 	private String smtpPassword;
 	private String from;
 	private boolean useSSL;
+	private boolean enableStartTLS;
 	private boolean useAuthentication;
 }
