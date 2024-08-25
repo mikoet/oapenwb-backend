@@ -25,7 +25,7 @@ public class DictSpring
 	@Inject
 	public DictSpring(AppConfig appConfig) {
 		this.channel = ManagedChannelBuilder.forAddress(
-			"localhost", appConfig.getRpcHostPort()).usePlaintext().build();
+			appConfig.getRpcHost(), appConfig.getRpcHostPort()).usePlaintext().build();
 		this.healthStub = HealthGrpc.newBlockingStub(this.channel);
 	}
 
