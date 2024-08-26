@@ -7,8 +7,7 @@ dist/
 
 # backend config files
 config.json
-config.testing.json
-config.dev.json
+config.*.json
 application-*.yml
 application-dev.yml
 
