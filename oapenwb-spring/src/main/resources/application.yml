@@ -9,7 +9,9 @@ spring:
     application:
         name: 'oapenwb-spring'
     datasource:
-        url: jdbc:postgresql://host:port/database_name
+        url: 'jdbc:postgresql://${OAPENWB_DB_HOST}:${OAPENWB_DB_PORT}/${OAPENWB_DB_NAME}'
+        username: '${OAPENWB_DB_USER}'
+        password: '${OAPENWB_DB_PASSWORD}'
     jpa:
         hibernate:
             naming:
