@@ -5,7 +5,7 @@
 ##
 
 FROM eclipse-temurin:22.0.1_8-jre-alpine
-MAINTAINER ule.dk
+LABEL org.opencontainers.image.authors="ule.dk"
 
 ARG APP_VERSION=0.1.0-SNAPSHOT
 
