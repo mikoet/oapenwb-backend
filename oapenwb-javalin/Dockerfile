@@ -5,7 +5,7 @@
 ##
 
 FROM eclipse-temurin:22.0.1_8-jre-alpine
-MAINTAINER ule.dk
+LABEL org.opencontainers.image.authors="ule.dk"
 
 ARG APP_VERSION=0.1.0-SNAPSHOT
 
@@ -20,6 +20,8 @@ WORKDIR /app
 
 COPY target/oapenwb-javalin-${APP_VERSION}.jar oapenwb-javalin.jar
 COPY logging-docker.properties logging.properties
+
+# This config file needs to be created locally!
 COPY config.docker.json config.json
 
 ENTRYPOINT [ "java", "-jar", "oapenwb-javalin.jar" ]
