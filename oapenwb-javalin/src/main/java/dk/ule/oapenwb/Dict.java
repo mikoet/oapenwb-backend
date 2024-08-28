@@ -75,8 +75,6 @@ public class Dict
 				case "test" -> runMode = RunMode.Testing;
 				default -> error = true;
 			}
-		} else {
-			error = true;
 		}
 
 		if (error) {
