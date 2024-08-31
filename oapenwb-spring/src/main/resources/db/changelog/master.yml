@@ -1,5 +1,4 @@
 
 databaseChangeLog:
-    - changeSet:
-        id: 1
-        author: mikoet
+    - include:
+          file: db/changelog/2024/240901-001-init.sql
