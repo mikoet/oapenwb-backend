@@ -702,7 +702,6 @@ alter table if exists LexemeForms_AUD add constraint FKqm67kwnxrf0k3g8ls79gk18ut
 alter table if exists LexemeFormTypes_AUD add constraint FK5nkebyivc9fhybssvaumebsdm foreign key (REV) references RevInfos;
 alter table if exists Mappings_AUD add constraint FKoo41w5kdwtxtjoytfc7a44cfy foreign key (REV) references RevInfos;
 alter table if exists Lexemes_AUD add constraint FKk25ou47c6w2ksk5ab9jmbokdd foreign key (REV) references RevInfos;
-alter table if exists Lexemes_AUD add constraint FKk25ou47c6w2ksk5ab9jmbokdd foreign key (REV) references RevInfos;
 alter table if exists LexemeTypes_AUD add constraint FKqv1wag4xvkbpqwhhedth7y4qm foreign key (REV) references RevInfos;
 alter table if exists Links_AUD add constraint FK4qkuh4ym84muq46bfwc8vtlqg foreign key (REV) references RevInfos;
 alter table if exists LinkTypes_AUD add constraint FK5dvyytaxvs4iw8s7i8p6pwwh7 foreign key (REV) references RevInfos;
