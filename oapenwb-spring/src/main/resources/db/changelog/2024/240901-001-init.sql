@@ -1,15 +1,16 @@
 -- SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
 -- SPDX-License-Identifier: AGPL-3.0-only
 
--- these are remainings of the auto-generated stuff from Hibernate
+-- liquibase formatted sql
 
+-- changeset mikoet:init-1
+
+-- !! These are remainings of the auto-generated stuff from Hibernate
 create sequence audio_seq start 1 increment 1;
 create sequence langortho_seq start 1 increment 1;
 create sequence orthography_seq start 1 increment 1;
 create sequence permission_seq start 1 increment 20;
 create sequence revision_seq start 1 increment 10;
---create sequence sentence_seq start 1 increment 1;
---create sequence sentencegroup_seq start 1 increment 1;
 create sequence synlink_seq start 1 increment 1;
 create sequence user_seq start 1 increment 5;
 
@@ -23,8 +24,6 @@ create table Orthographies (id int4 not null, version int4 not null, abbreviatio
 create table Orthographies_AUD (id int4 not null, REV int8 not null, REVTYPE int2, abbreviation varchar(32), description varchar(1024), parentID int4, publicly boolean, uitID varchar(64), primary key (id, REV));
 create table Permissions (id int4 not null, version int4 not null, access varchar(4) not null, entity varchar(128) not null, entityID varchar(64) not null, userID int4 not null, primary key (id));
 create table Permissions_AUD (id int4 not null, REV int8 not null, REVTYPE int2, access varchar(4), entity varchar(128), entityID varchar(64), userID int4, primary key (id, REV));
---create table SentenceGroups (id int4 not null, version int4 not null, description varchar(512), primary key (id));
---create table Sentences (id int4 not null, version int4 not null, dialectID int4, groupID int4 not null, langID int4 not null, orthographyID int4 not null, text varchar(256) not null, primary key (id));
 create table SynLinks (id int4 not null, version int4 not null, endSynGroupID int8 not null, startSynGroupID int8 not null, typeID int4 not null, primary key (id));
 create table SynLinks_AUD (id int4 not null, REV int8 not null, REVTYPE int2, endSynGroupID int8, startSynGroupID int8, typeID int4, primary key (id, REV));
 create table UiLanguages (locale varchar(32) not null, version int4 not null, active boolean, isDefault boolean, localName varchar(32) not null, primary key (locale));
@@ -34,8 +33,7 @@ create table Users_AUD (id int4 not null, REV int8 not null, REVTYPE int2, activ
 create table VersionInfos (version varchar(12) not null, actionTS timestamp, primary key (version));
 create table Violation (ip varchar(45) not null, whenTS timestamp not null, info varchar(256) not null, type character not null, primary key (ip, whenTS));
 
-
--- From here on things are in self control
+-- !! From here on things are in self control
 
 create table RevInfos (
 	id int8 not null,
@@ -258,7 +256,7 @@ create table LexemeFormTypes (
 	primary key (id)
 );
 alter table if exists LexemeFormTypes add constraint FK_LexemeFormTypes_lexemeTypeID foreign key (lexemeTypeID) references LexemeTypes;
--- TODO Create indices on name?
+-- !! TODO Create indices on name?
 
 create table LexemeFormTypes_AUD (
 	id int4 not null,
@@ -408,7 +406,7 @@ create table Variants (
 	constraint check_dialectIDs check (dialectIDs is null or jsonb_typeof(dialectIDs) = 'array'),
 	constraint check_metaInfos check (metaInfos is null or jsonb_typeof(metaInfos) = 'object')
 );
---alter table if exists Variants add constraint FK_Variants_dialectID foreign key (dialectID) references Languages on delete restrict;
+-- //alter table if exists Variants add constraint FK_Variants_dialectID foreign key (dialectID) references Languages on delete restrict;
 alter table if exists Variants add constraint FK_Variants_orthographyID foreign key (orthographyID) references Orthographies on delete restrict;
 alter table if exists Variants add constraint FK_Variants_lexemeID foreign key (lexemeID) references Lexemes on delete cascade;
 create index IDX_Variants_active on Variants (active);
@@ -422,9 +420,9 @@ create index IDX_Variants_orthographyID on Variants (orthographyID);
 create index IDX_Variants_dialectIDs on Variants using GIN (dialectIDs jsonb_path_ops);
 create index IDX_Variants_metaInfos on Variants using GIN (metaInfos jsonb_path_ops);
 create index IDX_Variants_properties on Variants using GIN (properties jsonb_path_ops);
--- TODO structure of data in metaInfos shall be: { "key1": {"value":"real value"}, "key2": {"value":"real value 2"}}
--- because this will ultimately allow to search like: SELECT '{ "key1": {"value":"real value"}, "key2": {"value":"real value 2"}}'::jsonb @> '{"key2": {}}'::jsonb; -- true
--- and SELECT '{ "key1": {"value":"real value"}, "key2": {"value":"real value 2"}}'::jsonb @> '{"key2": {"value":"real value 2"}}'::jsonb; -- true
+-- !! TODO Structure of data in metaInfos shall be: { "key1": {"value":"real value"}, "key2": {"value":"real value 2"}}
+-- !! Because this will ultimately allow to search like: SELECT '{ "key1": {"value":"real value"}, "key2": {"value":"real value 2"}}'::jsonb @> '{"key2": {}}'::jsonb; -- true
+-- !! and SELECT '{ "key1": {"value":"real value"}, "key2": {"value":"real value 2"}}'::jsonb @> '{"key2": {"value":"real value 2"}}'::jsonb; -- true
 
 create table Variants_AUD (
 	id int8 not null,
@@ -475,9 +473,9 @@ create table Sememes (
 );
 alter table if exists Sememes add constraint FK_Sememes_lexemeID foreign key (lexemeID) references Lexemes on delete cascade;
 create index IDX_Sememes_categoryIDs on Sememes using GIN (categoryIDs jsonb_path_ops);
--- jsonb_path_ops index makes it possible to make indexed searches with the operator @>
--- example: select * from Lexemes where categoryIDs @> '[1, 3]'::jsonb;
--- what it does: select all Lexemes that have the categories 1 and 3
+-- !! jsonb_path_ops index makes it possible to make indexed searches with the operator @>
+-- !! example: select * from Lexemes where categoryIDs @> '[1, 3]'::jsonb;
+-- !! What it does: select all Lexemes that have the categories 1 and 3
 create index IDX_Sememes_dialectIDs on Sememes using GIN (dialectIDs jsonb_path_ops);
 create index IDX_Sememes_levelIDs on Sememes using GIN (levelIDs jsonb_path_ops);
 create index IDX_Sememes_variantIDs on Sememes using GIN (variantIDs jsonb_path_ops);
@@ -557,21 +555,19 @@ create table Mappings (
 	version int4 not null,
 	creatorID int4,
 	langPair varchar(32) not null,
---	lexemeOneID int8 not null,
---	lexemeTwoID int8 not null,
 	sememeOneID int8 not null,
 	sememeTwoID int8 not null,
 	weight int2 not null,
 	primary key (id)
 );
---alter table if exists Mappings add constraint UK_Mappings_lexemeOneID_lexemeTwoID unique (lexemeOneID, lexemeTwoID);
---alter table if exists Mappings add constraint FK_Mappings_lexemeOneID foreign key (lexemeOneID) references Lexemes;
---alter table if exists Mappings add constraint FK_Mappings_lexemeTwoID foreign key (lexemeTwoID) references Lexemes;
+-- //alter table if exists Mappings add constraint UK_Mappings_lexemeOneID_lexemeTwoID unique (lexemeOneID, lexemeTwoID);
+-- //alter table if exists Mappings add constraint FK_Mappings_lexemeOneID foreign key (lexemeOneID) references Lexemes;
+-- //alter table if exists Mappings add constraint FK_Mappings_lexemeTwoID foreign key (lexemeTwoID) references Lexemes;
 alter table if exists Mappings add constraint FK_Mappings_langPair foreign key (langPair) references LangPairs on delete restrict;
 alter table if exists Mappings add constraint UK_Mappings_sememeOneID_sememeTwoID unique (sememeOneID, sememeTwoID);
 alter table if exists Mappings add constraint FK_Mappings_sememeOneID foreign key (sememeOneID) references Sememes;
 alter table if exists Mappings add constraint FK_Mappings_sememeTwoID foreign key (sememeTwoID) references Sememes;
--- TODO Do not forget indices
+-- !! TODO Do not forget indices
 
 create table Mappings_AUD (
 	id int8 not null,
@@ -579,8 +575,6 @@ create table Mappings_AUD (
 	REVTYPE int2,
 	creatorID int4,
 	langPair varchar(32),
---	lexemeOneID int8,
---	lexemeTwoID int8,
 	sememeOneID int8,
 	sememeTwoID int8,
 	weight int2,
@@ -684,7 +678,7 @@ create table SearchRuns (
 );
 
 
--- the following is generated again
+-- !! the following is generated again
 alter table if exists Orthographies add constraint UK_tmvkgpu0jkdf7amubrffxmw2s unique (abbreviation);
 alter table if exists Users add constraint UK_ncoa9bfasrql0x4nhmh1plxxy unique (email);
 alter table if exists Users add constraint UK_23y4gd49ajvbqgl3psjsvhff6 unique (username);
@@ -693,15 +687,11 @@ alter table if exists LangOrthoMappings add constraint FKoajnd2drrbkhtjvq5r60ngh
 alter table if exists LangOrthoMappings add constraint FKog6bngtrsff8e60hk3cxb80bd foreign key (orthographyID) references Orthographies;
 alter table if exists Orthographies add constraint FK9onah7q1i4i7uka2i2kot5s7c foreign key (parentID) references Orthographies;
 alter table if exists Permissions add constraint FK39j46aw4cj6e1g0yefk34npg1 foreign key (userID) references Users;
---alter table if exists Sentences add constraint FKgcx8i19lek87bvjsnkf1knoih foreign key (dialectID) references Languages;
---alter table if exists Sentences add constraint FKm0i8bf0axj7n4mrvh9cgt0kdy foreign key (groupID) references SentenceGroups;
---alter table if exists Sentences add constraint FK6l7sb05a1wyxnsralmib155jm foreign key (langID) references Languages;
---alter table if exists Sentences add constraint FK3c3lvnf2cpmhpv8gtx6piapyx foreign key (orthographyID) references Orthographies;
 alter table if exists SynLinks add constraint FKtdecj4osguukahy3ooqnltkmx foreign key (startSynGroupID) references SynGroups;
 alter table if exists SynLinks add constraint FK9ub84y8g1nlbrt029esqfnkb6 foreign key (endSynGroupID) references SynGroups;
 alter table if exists SynLinks add constraint FKnk3xotfpyrgag0yo2a1i0mswp foreign key (typeID) references LinkTypes;
 
--- alleyn de _AUD constraints
+-- !! alleyn de _AUD constraints
 alter table if exists Audios_AUD add constraint FKqsoqio0lf1qtequda73fja82y foreign key (REV) references RevInfos;
 alter table if exists Categories_AUD add constraint FK884pw6h022edg0iibj1e4a3uf foreign key (REV) references RevInfos;
 alter table if exists LangOrthoMappings_AUD add constraint FKpc44mjis3ayvbj49eq7lp5vwx foreign key (REV) references RevInfos;
@@ -711,7 +701,8 @@ alter table if exists LemmaTemplates_AUD add constraint FKiy0fyvqiyh8jlp2ja8tu76
 alter table if exists LexemeForms_AUD add constraint FKqm67kwnxrf0k3g8ls79gk18ut foreign key (REV) references RevInfos;
 alter table if exists LexemeFormTypes_AUD add constraint FK5nkebyivc9fhybssvaumebsdm foreign key (REV) references RevInfos;
 alter table if exists Mappings_AUD add constraint FKoo41w5kdwtxtjoytfc7a44cfy foreign key (REV) references RevInfos;
---alter table if exists Lexemes_AUD add constraint FKk25ou47c6w2ksk5ab9jmbokdd foreign key (REV) references RevInfos;
+alter table if exists Lexemes_AUD add constraint FKk25ou47c6w2ksk5ab9jmbokdd foreign key (REV) references RevInfos;
+alter table if exists Lexemes_AUD add constraint FKk25ou47c6w2ksk5ab9jmbokdd foreign key (REV) references RevInfos;
 alter table if exists LexemeTypes_AUD add constraint FKqv1wag4xvkbpqwhhedth7y4qm foreign key (REV) references RevInfos;
 alter table if exists Links_AUD add constraint FK4qkuh4ym84muq46bfwc8vtlqg foreign key (REV) references RevInfos;
 alter table if exists LinkTypes_AUD add constraint FK5dvyytaxvs4iw8s7i8p6pwwh7 foreign key (REV) references RevInfos;
