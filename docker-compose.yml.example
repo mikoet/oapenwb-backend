@@ -1,4 +1,3 @@
-#version: '3.9'
 
 services:
     oapenwb-spring:
@@ -25,7 +24,9 @@ services:
             - ./logs/javalin:/logs
 
     postgres:
-        image: postgres:15.3-alpine3.18
+        # Has support until November 11, 2027
+        # https://www.postgresql.org/support/versioning/
+        image: postgres:15.8-alpine3.20
         restart: always
         shm_size: 256mb
         environment:
