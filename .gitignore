@@ -19,6 +19,7 @@ docker-compose.yml
 db-schema.jpa.ddl
 classes/
 /logs/
+/config/
 
 ### Settings for IntelliJ products from:
 #   https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
