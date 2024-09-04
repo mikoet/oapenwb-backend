@@ -114,7 +114,7 @@ public class UserController
 			} else if (preparedName != null && !preparedName.isEmpty()) {
 				person = " " + preparedName;
 			}
-			EmailUtil.sendEmail(preparedEmail, "ULE.DK – Welkoamen",
+			EmailUtil.sendEmail(preparedEmail, "Welkoamen",
 				String.format(
 					"Moin%s, dyn konto is jüst anlegt warden. Nu skalst du töyven bet en admin dyn konto aktiv setten deit un du dy inloggen kanst.",
 					person));

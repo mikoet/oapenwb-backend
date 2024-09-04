@@ -20,6 +20,8 @@ public class EmailConfig
 	private String smtpUsername;
 	private String smtpPassword;
 	private String from;
+	private String subjectPrefix;
 	private boolean useSSL;
+	private boolean enableStartTLS;
 	private boolean useAuthentication;
 }

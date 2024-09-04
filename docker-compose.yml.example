@@ -1,0 +1,50 @@
+
+services:
+    oapenwb-spring:
+        image: oapenwb-spring:latest
+        environment:
+            SPRING_PROFILES_ACTIVE: docker
+            OAPENWB_DB_HOST: 'postgres'
+            OAPENWB_DB_PORT: 5432
+            OAPENWB_DB_NAME: 'some_db'
+            OAPENWB_DB_USER: 'some_user'
+            OAPENWB_DB_PASSWORD: 'some_password'
+        restart: always
+        ports:
+            - '127.0.0.1:15710:8080'
+        volumes:
+            - ./logs/spring:/logs
+
+    oapenwb-javalin:
+        image: oapenwb-javalin:latest
+        restart: always
+        ports:
+            - '127.0.0.1:15720:8080'
+        volumes:
+            - ./logs/javalin:/logs
+            -   type: bind
+                source: ./config/config.javalin.json
+                target: /app/config.json
+
+    postgres:
+        # Has support until November 11, 2027
+        # https://www.postgresql.org/support/versioning/
+        image: postgres:15.8-alpine3.20
+        restart: always
+        shm_size: 256mb
+        environment:
+            POSTGRES_DB: 'some_db'
+            POSTGRES_USER: 'some_user'
+            POSTGRES_PASSWORD: 'some_password'
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - '127.0.0.1:15790:8080'
+
+volumes:
+    postgres_data:
+        driver: local

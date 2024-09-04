@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!--
+		More on variables:
+		https://logback.qos.ch/manual/configuration.html#defaultValuesForVariables
+	-->
+	<variable file="logging.properties" />
+
+	<import class="ch.qos.logback.core.ConsoleAppender"/>
+	<import class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"/>
+	<import class="ch.qos.logback.core.rolling.RollingFileAppender"/>
+	<import class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"/>
+
+	<appender name="Console" class="ConsoleAppender">
+		<encoder class="PatternLayoutEncoder">
+			<pattern>%cyan(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%c{20}): %msg%n%throwable</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="File" class="RollingFileAppender">
+		<rollingPolicy class="SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${log_destination:-./}oapenwb-javalin.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<maxFileSize>1MB</maxFileSize>
+			<totalSizeCap>1GB</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{ISO8601} %-5level [%t] %C{20}: %msg%n%throwable</pattern>
+		</encoder>
+	</appender>
+
+	<root level="info">
+		<appender-ref ref="${active_logger:-Console}" />
+	</root>
+</configuration>

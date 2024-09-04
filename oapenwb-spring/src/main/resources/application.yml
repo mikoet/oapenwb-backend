@@ -9,11 +9,17 @@ spring:
     application:
         name: 'oapenwb-spring'
     datasource:
-        url: jdbc:postgresql://host:port/database_name
+        url: 'jdbc:postgresql://${OAPENWB_DB_HOST}:${OAPENWB_DB_PORT}/${OAPENWB_DB_NAME}'
+        username: '${OAPENWB_DB_USER}'
+        password: '${OAPENWB_DB_PASSWORD}'
     jpa:
         hibernate:
             naming:
                 physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
                 implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
     liquibase:
-        enabled: false
+        enabled: true
+        changeLog: 'db/changelog/master.yml'
+        url: ${spring.datasource.url}
+        user: ${spring.datasource.username}
+        password: ${spring.datasource.password}

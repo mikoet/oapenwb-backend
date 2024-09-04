@@ -65,8 +65,14 @@ public class EmailUtil
 			if (emailConfig.isUseSSL()) {
 				email.setSSLOnConnect(true);
 			}
+			if (emailConfig.isEnableStartTLS()) {
+				email.setStartTLSEnabled(true);
+			}
 			email.setFrom(from != null ? from : emailConfig.getFrom());
-			email.setSubject(subject);
+			final String finalSubject = emailConfig.getSubjectPrefix() != null && !emailConfig.getSubjectPrefix().isEmpty()
+				? String.format("%s – %s", emailConfig.getSubjectPrefix(), subject)
+				: String.format("oapenwb – %s", subject);
+			email.setSubject(finalSubject);
 			email.setMsg(message);
 			email.addTo(to);
 			email.send();

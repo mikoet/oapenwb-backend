@@ -17,6 +17,7 @@
 		"smtpUsername": "",
 		"smtpPassword": "",
 		"from": "from@adress.domain",
+		"subjectPrefix": "oapenwb [test instance]",
 		"useSSL": false,
 		"useAuthentication": false
 	},

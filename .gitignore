@@ -7,15 +7,19 @@ dist/
 
 # backend config files
 config.json
-config.testing.json
-config.dev.json
+config.*.json
 application-*.yml
 application-dev.yml
+
+## Docker
+# might contain auth credentials
+docker-compose.yml
 
 # other backend files / directories
 db-schema.jpa.ddl
 classes/
-
+/logs/
+/config/
 
 ### Settings for IntelliJ products from:
 #   https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
