@@ -22,6 +22,7 @@ COPY target/oapenwb-javalin-${APP_VERSION}.jar oapenwb-javalin.jar
 COPY logging-docker.properties logging.properties
 
 # This config file needs to be created locally!
-COPY config.docker.json config.json
+# HINT config file is now mapped into the container via docker compose.
+#COPY config.docker.json config.json
 
 ENTRYPOINT [ "java", "-jar", "oapenwb-javalin.jar" ]

@@ -22,6 +22,9 @@ services:
             - '127.0.0.1:15720:8080'
         volumes:
             - ./logs/javalin:/logs
+            -   type: bind
+                source: ./config/config.javalin.json
+                target: /app/config.json
 
     postgres:
         # Has support until November 11, 2027
