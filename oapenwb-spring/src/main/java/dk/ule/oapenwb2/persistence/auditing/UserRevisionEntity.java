@@ -6,6 +6,8 @@ package dk.ule.oapenwb2.persistence.auditing;
 import dk.ule.oapenwb2.persistence.UserRevisionListener;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
@@ -18,8 +20,10 @@ import org.hibernate.envers.RevisionTimestamp;
  * same columns. The difference, however, is that each of the two entities uses a different
  * RevisionListener which is platform specific.</p>
  */
-@Data
+
 @Entity
+@Getter
+@Setter
 @Table(name = "RevInfos")
 @RevisionEntity(UserRevisionListener.class)
 public class UserRevisionEntity
