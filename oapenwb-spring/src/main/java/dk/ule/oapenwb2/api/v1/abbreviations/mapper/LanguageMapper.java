@@ -6,6 +6,7 @@ package dk.ule.oapenwb2.api.v1.abbreviations.mapper;
 import dk.ule.oapenwb.persistency.entity.content.basedata.Language;
 import dk.ule.oapenwb2.api.v1.abbreviations.domain.LanguageDto;
 import dk.ule.oapenwb2.service.content.LanguageService;
+import dk.ule.oapenwb2.service.content.OrthographyService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -19,11 +20,15 @@ public abstract class LanguageMapper
 	@Autowired
 	protected LanguageService languageService;
 
+	@Autowired
+	protected OrthographyService orthographyService;
+
 	@Mapping(target = "ownName", source = "localName")
 	@Mapping(target = "uitId", source = "uitID")
 	@Mapping(target = "uitIdAbbr", source = "uitID_abbr")
-	@Mapping(target = "dialects", expression = "java(this.map(languageService.getDialectsFor(language)))")
-	public abstract LanguageDto map(Language language);
+	@Mapping(target = "dialects", expression = "java(this.mapLanguageList(languageService.getDialectsFor(language)))")
+	@Mapping(target = "orthographies", expression = "java(orthographyService.getOrthographyDtosForLanguage(language))")
+	public abstract LanguageDto mapLanguageList(Language language);
 
-	public abstract List<LanguageDto> map(List<Language> languageList);
+	public abstract List<LanguageDto> mapLanguageList(List<Language> languageList);
 }

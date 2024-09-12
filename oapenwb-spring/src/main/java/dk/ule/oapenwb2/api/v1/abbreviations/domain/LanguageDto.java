@@ -9,5 +9,6 @@ public record LanguageDto(
 	String ownName,
 	String uitId,
 	String uitIdAbbr,
-	List<LanguageDto> dialects
+	List<LanguageDto> dialects,
+	List<OrthographyDto> orthographies
 ) { }
