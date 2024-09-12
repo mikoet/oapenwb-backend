@@ -25,6 +25,6 @@ public class AbbreviationsController
 	@GetMapping(path = "languages")
 	public List<LanguageDto> allLanguages() {
 		final List<Language> languageList = this.languageService.getAllLanguages();
-		return languageMapper.map(languageList);
+		return languageMapper.mapLanguageList(languageList);
 	}
 }
