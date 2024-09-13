@@ -4,7 +4,7 @@
 package dk.ule.oapenwb2.service.content;
 
 import dk.ule.oapenwb.persistency.entity.content.basedata.Language;
-import dk.ule.oapenwb2.api.v1.abbreviations.domain.OrthographyDto;
+import dk.ule.oapenwb.persistency.entity.content.basedata.Orthography;
 import dk.ule.oapenwb2.persistence.content.basedata.OrthographyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class OrthographyService
 {
 	private final OrthographyRepository orthographyRepository;
 
-	public List<OrthographyDto> getOrthographyDtosForLanguage(Language language) {
+	public List<Orthography> getOrthographiesForLanguage(Language language) {
 		if (!"nds".equals(language.getLocale())) {
 			return null;
 		}
