@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: © 2022 Michael Köther <mkoether38@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-only
+
 package dk.ule.oapenwb.data.importer.csv.components.sememecreators.saxon;
 
 import dk.ule.oapenwb.data.importer.csv.CsvImporterContext;
@@ -19,7 +20,7 @@ public class SaxonSememeCreator extends DefaultSememeCreator
 		String text = rowData.getParts()[SaxonFirstImportSetting.COL_VASTE_VORBINDING - 1];
 		if (text != null && !text.isBlank()) {
 			// token PTAPIE
-			sememe.getProperties().put("vaste-vorbinding", text);
+			sememe.getProperties().put(Sememe.PROPERTY_VASTE_VORBINDING, text);
 		}
 
 		return sememe;

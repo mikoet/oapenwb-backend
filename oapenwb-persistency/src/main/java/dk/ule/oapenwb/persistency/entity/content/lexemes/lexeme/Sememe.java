@@ -44,6 +44,13 @@ public class Sememe implements IRPCEntity<Long>, IEntity<Long>
 	public static final int FILL_SPEC_FROM_TEMPLATE = 2;
 	public static final int FILL_SPEC_MANUALLY = 3;
 
+	/**
+	 * Vaste vorbinding key name for the properties map of the Sememe entity.
+	 *
+	 * <p>TODO Relation to rection/Rektion?
+	 */
+	public static final String PROPERTY_VASTE_VORBINDING = "vaste-vorbinding";
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sememe_seq")
 	@SequenceGenerator(name = "sememe_seq", sequenceName = "sememe_seq", allocationSize = 1)

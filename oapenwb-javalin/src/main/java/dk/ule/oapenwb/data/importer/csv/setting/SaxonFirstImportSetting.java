@@ -20,6 +20,7 @@ import dk.ule.oapenwb.persistency.entity.content.basedata.Language;
 import dk.ule.oapenwb.persistency.entity.content.basedata.LexemeType;
 import dk.ule.oapenwb.persistency.entity.content.basedata.LinkType;
 import dk.ule.oapenwb.persistency.entity.content.basedata.Orthography;
+import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Sememe;
 import dk.ule.oapenwb.persistency.entity.content.lexemes.lexeme.Variant;
 import dk.ule.oapenwb.util.Pair;
 
@@ -122,8 +123,8 @@ public class SaxonFirstImportSetting
 			// Is there a 'vaste vorbinding'?
 			String vasteVorbinding = null;
 			final Map<String, Object> sememeProperties = dto.getSememes().get(0).getProperties();
-			if (sememeProperties.containsKey("vaste-vorbinding")) {
-				vasteVorbinding = (String) sememeProperties.get("vaste-vorbinding");
+			if (sememeProperties.containsKey(Sememe.PROPERTY_VASTE_VORBINDING)) {
+				vasteVorbinding = (String) sememeProperties.get(Sememe.PROPERTY_VASTE_VORBINDING);
 			}
 
 			// Build a key for each variant
