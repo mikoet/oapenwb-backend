@@ -24,7 +24,7 @@
 	"dbConfig": {
 		"hostname": "localhost",
 		"port": 3306,
-		"database": "oapenwb_dev"
+		"database": "oapenwb_dev",
 		"username": "username",
 		"password": "password",
 		"showSQL": false,
