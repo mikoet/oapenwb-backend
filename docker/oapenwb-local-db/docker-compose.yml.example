@@ -1,0 +1,28 @@
+
+services:
+    postgres:
+        # Has support until November 8, 2029
+        # https://www.postgresql.org/support/versioning/
+        image: postgres:17.2
+        restart: always
+        shm_size: 256mb
+        environment:
+            POSTGRES_DB: 'oapenwb'
+            POSTGRES_USER: 'some-ddl-user'
+            POSTGRES_PASSWORD: 'some password'
+            APP_USER: 'some-app-user'
+            APP_PASSWORD: 'another password'
+        volumes:
+            # Mounts script to create the app user
+            - ./init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+            - postgres_data:/var/lib/postgresql/data
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - '127.0.0.1:15791:8080'
+
+volumes:
+    postgres_data:
+        driver: local
